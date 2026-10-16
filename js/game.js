@@ -65,6 +65,7 @@
     detour: 0, // 우회 선로가 놓인 정도 0~1
     detourT: 0,
     detourLit: false,
+    run: 0, // 우회 선로를 달리는 열차 위치 (0 가까이 ~ 1 멀리)
     hp: 1,
     hpT: 1,
     hpShow: false,
@@ -745,6 +746,26 @@
       const p = bez((built - 1) / (DETOUR - 1));
       if (Math.floor(t * 6) % 2) r(p.x - 1, p.y - 6, 2, 2, '#fff6c8');
     }
+    // 우회 선로를 달려 나가는 내 열차 (멀리 있는 칸부터 그린다)
+    if (S.run > 0) {
+      for (let i = 0; i < 4; i++) {
+        const p = S.run - i * 0.075;
+        if (p < 0 || p > 1) continue;
+        const pt = bez(p);
+        const d = (pt.y - HZ) / (H - HZ);
+        const w = Math.round(5 + d * 64);
+        const h = Math.round(w * 0.78);
+        const x0 = Math.round(pt.x - w / 2);
+        const y0 = Math.round(pt.y - h);
+        r(x0, y0, w, h, '#c7cbd9');
+        r(x0, y0 + Math.round(h * 0.62), w, Math.max(1, Math.round(h * 0.12)), col);
+        r(x0 + Math.round(w * 0.15), y0 + Math.round(h * 0.18), Math.round(w * 0.7), Math.max(1, Math.round(h * 0.3)), '#ffe39a');
+        if (i === 3 || p - 0.075 < 0) {
+          r(x0 + 1, y0 + h - Math.max(2, Math.round(h * 0.2)), Math.max(1, Math.round(w * 0.12)), Math.max(1, Math.round(h * 0.1)), '#ff4a5a');
+          r(x0 + w - 1 - Math.max(1, Math.round(w * 0.12)), y0 + h - Math.max(2, Math.round(h * 0.2)), Math.max(1, Math.round(w * 0.12)), Math.max(1, Math.round(h * 0.1)), '#ff4a5a');
+        }
+      }
+    }
     // 그림자와 바위
     const k = 1.15 + S.lunge * 0.35;
     const jit = Math.sin(t * 70) * 4 * S.hit;
@@ -916,6 +937,7 @@
     S.lunge = Math.max(0, S.lunge - dt * 1.4);
     S.detour += (S.detourT - S.detour) * Math.min(1, dt * 2.5);
     S.hp += (S.hpT - S.hp) * Math.min(1, dt * 3);
+    if (S.run > 0 && S.run < 1.5) S.run += dt * 0.28;
     if (S.scene === 'arrival') S.train = Math.min(1, S.train + dt * 0.35);
     if (S.shadow !== undefined) S.shadow += ((S.shadowT || 0) - S.shadow) * Math.min(1, dt * 1.2);
     if ((S.scene === 'underpass' || S.scene === 'track') && S.walk) {
@@ -1033,6 +1055,7 @@
       S.beam = S.hit = S.lunge = 0;
       S.detour = S.detourT = 0;
       S.detourLit = false;
+      S.run = 0;
       S.hp = S.hpT = 1;
       S.hpShow = false;
       if (name === 'battle') {
@@ -1097,6 +1120,10 @@
     },
     detour(v) {
       S.detourT = v;
+    },
+    trainRun() {
+      S.run = 0.001;
+      S.quake = 0.4;
     },
     detourLit(on) {
       S.detourLit = on;

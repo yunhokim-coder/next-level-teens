@@ -287,7 +287,7 @@
     "shadow0": "You again? I told you, this way is blocked.",
     "tut1": "Time to use detour cards. Each time the shadow attacks, play one card to lay a way around.",
     "tut2": "See the colored tags on the attack card? Play a card with the same tag and it hits harder. Matches glow yellow.",
-    "tut3": "Don't like the four in your hand? You can pick from all the cards. You can't lose. Take your time.",
+    "tut3": "The cards in your hand fit this attack. Want something else? Pick from 'See more cards.' You can't lose.",
     "tut4": "That's how it works. Each card lays one more piece of the detour.",
     "attackLine": "...{desc}. {taunt}",
     "taunts": "So just give up.|It won't work anyway.|Just rest today.|You're not getting past me.|You can do it tomorrow.",
@@ -297,13 +297,13 @@
     "shadowEnd": "...Tch. So there's more than one way.",
     "end2": "See? {name} won't vanish. It'll show up again. But now you know the way around.",
     "end3": "Here are the detours you laid today.",
-    "end4": "At the next stop, pick the ones you'll really use and finish your route map. Almost there.",
+    "end4": "At the next stop, pick the ones you'll really use and finish your route map. Almost there. Let's go!",
     "fallbackName": "Shadow",
     "tag": "Detour",
     "attack": "Shadow attack",
-    "handLead": "Tap a card to look closer and play it. More matching tags, bigger effect.",
-    "deck": "Pick from all cards",
-    "use": "Detour with this card",
+    "handLead": "These cards fit this attack. Tap one to look closer and choose.",
+    "deck": "See more cards",
+    "use": "Choose",
     "back": "Choose again",
     "zoomHit": "★ Tags match! Bigger effect.",
     "deckTitle": "All 55 detour cards",
@@ -311,6 +311,7 @@
     "deckClose": "Back to my hand",
     "routeTitle": "Detours you laid today",
     "routeLead": "The card you played for each shadow attack. ★ means the tags matched.",
-    "routeGo": "Next"
+    "routeGo": "Next",
+    "trainRun": "Your train rolls out onto the lit detour, around the rocks, toward the next stop."
   }
 }

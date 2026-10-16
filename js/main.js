@@ -742,6 +742,12 @@
     ]);
     await Battle.summary(turns, Mamba.card);
     await say([nova('ep5.end4')]);
+    // 완성된 우회 선로로 내 열차가 지나간다
+    Game.hp(0, false);
+    Game.trainRun();
+    Sound.play('rumble');
+    await say([n('ep5.trainRun', { wait: 4200 })]);
+    await Game.fadeTo(1);
     Data.save.ep5 = { turns };
     Data.persist();
     Data.send('ep5_result', {

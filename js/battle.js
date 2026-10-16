@@ -37,14 +37,17 @@
   const tagNames = (tags) => tags.map((t) => data.tags[t][lang()]).join(', ');
 
   // ---------- 손패 ----------
-  // 이번 공격에 맞는 카드가 손에 하나도 없으면 하나를 바꿔 준다 (튜토리얼처럼 늘 답이 있게)
+  // 매 턴 새로 나눈다: 이번 공격과 태그가 많이 겹치는 카드부터 최대 4장 추천, 모자라면 나머지로 채운다
   function deal(hand, used, attackTags) {
-    const pool = shuffle(data.cards.filter((c) => !used.includes(c.id) && !hand.includes(c.id)).map((c) => c.id));
-    while (hand.length < HAND && pool.length) hand.push(pool.shift());
-    if (!hand.some((id) => overlap(card(id).tags, attackTags).length)) {
-      const fit = pool.find((id) => overlap(card(id).tags, attackTags).length);
-      if (fit) hand[Math.floor(Math.random() * hand.length)] = fit;
-    }
+    const pool = shuffle(data.cards.filter((c) => !used.includes(c.id)));
+    const fit = pool
+      .map((c) => ({ id: c.id, n: overlap(c.tags, attackTags).length }))
+      .filter((x) => x.n > 0)
+      .sort((x, y) => y.n - x.n)
+      .map((x) => x.id);
+    const rest = pool.map((c) => c.id).filter((id) => !fit.includes(id));
+    hand.length = 0;
+    fit.concat(rest).slice(0, HAND).forEach((id) => hand.push(id));
     return hand;
   }
 
