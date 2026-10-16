@@ -621,19 +621,19 @@
     await sleep(1400);
     await say([n('ep4.grow'), nova('ep4.nova3')]);
     const named = await Mamba.name(ids, freq, prev);
-    Game.shadowName = named.name;
+    Game.shadowName = named.full;
     Sound.play('powerup');
     await sleep(800);
     const L = I18n.lang === 'en' ? 'en' : 'ko';
     const top = Mamba.card(Mamba.byFrequency(ids, freq)[0]);
     await say([
-      { who: 'shadow', name: named.name, key: 'ep4.shadow1', vars: { name: named.name, desc: top[L].desc } },
-      nova('ep4.nova4', { vars: { name: named.name } }),
-      nova('ep4.nova5'),
+      { who: 'shadow', name: named.full, key: 'ep4.shadow1', vars: { name: named.full, desc: top[L].desc } },
+      nova('ep4.nova4', { vars: { name: named.full } }),
+      nova('ep4.nova5', { vars: { name: named.full } }),
       { who: 'narrator', key: 'ep4.n4', do: () => Game.shadow(0.35) , wait: 1200 },
-      nova('ep4.nova6', { vars: { name: named.name } }),
+      nova('ep4.nova6', { vars: { name: named.full } }),
     ]);
-    Data.save.ep4 = { cards: ids, freq, name: named.name, idea: named.idea };
+    Data.save.ep4 = { cards: ids, freq, name: named.name, full: named.full, idea: named.idea };
     Data.persist();
     Data.send('ep4_result', {
       cards: ids.join(','),

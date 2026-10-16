@@ -152,23 +152,23 @@
   }
 
   // ---------- 그림자 이름 붙이기 (외재화) ----------
-  // 추천 이름은 가장 자주 나타나는 카드의 낱말로 만든다. 예) 숏폼 → 숏폼 그림자, 숏폼 씨
+  // 앞은 가장 자주 나타나는 카드 이름, 뒤는 학생이 붙이는 이름. 예) 불안 + 검댕이 → 불안 검댕이
+  const join = (word, nick) => `${word} ${nick}`;
   function name(ids, freq, prev) {
-    const L = lang();
-    const top = byFrequency(ids, freq).slice(0, 2).map((id) => card(id)[L].word);
-    const ideas = [];
-    top.forEach((w) => {
-      I18n.t('ep4.nameIdeas')
-        .split('|')
-        .forEach((pattern) => ideas.push(pattern.replace('{w}', w)));
-    });
+    const word = card(byFrequency(ids, freq)[0])[lang()].word;
+    const ideas = I18n.t('ep4.nameIdeas').split('|');
     return new Promise((resolve) => {
       const input = $('#name-own');
       input.value = (prev && prev.name) || '';
+      $('#name-word').textContent = word;
+      const preview = () => {
+        const v = input.value.trim();
+        $('#name-preview').textContent = v ? I18n.t('ep4.namePreview').replace('{full}', join(word, v)) : '';
+      };
       const box = $('#name-ideas');
       box.innerHTML = '';
       let fromIdea = -1;
-      ideas.slice(0, 4).forEach((idea, i) => {
+      ideas.forEach((idea, i) => {
         const b = document.createElement('button');
         b.type = 'button';
         b.className = 'chip';
@@ -178,15 +178,17 @@
           fromIdea = i;
           Sound.play('blip');
           $('#name-error').hidden = true;
+          preview();
         };
         box.appendChild(b);
       });
       input.oninput = () => {
         fromIdea = -1;
         $('#name-error').hidden = true;
+        preview();
       };
       $('#name-go').onclick = () => {
-        const v = input.value.trim().slice(0, 16);
+        const v = input.value.trim().slice(0, 10);
         if (!v) {
           $('#name-error').hidden = false;
           Sound.play('poof');
@@ -194,9 +196,10 @@
         }
         Sound.play('select');
         $('#name-screen').hidden = true;
-        resolve({ name: v, idea: fromIdea >= 0 && v === ideas[fromIdea] ? fromIdea : -1 });
+        resolve({ name: v, full: join(word, v), idea: fromIdea >= 0 && v === ideas[fromIdea] ? fromIdea : -1 });
       };
       $('#name-error').hidden = true;
+      preview();
       open('#name-screen');
       setTimeout(() => input.focus(), 50);
     });
@@ -212,5 +215,6 @@
     frequency,
     byFrequency,
     name,
+    join,
   };
 })();

@@ -207,6 +207,10 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 @media (max-width: 420px) { .dest-options { grid-template-columns: 1fr; } .gauge-row { grid-template-columns: 1fr; gap: 3px; } }
 
 .field-big { font-size: 17px; padding: 11px 12px; }
+.name-join { display: flex; align-items: center; gap: 8px; }
+.name-join .field { flex: 1; min-width: 0; }
+.name-word { flex: none; padding: 10px 12px; border-radius: 8px; background: #2a2140; color: #ffcf4a; font-weight: 700; font-size: 16px; }
+.name-preview { min-height: 1.4em; margin: 8px 0 0; color: #ffcf4a; font-weight: 700; }
 .btn-ghost { background: transparent; border-style: dashed; color: var(--amber); }
 .dest-opt[aria-pressed='true'] { border-color: var(--line); background: #0f2e2b; }
 

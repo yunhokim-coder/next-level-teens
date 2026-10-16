@@ -262,11 +262,12 @@
     "freq3": "Almost daily",
     "freqError": "Please choose for every card.",
     "nameTitle": "What will you call this shadow?",
-    "nameLead": "You name it. It stays on this device.",
-    "namePh": "e.g. Phone Ghost",
+    "nameLead": "The card's name goes first; you choose what comes after. e.g. Anxiety + Gremlin → Anxiety Gremlin. It stays on this device.",
+    "namePh": "e.g. Gremlin",
     "nameIdeasLead": "Stuck? Pick one",
-    "nameIdeas": "{w} Shadow|Mr. {w}",
+    "nameIdeas": "Shadow|Monster|Goblin|Gremlin",
     "nameError": "Please write or pick a name.",
-    "nameGo": "Call it this"
+    "nameGo": "Call it this",
+    "namePreview": "→ {full}"
   }
 }

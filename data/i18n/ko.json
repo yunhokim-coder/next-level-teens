@@ -262,11 +262,12 @@
     "freq3": "거의 매일",
     "freqError": "모든 카드에 골라 줘.",
     "nameTitle": "이 그림자, 뭐라고 부를래?",
-    "nameLead": "네가 붙이는 이름이야. 이 기기에만 저장돼.",
-    "namePh": "예: 폰귀신",
+    "nameLead": "앞에는 카드 이름이 붙고, 뒤에 붙일 이름은 네가 정해. 예) 불안 + 검댕이 → 불안 검댕이. 이 기기에만 저장돼.",
+    "namePh": "예: 검댕이",
     "nameIdeasLead": "떠오르지 않으면 골라 봐",
-    "nameIdeas": "{w} 그림자|{w} 씨",
+    "nameIdeas": "그림자|괴물|도깨비|요괴",
     "nameError": "이름을 써 주거나 골라 줘.",
-    "nameGo": "이 이름으로 부르기"
+    "nameGo": "이 이름으로 부르기",
+    "namePreview": "→ {full}"
   }
 }
