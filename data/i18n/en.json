@@ -76,7 +76,16 @@
     "next": "Next stop: your character, reflected in the train window",
     "demo": "That's the end of the demo.",
     "replay": "Start over",
-    "toSurvey": "On to the last questions"
+    "toSurvey": "On to the last questions",
+    "ep1": {
+      "title": "First Train · CLEAR",
+      "next": "Next stop: your character, reflected in the train window"
+    },
+    "ep2": {
+      "title": "Your Character · CLEAR",
+      "next": "Next stop: the final station, where you choose where to go"
+    },
+    "toNext": "Next stop"
   },
   "consent": {
     "tag": "Before boarding",
@@ -116,5 +125,33 @@
   "thanks": {
     "title": "Thanks, passenger",
     "body": "Your line has just begun. You decide the next stop."
+  },
+  "ep2": {
+    "n1": "Inside the first train. You are the only passenger. The sleeping city slides past the window.",
+    "nova1": "This train is a little unusual. It changes depending on who rides it.",
+    "nova2": "But you haven't really seen yourself yet, have you? With that hood up, I can't tell either.",
+    "nova3": "Let me ask you a few things. 24 of them. No right answers. Just pick what's closest to the everyday you.",
+    "nova4": "Okay. A tunnel's coming up. Look at the window across from you.",
+    "tunnel": "Clunk. The train enters the tunnel. The window turns black.",
+    "reflect1": "Someone appears in the dark glass.",
+    "reflect2": "...{type}. That’s me.",
+    "nova5": "{line}. That's your line color. It'll be on your ticket and your route map from now on.",
+    "nova6": "At the next stop you'll choose your final station. It's okay if you don't know yet."
+  },
+  "quiz": {
+    "tag": "Your character",
+    "title": "Which is most like you?",
+    "lead": "Pick the one closest to the everyday you. No right answers.",
+    "back": "Previous question",
+    "tie1": "Both look like you. Which is closer?",
+    "tie2": "Which one are you a little bit of, too?"
+  },
+  "result": {
+    "strengths": "Strengths",
+    "watch": "Watch out",
+    "study": "When studying",
+    "mix": "Mixed in",
+    "mixText": "You have a bit of {name} in you, too.",
+    "go": "Got it"
   }
 }

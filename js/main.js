@@ -21,22 +21,10 @@
     Game.resize(scale);
   }
 
-  // ---------- 미니 초상화: 아직 거울을 보지 않아 후드 실루엣과 ? ----------
-  function drawPortrait() {
-    const c = $('#portrait-canvas');
-    const g = c.getContext('2d');
-    g.clearRect(0, 0, 24, 32);
-    g.fillStyle = '#565c70';
-    g.fillRect(7, 4, 10, 3);
-    g.fillRect(5, 7, 14, 11);
-    g.fillRect(4, 18, 16, 14);
-    g.fillStyle = '#0b0c16';
-    g.fillRect(8, 9, 8, 8);
-    g.fillStyle = '#ffe14a';
-    g.fillRect(11, 10, 3, 1);
-    g.fillRect(13, 11, 1, 2);
-    g.fillRect(12, 13, 1, 1);
-    g.fillRect(12, 15, 1, 1);
+  // ---------- 미니 초상화: 2화 전에는 후드 실루엣과 ?, 그 뒤로는 내 캐릭터와 노선색 ----------
+  function drawPortrait(code = null, color = null) {
+    Chars.portrait($('#portrait-canvas'), code);
+    $('#portrait').style.borderLeftColor = color || '';
   }
 
   let toastTimer = null;
@@ -236,6 +224,7 @@
   async function start() {
     $('#title-screen').hidden = true;
     await Data.loadSurvey();
+    await Quiz.load();
     const yes = await consent();
     Data.create(yes);
     await setup();
@@ -326,10 +315,98 @@
     await Game.fadeTo(0);
     Sound.play('rumble');
     await say([n('ep1.arrive1', { wait: 2600 }), nova('ep1.nova9'), nova('ep1.nova10')]);
-    Sound.play('clear');
-    Data.send('episode_complete', { episode: 1 });
-    $('#clear-screen').hidden = false;
+    await stopClear(1);
   }
+
+  // ---------- 역 클리어: 다음 역이 있으면 이어서, 없으면 마지막 질문으로 ----------
+  const READY = [1, 2];
+  function stopClear(ep) {
+    Sound.play('clear');
+    Data.save.done[ep] = true;
+    Data.persist();
+    Data.send('episode_complete', { episode: ep });
+    const next = READY.includes(ep + 1);
+    $('#clear-stop').textContent = `STOP ${ep}`;
+    $('#clear-title').textContent = I18n.t(`clear.ep${ep}.title`);
+    $('#clear-next').textContent = I18n.t(`clear.ep${ep}.next`);
+    $('#clear-demo').hidden = next;
+    $('#replay-btn').textContent = I18n.t(next ? 'clear.toNext' : 'clear.toSurvey');
+    $('#clear-screen').hidden = false;
+    return new Promise((resolve) => {
+      $('#replay-btn').onclick = () => {
+        Sound.play('select');
+        $('#clear-screen').hidden = true;
+        resolve();
+        if (next) EPISODES[ep + 1]();
+        else finish();
+      };
+    });
+  }
+
+  // ---------- 2화: 탑승 캐릭터 ----------
+  function showResult(res) {
+    const types = Quiz.types;
+    const L = I18n.lang === 'en' ? 'en' : 'ko';
+    const tp = types[res.primary];
+    const t2 = types[res.secondary];
+    $('#result-line').textContent = tp[L].line;
+    $('#result-line').style.color = tp.color;
+    $('#result-screen .result-panel').style.borderTopColor = tp.color;
+    Chars.portrait($('#result-canvas'), res.primary);
+    $('#result-name').textContent = tp[L].name;
+    $('#result-animal').textContent = tp[L].animal;
+    $('#result-summary').textContent = tp[L].summary;
+    $('#result-strengths').textContent = tp[L].strengths.join(' · ');
+    $('#result-watch').textContent = tp[L].watch;
+    $('#result-study').textContent = tp[L].study;
+    $('#result-mix').textContent = I18n.t('result.mixText').replace('{name}', t2[L].name);
+    $('#result-screen').hidden = false;
+    Sound.play('powerup');
+    return new Promise((resolve) => {
+      $('#result-go').onclick = () => {
+        Sound.play('select');
+        $('#result-screen').hidden = true;
+        resolve();
+      };
+    });
+  }
+
+  async function ep2() {
+    await Game.fadeTo(1);
+    Game.scene('train', { phase: 0.2 });
+    Game.novaSit(292);
+    await Game.fadeTo(0);
+    await say([n('ep2.n1'), nova('ep2.nova1'), nova('ep2.nova2'), nova('ep2.nova3')]);
+
+    const res = await Quiz.run();
+    Data.save.disc = res;
+    Data.persist();
+    Data.send('disc_result', {
+      answers: res.answers.join(''),
+      scores: ['D', 'I', 'S', 'C'].map((k) => `${k}${res.scores[k]}`).join(' '),
+      primary: res.primary,
+      secondary: res.secondary,
+    });
+
+    const L = I18n.lang === 'en' ? 'en' : 'ko';
+    const tp = Quiz.types[res.primary];
+    await say([nova('ep2.nova4'), { who: 'narrator', key: 'ep2.tunnel', do: () => { Game.tunnel(true); Sound.play('rumble'); }, wait: 1800 }]);
+    // 창에 비친 내 모습
+    Game.setChar(res.primary, null);
+    Game.reflect(1);
+    await sleep(2600);
+    await say([n('ep2.reflect1'), n('ep2.reflect2', { vars: { type: tp[L].name } })]);
+    Game.setChar(res.primary, tp.color);
+    drawPortrait(res.primary, tp.color);
+    await showResult(res);
+    Game.tunnel(false);
+    Game.reflect(0);
+    await sleep(900);
+    await say([nova('ep2.nova5', { vars: { line: tp[L].line } }), nova('ep2.nova6')]);
+    await stopClear(2);
+  }
+
+  const EPISODES = { 1: () => ep1(), 2: () => ep2() };
 
   function showTitle() {
     Game.scene('title', { phase: 0 });
@@ -338,6 +415,8 @@
     $('#portrait').hidden = true;
     $('#clear-screen').hidden = true;
     $('#portrait-name').textContent = '???';
+    Game.setChar(null, null);
+    drawPortrait();
     $('#title-screen').hidden = false;
   }
 
@@ -356,10 +435,6 @@
       Sound.unlock && Sound.unlock();
       Sound.play('start');
       start();
-    });
-    $('#replay-btn').addEventListener('click', () => {
-      Sound.play('select');
-      finish();
     });
     $('#thanks-replay').addEventListener('click', () => {
       Sound.play('select');

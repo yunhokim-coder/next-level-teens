@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>NEXT LINE</title>
   <meta name="description" content="NEXT LINE: 공부, 내일의 역">
-  <meta name="app-version" content="20261016h">
+  <meta name="app-version" content="20261017b">
   <link rel="preload" href="assets/fonts/Galmuri11.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=20261016h">
+  <link rel="stylesheet" href="css/style.css?v=20261017b">
 </head>
 <body>
   <div id="app">
@@ -102,6 +102,41 @@
         </div>
       </div>
 
+      <!-- 2화 성향 질문 -->
+      <div id="quiz-screen" class="overlay" hidden>
+        <div class="panel form-panel">
+          <div class="quiz-top"><button id="quiz-back" class="mini" type="button" data-i18n-aria="quiz.back">◀</button><span class="clear-stop" data-i18n="quiz.tag"></span><span id="quiz-count" class="quiz-count"></span></div>
+          <div class="quiz-progress"><i id="quiz-bar"></i></div>
+          <h2 data-i18n="quiz.title"></h2>
+          <p class="muted" data-i18n="quiz.lead"></p>
+          <div id="quiz-options" class="quiz-options"></div>
+        </div>
+      </div>
+      <div id="tie-screen" class="overlay" hidden>
+        <div class="panel form-panel">
+          <div class="clear-stop" data-i18n="quiz.tag"></div>
+          <h2 id="tie-title"></h2>
+          <div id="tie-options" class="quiz-options"></div>
+        </div>
+      </div>
+
+      <!-- 2화 캐릭터 카드 -->
+      <div id="result-screen" class="overlay" hidden>
+        <div class="panel form-panel result-panel">
+          <div class="clear-stop" id="result-line"></div>
+          <div class="result-head">
+            <canvas id="result-canvas" width="32" height="32" aria-hidden="true"></canvas>
+            <div><h2 id="result-name"></h2><div id="result-animal" class="muted"></div></div>
+          </div>
+          <p id="result-summary"></p>
+          <div class="result-row"><b data-i18n="result.strengths"></b><span id="result-strengths"></span></div>
+          <div class="result-row"><b data-i18n="result.watch"></b><span id="result-watch"></span></div>
+          <div class="result-row"><b data-i18n="result.study"></b><span id="result-study"></span></div>
+          <div class="result-row"><b data-i18n="result.mix"></b><span id="result-mix"></span></div>
+          <button id="result-go" class="btn btn-primary" type="button" data-i18n="result.go"></button>
+        </div>
+      </div>
+
       <!-- 끝 인사 -->
       <div id="thanks-screen" class="overlay" hidden>
         <div class="panel">
@@ -116,11 +151,11 @@
       <!-- 데모 끝 -->
       <div id="clear-screen" class="overlay" hidden>
         <div class="panel">
-          <div class="clear-stop" data-i18n="clear.stop"></div>
-          <h2 data-i18n="clear.title"></h2>
-          <p data-i18n="clear.next"></p>
-          <p class="muted" data-i18n="clear.demo"></p>
-          <button id="replay-btn" class="btn btn-primary" type="button" data-i18n="clear.toSurvey"></button>
+          <div class="clear-stop" id="clear-stop"></div>
+          <h2 id="clear-title"></h2>
+          <p id="clear-next"></p>
+          <p class="muted" id="clear-demo" data-i18n="clear.demo"></p>
+          <button id="replay-btn" class="btn btn-primary" type="button"></button>
         </div>
       </div>
 
@@ -142,12 +177,14 @@
     </div>
   </div>
 
-  <script src="config.js?v=20261016h"></script>
-  <script src="js/i18n.js?v=20261016h"></script>
-  <script src="js/sound.js?v=20261016h"></script>
-  <script src="js/data.js?v=20261016h"></script>
-  <script src="js/story.js?v=20261016h"></script>
-  <script src="js/game.js?v=20261016h"></script>
-  <script src="js/main.js?v=20261016h"></script>
+  <script src="config.js?v=20261017b"></script>
+  <script src="js/i18n.js?v=20261017b"></script>
+  <script src="js/sound.js?v=20261017b"></script>
+  <script src="js/data.js?v=20261017b"></script>
+  <script src="js/story.js?v=20261017b"></script>
+  <script src="js/chars.js?v=20261017b"></script>
+  <script src="js/game.js?v=20261017b"></script>
+  <script src="js/quiz.js?v=20261017b"></script>
+  <script src="js/main.js?v=20261017b"></script>
 </body>
 </html>

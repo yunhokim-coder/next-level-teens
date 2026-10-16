@@ -1,0 +1,1229 @@
+{
+ "source": "하늘꿈 DISC 질문지 24문항(개발자 사용 허락). 낱말과 점수 집계표는 원작 그대로, 설명만 청소년 표현으로 다듬음 (tools/make_disc.py).",
+ "items": [
+  {
+   "no": 1,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "절제하는",
+      "desc": "하고 싶은 말이 있어도 상황을 보고 참는다"
+     },
+     "en": {
+      "word": "Self-controlled",
+      "desc": "I hold back and read the room first"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "강력한",
+      "desc": "한번 정하면 밀고 나가는 힘이 있다"
+     },
+     "en": {
+      "word": "Strong",
+      "desc": "Once I decide, I push through"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "꼼꼼한",
+      "desc": "작은 것까지 빠짐없이 챙긴다"
+     },
+     "en": {
+      "word": "Careful",
+      "desc": "I check every small detail"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "표현력 있는",
+      "desc": "느낀 걸 말이나 표정으로 잘 드러낸다"
+     },
+     "en": {
+      "word": "Expressive",
+      "desc": "I show what I feel in words and faces"
+     }
+    }
+   },
+   "key": {
+    "D": "B",
+    "I": "D",
+    "S": "A",
+    "C": "C"
+   }
+  },
+  {
+   "no": 2,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "개척적인",
+      "desc": "남들이 안 해 본 걸 먼저 해 본다"
+     },
+     "en": {
+      "word": "Pioneering",
+      "desc": "I try what others haven't tried yet"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "정확한",
+      "desc": "틀리지 않게 정확히 하는 게 중요하다"
+     },
+     "en": {
+      "word": "Accurate",
+      "desc": "Getting it exactly right matters to me"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "흥미진진한",
+      "desc": "재밌어 보이면 일단 끌린다"
+     },
+     "en": {
+      "word": "Exciting",
+      "desc": "If it looks fun, I'm in"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "만족스러운",
+      "desc": "지금 있는 그대로도 괜찮다고 느낀다"
+     },
+     "en": {
+      "word": "Content",
+      "desc": "I feel fine with how things are"
+     }
+    }
+   },
+   "key": {
+    "D": "A",
+    "I": "C",
+    "S": "D",
+    "C": "B"
+   }
+  },
+  {
+   "no": 3,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "기꺼이 하는",
+      "desc": "부탁받으면 웬만하면 해 준다"
+     },
+     "en": {
+      "word": "Willing",
+      "desc": "If someone asks, I usually help"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "활기 있는",
+      "desc": "어디서든 에너지가 넘친다는 말을 듣는다"
+     },
+     "en": {
+      "word": "Lively",
+      "desc": "People say I have lots of energy"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "대담한",
+      "desc": "겁나는 일도 일단 부딪혀 본다"
+     },
+     "en": {
+      "word": "Bold",
+      "desc": "I face scary things head-on"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "정교한",
+      "desc": "세세한 부분까지 공들여 다듬는다"
+     },
+     "en": {
+      "word": "Precise",
+      "desc": "I polish the fine details"
+     }
+    }
+   },
+   "key": {
+    "D": "C",
+    "I": "B",
+    "S": "A",
+    "C": "D"
+   }
+  },
+  {
+   "no": 4,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "논쟁을 좋아하는",
+      "desc": "토론에서 내 의견을 세게 말한다"
+     },
+     "en": {
+      "word": "Likes to argue",
+      "desc": "In a debate, I argue my point hard"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "회의적인",
+      "desc": "그냥 믿기보다 일단 의심해 본다"
+     },
+     "en": {
+      "word": "Doubtful",
+      "desc": "I question things before I believe them"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "주저하는",
+      "desc": "결정 앞에서 자꾸 망설인다"
+     },
+     "en": {
+      "word": "Hesitant",
+      "desc": "I hesitate before deciding"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "예측할 수 없는",
+      "desc": "나도 내가 뭘 할지 모를 때가 있다"
+     },
+     "en": {
+      "word": "Unpredictable",
+      "desc": "Even I can't always guess what I'll do"
+     }
+    }
+   },
+   "key": {
+    "D": "A",
+    "I": "D",
+    "S": "C",
+    "C": "B"
+   }
+  },
+  {
+   "no": 5,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "공손한",
+      "desc": "선생님이나 어른께 예의를 잘 지킨다"
+     },
+     "en": {
+      "word": "Polite",
+      "desc": "I'm polite to teachers and adults"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "사교적인",
+      "desc": "처음 보는 사람과도 금방 친해진다"
+     },
+     "en": {
+      "word": "Sociable",
+      "desc": "I get close to new people fast"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "참을성이 있는",
+      "desc": "느린 친구도 잘 기다려 준다"
+     },
+     "en": {
+      "word": "Patient",
+      "desc": "I wait for friends who are slower"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "무서움을 모르는",
+      "desc": "무서운 것 앞에서도 잘 안 쫄린다"
+     },
+     "en": {
+      "word": "Fearless",
+      "desc": "I don't get scared easily"
+     }
+    }
+   },
+   "key": {
+    "D": "D",
+    "I": "B",
+    "S": "C",
+    "C": "A"
+   }
+  },
+  {
+   "no": 6,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "설득력 있는",
+      "desc": "내 말에 친구들이 잘 따라온다"
+     },
+     "en": {
+      "word": "Persuasive",
+      "desc": "Friends tend to go along with my ideas"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "독립심이 강한",
+      "desc": "혼자서도 알아서 잘 해낸다"
+     },
+     "en": {
+      "word": "Independent",
+      "desc": "I handle things on my own"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "논리적인",
+      "desc": "이유와 근거를 따져서 말한다"
+     },
+     "en": {
+      "word": "Logical",
+      "desc": "I speak with reasons and evidence"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "온화한",
+      "desc": "말투나 행동이 부드럽다"
+     },
+     "en": {
+      "word": "Gentle",
+      "desc": "My words and manner are gentle"
+     }
+    }
+   },
+   "key": {
+    "D": "B",
+    "I": "A",
+    "S": "D",
+    "C": "C"
+   }
+  },
+  {
+   "no": 7,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "신중한",
+      "desc": "한 번 더 생각하고 움직인다"
+     },
+     "en": {
+      "word": "Cautious",
+      "desc": "I think twice before I move"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "차분한",
+      "desc": "급한 상황에서도 침착한 편이다"
+     },
+     "en": {
+      "word": "Calm",
+      "desc": "I stay calm when things get urgent"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "과장성 있는",
+      "desc": "이야기를 실제보다 크게 부풀리곤 한다"
+     },
+     "en": {
+      "word": "Dramatic",
+      "desc": "I tend to make stories bigger than they are"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "파티를 좋아하는",
+      "desc": "사람 많은 자리나 모임이 즐겁다"
+     },
+     "en": {
+      "word": "Party-loving",
+      "desc": "I enjoy parties and big groups"
+     }
+    }
+   },
+   "key": {
+    "D": "C",
+    "I": "D",
+    "S": "B",
+    "C": "A"
+   }
+  },
+  {
+   "no": 8,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "인기 있는",
+      "desc": "주변에 친구가 많은 편이다"
+     },
+     "en": {
+      "word": "Popular",
+      "desc": "I have lots of friends around me"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "고집 있는",
+      "desc": "내 방식을 쉽게 안 바꾼다"
+     },
+     "en": {
+      "word": "Stubborn",
+      "desc": "I don't change my way easily"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "완벽주의자",
+      "desc": "실수 없이 완벽하게 하고 싶다"
+     },
+     "en": {
+      "word": "Perfectionist",
+      "desc": "I want to do it perfectly, no mistakes"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "인심 좋은",
+      "desc": "가진 걸 잘 나눠 준다"
+     },
+     "en": {
+      "word": "Generous",
+      "desc": "I share what I have"
+     }
+    }
+   },
+   "key": {
+    "D": "B",
+    "I": "A",
+    "S": "D",
+    "C": "C"
+   }
+  },
+  {
+   "no": 9,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "변화가 많은",
+      "desc": "관심사가 자주 바뀐다"
+     },
+     "en": {
+      "word": "Changeable",
+      "desc": "My interests change often"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "수줍음을 타는",
+      "desc": "낯선 사람 앞에서는 말이 줄어든다"
+     },
+     "en": {
+      "word": "Shy",
+      "desc": "I get quiet around new people"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "느긋한",
+      "desc": "서두르지 않고 내 속도로 간다"
+     },
+     "en": {
+      "word": "Easygoing",
+      "desc": "I go at my own pace, no rush"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "완고한",
+      "desc": "한번 정한 건 잘 굽히지 않는다"
+     },
+     "en": {
+      "word": "Firm",
+      "desc": "I rarely back down once I decide"
+     }
+    }
+   },
+   "key": {
+    "D": "D",
+    "I": "A",
+    "S": "C",
+    "C": "B"
+   }
+  },
+  {
+   "no": 10,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "체계적인",
+      "desc": "순서를 정해 놓고 차근차근 한다"
+     },
+     "en": {
+      "word": "Organized",
+      "desc": "I set an order and go step by step"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "낙관적인",
+      "desc": "어떻게든 잘될 거라고 생각한다"
+     },
+     "en": {
+      "word": "Optimistic",
+      "desc": "I believe it will work out somehow"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "의지가 강한",
+      "desc": "마음먹은 건 끝까지 한다"
+     },
+     "en": {
+      "word": "Strong-willed",
+      "desc": "I finish what I set out to do"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "친절한",
+      "desc": "누구에게나 다정하게 대한다"
+     },
+     "en": {
+      "word": "Kind",
+      "desc": "I'm kind to everyone"
+     }
+    }
+   },
+   "key": {
+    "D": "C",
+    "I": "B",
+    "S": "D",
+    "C": "A"
+   }
+  },
+  {
+   "no": 11,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "엄격한",
+      "desc": "규칙은 지켜야 한다고 생각한다"
+     },
+     "en": {
+      "word": "Strict",
+      "desc": "I think rules should be followed"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "겸손한",
+      "desc": "잘해도 티 내지 않는다"
+     },
+     "en": {
+      "word": "Humble",
+      "desc": "I don't show off when I do well"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "상냥한",
+      "desc": "말과 행동이 상냥하다는 말을 듣는다"
+     },
+     "en": {
+      "word": "Sweet",
+      "desc": "People say I'm sweet in word and deed"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "말주변이 좋은",
+      "desc": "말로 분위기를 잘 살린다"
+     },
+     "en": {
+      "word": "Good talker",
+      "desc": "I can liven up a room with words"
+     }
+    }
+   },
+   "key": {
+    "D": "A",
+    "I": "D",
+    "S": "C",
+    "C": "B"
+   }
+  },
+  {
+   "no": 12,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "호의적인",
+      "desc": "다른 사람을 먼저 챙긴다"
+     },
+     "en": {
+      "word": "Friendly",
+      "desc": "I look after others first"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "빈틈없는",
+      "desc": "빠뜨리는 게 없도록 꼼꼼히 확인한다"
+     },
+     "en": {
+      "word": "Thorough",
+      "desc": "I double-check so nothing is missed"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "놀기 좋아하는",
+      "desc": "노는 시간이 정말 중요하다"
+     },
+     "en": {
+      "word": "Playful",
+      "desc": "Free time to have fun really matters to me"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "의지가 강한",
+      "desc": "하기로 한 건 밀어붙인다"
+     },
+     "en": {
+      "word": "Determined",
+      "desc": "I push ahead with what I've decided"
+     }
+    }
+   },
+   "key": {
+    "D": "D",
+    "I": "C",
+    "S": "A",
+    "C": "B"
+   }
+  },
+  {
+   "no": 13,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "참신한",
+      "desc": "남다른 아이디어를 잘 낸다"
+     },
+     "en": {
+      "word": "Original",
+      "desc": "I come up with fresh ideas"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "모험적인",
+      "desc": "해 보지 않은 일에 도전하고 싶다"
+     },
+     "en": {
+      "word": "Adventurous",
+      "desc": "I want to try what I haven't done"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "절제된",
+      "desc": "하고 싶어도 선을 지킨다"
+     },
+     "en": {
+      "word": "Restrained",
+      "desc": "I keep limits even when I want more"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "신중한",
+      "desc": "결정하기 전에 조심스럽게 살핀다"
+     },
+     "en": {
+      "word": "Careful",
+      "desc": "I look carefully before I decide"
+     }
+    }
+   },
+   "key": {
+    "D": "B",
+    "I": "A",
+    "S": "D",
+    "C": "C"
+   }
+  },
+  {
+   "no": 14,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "참는",
+      "desc": "당장 하고 싶어도 기다릴 줄 안다"
+     },
+     "en": {
+      "word": "Waiting",
+      "desc": "I can wait even when I want it now"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "성실한",
+      "desc": "맡은 건 빠지지 않고 꾸준히 한다"
+     },
+     "en": {
+      "word": "Diligent",
+      "desc": "I keep at my tasks without skipping"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "공격적인",
+      "desc": "말이나 행동이 세게 나갈 때가 있다"
+     },
+     "en": {
+      "word": "Aggressive",
+      "desc": "Sometimes I come on too strong"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "매력 있는",
+      "desc": "사람들이 나에게 끌린다는 말을 듣는다"
+     },
+     "en": {
+      "word": "Charming",
+      "desc": "People say I'm easy to like"
+     }
+    }
+   },
+   "key": {
+    "D": "C",
+    "I": "D",
+    "S": "B",
+    "C": "A"
+   }
+  },
+  {
+   "no": 15,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "열정적인",
+      "desc": "좋아하는 일엔 온 힘을 쏟는다"
+     },
+     "en": {
+      "word": "Enthusiastic",
+      "desc": "I give everything to what I love"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "분석적인",
+      "desc": "왜 그런지 하나하나 따져 본다"
+     },
+     "en": {
+      "word": "Analytical",
+      "desc": "I break things down to see why"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "동정심이 많은",
+      "desc": "힘든 사람을 보면 그냥 못 지나친다"
+     },
+     "en": {
+      "word": "Compassionate",
+      "desc": "I can't walk past someone struggling"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "단호한",
+      "desc": "결정이 빠르고 분명하다"
+     },
+     "en": {
+      "word": "Decisive",
+      "desc": "I decide fast and clearly"
+     }
+    }
+   },
+   "key": {
+    "D": "D",
+    "I": "A",
+    "S": "C",
+    "C": "B"
+   }
+  },
+  {
+   "no": 16,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "지도력 있는",
+      "desc": "조별 과제에서 자연스럽게 리더가 된다"
+     },
+     "en": {
+      "word": "Leading",
+      "desc": "I end up leading group projects"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "충동적인",
+      "desc": "생각나면 바로 해 버린다"
+     },
+     "en": {
+      "word": "Impulsive",
+      "desc": "I act as soon as an idea hits"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "느린",
+      "desc": "천천히, 내 속도로 움직인다"
+     },
+     "en": {
+      "word": "Slow-paced",
+      "desc": "I move slowly, at my own speed"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "비판적인",
+      "desc": "잘못된 점이 먼저 눈에 들어온다"
+     },
+     "en": {
+      "word": "Critical",
+      "desc": "I notice what's wrong first"
+     }
+    }
+   },
+   "key": {
+    "D": "A",
+    "I": "B",
+    "S": "C",
+    "C": "D"
+   }
+  },
+  {
+   "no": 17,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "일관성 있는",
+      "desc": "말과 행동이 잘 안 바뀐다"
+     },
+     "en": {
+      "word": "Consistent",
+      "desc": "My words and actions stay the same"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "영향력 있는",
+      "desc": "내 말과 행동이 친구들에게 영향을 준다"
+     },
+     "en": {
+      "word": "Influential",
+      "desc": "What I say and do affects my friends"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "생기 있는",
+      "desc": "늘 생기 있고 표정이 밝다"
+     },
+     "en": {
+      "word": "Lively",
+      "desc": "I'm lively and bright"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "느긋한",
+      "desc": "여유 있고 쉽게 조급해하지 않는다"
+     },
+     "en": {
+      "word": "Relaxed",
+      "desc": "I'm relaxed and rarely in a hurry"
+     }
+    }
+   },
+   "key": {
+    "D": "B",
+    "I": "C",
+    "S": "D",
+    "C": "A"
+   }
+  },
+  {
+   "no": 18,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "유력한",
+      "desc": "듬직하고 힘 있어 보인다는 말을 듣는다"
+     },
+     "en": {
+      "word": "Commanding",
+      "desc": "People say I seem strong and reliable"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "친절한",
+      "desc": "누구에게나 친절하게 대한다"
+     },
+     "en": {
+      "word": "Kind",
+      "desc": "I'm friendly to everyone"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "독립적인",
+      "desc": "남에게 기대지 않고 해결한다"
+     },
+     "en": {
+      "word": "Independent",
+      "desc": "I solve things without leaning on others"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "정돈된",
+      "desc": "책상과 파일이 잘 정리돼 있다"
+     },
+     "en": {
+      "word": "Tidy",
+      "desc": "My desk and files are organized"
+     }
+    }
+   },
+   "key": {
+    "D": "C",
+    "I": "A",
+    "S": "B",
+    "C": "D"
+   }
+  },
+  {
+   "no": 19,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "이상주의적인",
+      "desc": "세상이 더 나아졌으면 좋겠다고 자주 생각한다"
+     },
+     "en": {
+      "word": "Idealistic",
+      "desc": "I often wish the world were better"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "평판이 좋은",
+      "desc": "주변 사람들이 나를 좋게 본다"
+     },
+     "en": {
+      "word": "Well-liked",
+      "desc": "People around me think well of me"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "쾌활한",
+      "desc": "대체로 기분이 밝고 유쾌하다"
+     },
+     "en": {
+      "word": "Cheerful",
+      "desc": "I'm usually cheerful"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "솔직한",
+      "desc": "돌려 말하지 않고 솔직하게 말한다"
+     },
+     "en": {
+      "word": "Honest",
+      "desc": "I say things straight"
+     }
+    }
+   },
+   "key": {
+    "D": "D",
+    "I": "B",
+    "S": "C",
+    "C": "A"
+   }
+  },
+  {
+   "no": 20,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "참을성 없는",
+      "desc": "기다리는 게 제일 답답하다"
+     },
+     "en": {
+      "word": "Impatient",
+      "desc": "Waiting drives me crazy"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "진지한",
+      "desc": "장난보다 진지하게 임한다"
+     },
+     "en": {
+      "word": "Serious",
+      "desc": "I take things seriously"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "미루는",
+      "desc": "해야 할 일을 나중으로 미루곤 한다"
+     },
+     "en": {
+      "word": "Puts things off",
+      "desc": "I tend to put things off"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "감성적인",
+      "desc": "감정이 풍부하고 잘 느낀다"
+     },
+     "en": {
+      "word": "Emotional",
+      "desc": "I feel things deeply"
+     }
+    }
+   },
+   "key": {
+    "D": "A",
+    "I": "D",
+    "S": "C",
+    "C": "B"
+   }
+  },
+  {
+   "no": 21,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "경쟁심이 있는",
+      "desc": "지는 건 싫고 이기고 싶다"
+     },
+     "en": {
+      "word": "Competitive",
+      "desc": "I hate losing, I want to win"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "자발적인",
+      "desc": "누가 시키기 전에 먼저 한다"
+     },
+     "en": {
+      "word": "Self-starting",
+      "desc": "I start before anyone tells me to"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "충성스러운",
+      "desc": "한번 친구는 끝까지 친구다"
+     },
+     "en": {
+      "word": "Loyal",
+      "desc": "Once a friend, always a friend"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "사려 깊은",
+      "desc": "다른 사람 입장을 깊이 생각한다"
+     },
+     "en": {
+      "word": "Thoughtful",
+      "desc": "I think hard about how others see it"
+     }
+    }
+   },
+   "key": {
+    "D": "A",
+    "I": "B",
+    "S": "C",
+    "C": "D"
+   }
+  },
+  {
+   "no": 22,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "희생적인",
+      "desc": "친구를 위해 내 걸 양보한다"
+     },
+     "en": {
+      "word": "Selfless",
+      "desc": "I give up my share for friends"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "이해심 많은",
+      "desc": "친구 마음을 잘 알아준다"
+     },
+     "en": {
+      "word": "Understanding",
+      "desc": "I get how my friends feel"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "설득력 있는",
+      "desc": "친구들을 설득해 같이 하게 만든다"
+     },
+     "en": {
+      "word": "Persuasive",
+      "desc": "I get friends to join in"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "용기 있는",
+      "desc": "필요하면 용기 내서 나선다"
+     },
+     "en": {
+      "word": "Brave",
+      "desc": "I step up with courage when needed"
+     }
+    }
+   },
+   "key": {
+    "D": "D",
+    "I": "C",
+    "S": "B",
+    "C": "A"
+   }
+  },
+  {
+   "no": 23,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "의존적인",
+      "desc": "누군가 도와주면 더 잘된다"
+     },
+     "en": {
+      "word": "Dependent",
+      "desc": "I do better when someone helps"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "변덕스러운",
+      "desc": "기분이 자주 오르락내리락한다"
+     },
+     "en": {
+      "word": "Moody",
+      "desc": "My mood goes up and down"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "절제력 있는",
+      "desc": "하고 싶은 게 있어도 잘 참는다"
+     },
+     "en": {
+      "word": "Self-disciplined",
+      "desc": "I can hold back what I want"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "밀어붙이는",
+      "desc": "목표가 있으면 세게 밀어붙인다"
+     },
+     "en": {
+      "word": "Pushy",
+      "desc": "I push hard toward a goal"
+     }
+    }
+   },
+   "key": {
+    "D": "D",
+    "I": "B",
+    "S": "A",
+    "C": "C"
+   }
+  },
+  {
+   "no": 24,
+   "options": {
+    "A": {
+     "ko": {
+      "word": "포용력 있는",
+      "desc": "친구의 실수도 너그럽게 넘긴다"
+     },
+     "en": {
+      "word": "Accepting",
+      "desc": "I let friends' mistakes go"
+     }
+    },
+    "B": {
+     "ko": {
+      "word": "전통적인",
+      "desc": "해 오던 방식과 규칙이 편하다"
+     },
+     "en": {
+      "word": "Traditional",
+      "desc": "I like the usual ways and rules"
+     }
+    },
+    "C": {
+     "ko": {
+      "word": "사람을 부추기는",
+      "desc": "친구들을 들뜨게 하고 분위기를 띄운다"
+     },
+     "en": {
+      "word": "Encouraging",
+      "desc": "I get friends excited and fired up"
+     }
+    },
+    "D": {
+     "ko": {
+      "word": "이끌어 가는",
+      "desc": "앞에서 이끌어 가는 게 편하다"
+     },
+     "en": {
+      "word": "Guiding",
+      "desc": "I'm comfortable leading from the front"
+     }
+    }
+   },
+   "key": {
+    "D": "D",
+    "I": "C",
+    "S": "A",
+    "C": "B"
+   }
+  }
+ ]
+}

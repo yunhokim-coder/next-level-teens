@@ -40,6 +40,13 @@
     fade: 1,
     fadeT: 0,
     train: 0,
+    char: null, // D I S C (2화에서 정해짐)
+    lineColor: null,
+    ticketTo: '',
+    tunnel: 0,
+    tunnelT: 0,
+    reflect: 0,
+    reflectT: 0,
     lids: 1, // 1 뜬 눈, 0 감은 눈
     lidsT: 1,
     dream: false,
@@ -368,32 +375,119 @@
 
   // ---------- 내 손 (1인칭) ----------
   function drawHands() {
+    const h = Chars.hands(S.char);
     const bob = Math.round(Math.sin(t * 1.8) * 1.2);
     const sway = Math.round((S.camT - S.cam) * 0.04);
     // 왼손
-    r(18 - sway, 160 + bob, 52, 20, C.hood);
-    r(18 - sway, 160 + bob, 52, 3, C.hoodDark);
-    r(30 - sway, 148 + bob, 26, 14, C.skin);
-    for (let i = 0; i < 4; i++) r(31 - sway + i * 6, 147 + bob, 5, 3, C.skin);
-    r(30 - sway, 160 + bob, 26, 1, C.skinDark);
+    r(18 - sway, 160 + bob, 52, 20, h.sleeve);
+    r(18 - sway, 160 + bob, 52, 3, h.sleeveDark);
+    r(30 - sway, 148 + bob, 26, 14, h.skin);
+    for (let i = 0; i < 4; i++) r(31 - sway + i * 6, 147 + bob, 5, 3, i % 2 ? h.skin : h.skin);
+    r(30 - sway, 160 + bob, 26, 1, h.dark);
+    if (h.mark && S.char === 'D') for (let i = 0; i < 3; i++) r(34 - sway + i * 7, 152 + bob, 2, 5, h.mark);
+    if (h.mark && S.char === 'I') for (let i = 0; i < 4; i++) r(31 - sway + i * 6, 147 + bob, 5, 2, h.mark);
     // 오른손에 든 승차권 (엄지가 왼쪽 아래 모서리를 잡고 있다)
     const tx = 192 - sway;
     const ty = 110 + bob;
     r(tx - 1, ty - 1, 86, 48, C.K);
     r(tx, ty, 84, 46, '#efe8d6');
-    r(tx, ty, 84, 8, C.line);
-    text('NEXT LINE', tx + 4, ty + 1, '#0b2b28', 6);
-    r(tx + 70, ty + 2, 10, 4, '#0b2b28');
+    r(tx, ty, 84, 8, S.lineColor || C.line);
+    text('NEXT LINE', tx + 4, ty + 1, '#0b0c16', 6);
+    r(tx + 70, ty + 2, 10, 4, '#0b0c16');
     text(I18n.t('scene.ticketFrom'), tx + 4, ty + 12, '#4a4538', 6);
     text(I18n.t('scene.ticketTo'), tx + 4, ty + 24, '#4a4538', 6);
-    for (let x = tx + 26; x < tx + 78; x += 4) r(x, ty + 30, 2, 1, '#b0a890');
+    if (S.ticketTo) text(S.ticketTo, tx + 26, ty + 24, '#0b0c16', 6);
+    else for (let x = tx + 26; x < tx + 78; x += 4) r(x, ty + 30, 2, 1, '#b0a890');
     // 손가락은 승차권 뒤에서 받치고, 엄지는 앞에서 누른다
-    r(tx + 30, ty + 44, 34, 14, C.skin);
-    r(tx + 30, ty + 44, 34, 1, C.skinDark);
-    r(tx + 14, ty + 36, 14, 10, C.skin);
-    r(tx + 14, ty + 36, 1, 10, C.skinDark);
-    r(tx + 24, ty + 54, 50, 20, C.hood);
-    r(tx + 24, ty + 54, 50, 3, C.hoodDark);
+    r(tx + 30, ty + 44, 34, 14, h.skin);
+    r(tx + 30, ty + 44, 34, 1, h.dark);
+    r(tx + 14, ty + 36, 14, 10, h.skin);
+    r(tx + 14, ty + 36, 1, 10, h.dark);
+    if (h.mark && S.char === 'D') for (let i = 0; i < 3; i++) r(tx + 36 + i * 8, ty + 47, 2, 6, h.mark);
+    if (h.mark && S.char === 'I') r(tx + 14, ty + 36, 14, 3, h.mark);
+    r(tx + 24, ty + 54, 50, 20, h.sleeve);
+    r(tx + 24, ty + 54, 50, 3, h.sleeveDark);
+  }
+
+  // ---------- 열차 안 (1인칭, 맞은편 창문) ----------
+  // 창문 밖으로 도시가 흐르고, 터널에 들어가면 창이 어두워지며 내 모습이 비친다.
+  function drawTrain() {
+    const shake = Math.round(Math.sin(t * 22) * 0.6);
+    // 천장, 손잡이 봉, 손잡이
+    r(0, 0, W, 22, '#d9dde8');
+    for (let x = 10; x < W; x += 60) r(x, 4, 40, 3, '#ffffff');
+    r(0, 22, W, 22, '#e4e7ef');
+    r(0, 22, W, 2, '#9aa0b4');
+    r(0, 28, W, 2, '#b8bdcc');
+    for (let x = 30; x < W; x += 36) {
+      const sw = Math.round(Math.sin(t * 2 + x) * 1.5);
+      r(x + sw, 30, 1, 8, '#7a8094');
+      r(x - 3 + sw, 38, 7, 6, '#7a8094');
+      r(x - 2 + sw, 39, 5, 4, '#d9dde8');
+    }
+    // 벽
+    r(0, 44, W, 86, '#cfd3de');
+    r(0, 44, W, 2, '#b8bdcc');
+    // 창문 (가운데 큰 창)
+    const wx = 56;
+    const wy = 50 + shake;
+    const ww = 208;
+    const wh = 60;
+    r(wx - 4, wy - 4, ww + 8, wh + 8, '#8a90a4');
+    r(wx, wy, ww, wh, '#0a0c1c');
+    g.save();
+    g.beginPath();
+    g.rect(wx, wy, ww, wh);
+    g.clip();
+    // 창밖: 도시 (터널이면 어둠과 지나가는 불빛)
+    if (S.tunnel < 1) {
+      g.globalAlpha = 1 - S.tunnel;
+      r(wx, wy, ww, wh, '#141a3c');
+      const off = (t * 60) % 64;
+      const rand = rng(31);
+      for (let k = -1; k < 6; k++) {
+        const bx = wx + k * 64 - off;
+        for (let b = 0; b < 4; b++) {
+          const h = 14 + Math.floor(rand() * 30);
+          const bw = 10 + Math.floor(rand() * 8);
+          const x0 = bx + b * 16;
+          r(x0, wy + wh - h, bw, h, '#0b0e22');
+          for (let yy = wy + wh - h + 3; yy < wy + wh - 2; yy += 5) if (rand() < 0.5) r(x0 + 3, yy, 2, 2, '#ffd98a');
+        }
+      }
+      g.globalAlpha = 1;
+    }
+    if (S.tunnel > 0) {
+      g.globalAlpha = S.tunnel;
+      r(wx, wy, ww, wh, '#05060b');
+      const lx = wx + ww - ((t * 260) % (ww + 80));
+      r(lx, wy + 8, 30, 2, '#ffbe4a');
+      g.globalAlpha = 1;
+    }
+    // 창에 비친 나: 터널 속에서 서서히 드러난다
+    if (S.reflect > 0.01) {
+      g.globalAlpha = S.reflect * 0.85;
+      Chars.draw(g, S.char, wx + ww / 2 - 30, wy + 4, 2.5);
+      g.globalAlpha = S.reflect * 0.25;
+      r(wx, wy, ww, wh, '#7fa6d8');
+      g.globalAlpha = 1;
+    }
+    // 유리 반사광
+    g.globalAlpha = 0.12;
+    r(wx + 20, wy, 6, wh, '#ffffff');
+    r(wx + 30, wy, 2, wh, '#ffffff');
+    g.globalAlpha = 1;
+    g.restore();
+    // 노선도 띠 (내 노선색)
+    r(wx, wy + wh + 6, ww, 4, S.lineColor || '#9aa0b4');
+    for (let k = 0; k < 6; k++) r(wx + 10 + k * 38, wy + wh + 5, 6, 6, '#ffffff');
+    // 좌석
+    r(0, 122, W, 10, S.lineColor ? mix(S.lineColor, '#2a3047', 0.35) : '#3d6f8f');
+    r(0, 132, W, 6, '#262a3a');
+    // 바닥
+    r(0, 138, W, 42, '#3a3f52');
+    for (let x = 0; x < W; x += 24) r(x, 138, 1, 42, '#33384a');
+    if (S.nova) drawNova(S.nova.x - (S.cam - W / 2), 52);
   }
 
   // ---------- 지하 통로 (옆에서 걷기, 가로 640) ----------
@@ -518,6 +612,8 @@
     S.cam += (S.camT - S.cam) * Math.min(1, dt * 7);
     S.fade += (S.fadeT - S.fade) * Math.min(1, dt * 4);
     S.lids += (S.lidsT - S.lids) * Math.min(1, dt * 6);
+    S.tunnel += (S.tunnelT - S.tunnel) * Math.min(1, dt * 1.5);
+    S.reflect += (S.reflectT - S.reflect) * Math.min(1, dt * 0.9);
     if (S.nova && S.nova.tx !== undefined) S.nova.x += (S.nova.tx - S.nova.x) * Math.min(1, dt * 3);
     if (S.jam) {
       S.jam.a = Math.min(1, (S.jam.a || 0) + dt * 2);
@@ -558,13 +654,14 @@
     }
     else if (S.scene === 'underpass') drawUnderpass();
     else if (S.scene === 'arrival') drawArrival();
+    else if (S.scene === 'train') drawTrain();
     if (S.dream) {
       // 꿈: 아침빛이 번지고 화면이 출렁인다
       g.globalAlpha = 0.35 + 0.1 * Math.sin(t * 1.5);
       r(0, 0, W, H, '#fff4e0');
       g.globalAlpha = 1;
     }
-    if (S.hands && S.scene === 'platform' && !S.dream) drawHands();
+    if (S.hands && (S.scene === 'platform' || S.scene === 'train') && !S.dream) drawHands();
     if (S.lids < 0.999) drawLids();
     if (S.fade > 0.01) {
       g.globalAlpha = S.fade;
@@ -612,7 +709,7 @@
     },
     scene(name, opts = {}) {
       S.scene = name;
-      S.hands = name === 'platform';
+      S.hands = name === 'platform' || name === 'train';
       S.look = false;
       S.walk = false;
       S.nova = null;
@@ -626,6 +723,28 @@
         S.walker = { x: 40, dir: 1, moving: false, target: null, step: 0 };
       }
       if (name === 'arrival') S.train = 0;
+      if (name === 'train') {
+        S.cam = S.camT = W / 2;
+        S.tunnel = S.tunnelT = 0;
+        S.reflect = S.reflectT = 0;
+      }
+    },
+    // 2화: 내 캐릭터와 노선색
+    setChar(code, color) {
+      S.char = code;
+      S.lineColor = color || null;
+    },
+    set ticketTo(v) {
+      S.ticketTo = v;
+    },
+    tunnel(on) {
+      S.tunnelT = on ? 1 : 0;
+    },
+    reflect(v) {
+      S.reflectT = v;
+    },
+    novaSit(x) {
+      S.nova = { x, tx: x };
     },
     dream(on) {
       S.dream = on;
