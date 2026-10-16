@@ -193,7 +193,14 @@
     "replay": "✓ Passed · replay",
     "go": "▶ Next stop · go",
     "locked": "Opens after the stop before",
-    "soon": "Coming soon"
+    "soon": "Coming soon",
+    "what1": "Introduction",
+    "what2": "Learning style test",
+    "what3": "Future goal · study motivation",
+    "what4": "Finding obstacles",
+    "what5": "Choosing study strategies",
+    "what6": "Making an action plan",
+    "aiBadge": "✦ AI coaching"
   },
   "avatar": {
     "tag": "Your look",
@@ -455,6 +462,8 @@
     "oOwn2": "+ Use my own words as a method",
     "oOwnEmpty2": "You can add this only after writing what you want to change.",
     "oPickDone": "I'll go with these ({n}/3)",
-    "myIdea": "My idea"
+    "myIdea": "My idea",
+    "wTimeOwn": "Not here? Write your own (e.g. after practice)",
+    "wWhereOwn": "Not here? Write your own (e.g. the kitchen table)"
   }
 }

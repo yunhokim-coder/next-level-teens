@@ -209,18 +209,38 @@
           $('#grow-error').hidden = true;
           renderW1();
         });
+        // 목록에 없으면 직접 쓰기: 쓰는 동안 칩 선택은 풀리고 아래 문장만 바뀐다
+        const ownField = (field, key) => {
+          const inp = document.createElement('input');
+          inp.className = 'field own-field';
+          inp.maxLength = 20;
+          inp.autocomplete = 'off';
+          inp.placeholder = I18n.t(key);
+          inp.value = st.w[field] === 'own' ? st.w[`${field}Own`] || '' : '';
+          inp.oninput = () => {
+            const v = inp.value.trim();
+            st.w[`${field}Own`] = v;
+            st.w[field] = v ? 'own' : null;
+            $('#grow-error').hidden = true;
+            inp.previousElementSibling.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', 'false'));
+            body.querySelector('.plan-preview').textContent = actionSentence(st);
+          };
+          body.appendChild(inp);
+        };
         add('ep6.wTime', TIMES.map((d, i) => ({ id: i, label: d })), (id) => id === st.w.time, (id) => {
           st.w.time = id;
           Sound.play('blip');
           $('#grow-error').hidden = true;
           renderW1();
         });
+        ownField('time', 'ep6.wTimeOwn');
         add('ep6.wWhere', PLACES.map((d, i) => ({ id: i, label: d })), (id) => id === st.w.place, (id) => {
           st.w.place = id;
           Sound.play('blip');
           $('#grow-error').hidden = true;
           renderW1();
         });
+        ownField('place', 'ep6.wWhereOwn');
         const pv = document.createElement('p');
         pv.className = 'plan-preview';
         pv.textContent = actionSentence(st);
@@ -323,6 +343,16 @@
     });
   }
 
+  // 언제·어디서: 칩 번호 또는 직접 쓴 말
+  function timeText(w) {
+    if (w.time === 'own') return w.timeOwn || '';
+    return w.time !== null && w.time !== undefined ? I18n.t('ep6.times').split('|')[w.time] : '';
+  }
+  function placeText(w) {
+    if (w.place === 'own') return w.placeOwn || '';
+    return w.place !== null && w.place !== undefined ? I18n.t('ep6.places').split('|')[w.place] : '';
+  }
+
   // "이번 주 월·수 저녁, 내 책상에서 ○○." (W 실행 문장)
   function actionSentence(s) {
     const L = lang();
@@ -337,8 +367,8 @@
     const days = s.w.days.length ? s.w.days.map((d) => DAYS[d]).join(I18n.t('ep6.daySep')) : '__';
     return I18n.t('ep6.actionSentence')
       .replace('{days}', days)
-      .replace('{time}', s.w.time !== null && s.w.time !== undefined ? TIMES[s.w.time] : '__')
-      .replace('{place}', s.w.place !== null && s.w.place !== undefined ? PLACES[s.w.place] : '__')
+      .replace('{time}', timeText(s.w) || '__')
+      .replace('{place}', placeText(s.w) || '__')
       .replace('{subject}', subj)
       .replace('{what}', what);
   }
@@ -349,5 +379,5 @@
     return Story.josa(I18n.t('ep6.planSentence').replace('{if}', m ? m[L].word : '______').replace('{then}', c ? c[L].act : '______'));
   }
 
-  window.Grow = { run, ideas, analyze, analyzeTags, ideaText, actionSentence, ifSentence };
+  window.Grow = { run, ideas, analyze, analyzeTags, ideaText, actionSentence, ifSentence, timeText, placeText };
 })();

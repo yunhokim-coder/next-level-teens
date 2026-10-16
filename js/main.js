@@ -290,10 +290,18 @@
       const b = document.createElement('button');
       b.type = 'button';
       b.className = `map-stop ${state}`;
-      b.innerHTML = '<span class="dot"></span><span class="info"><span class="no"></span><span class="name"></span><span class="state"></span></span>';
+      b.innerHTML = '<span class="dot"></span><span class="info"><span class="no"></span><span class="name"></span><span class="what"></span><span class="state"></span></span>';
       b.querySelector('.dot').textContent = state === 'done' ? '✓' : state === 'locked' ? '🔒' : '';
       b.querySelector('.no').textContent = `STOP ${n}`;
       b.querySelector('.name').textContent = I18n.t(`map.stop${n}`);
+      b.querySelector('.what').textContent = I18n.t(`map.what${n}`);
+      // 6번 역: AI 코칭이 들어간다는 표시
+      if (n === 6) {
+        const ai = document.createElement('span');
+        ai.className = 'ai-badge';
+        ai.textContent = I18n.t('map.aiBadge');
+        b.querySelector('.name').appendChild(ai);
+      }
       b.querySelector('.state').textContent = I18n.t(state === 'done' ? 'map.replay' : state === 'next' ? 'map.go' : ready ? 'map.locked' : 'map.soon');
       if (state === 'locked') b.disabled = true;
       else
@@ -810,10 +818,8 @@
     const g = e6.grow;
     const label = (p) => (p.own ? p.own : p.ai ? p.ai.act : Grow.ideaText(Battle.card(p.id), p.subject || ''));
     const DAYS = I18n.t('ep6.days').split('|');
-    const TIMES = I18n.t('ep6.times').split('|');
-    const PLACES = I18n.t('ep6.places').split('|');
     const wp = g.o.picks[g.w.pick] || g.o.picks[0];
-    const when = `${g.w.days.map((d) => DAYS[d]).join(I18n.t('ep6.daySep'))} ${TIMES[g.w.time]} · ${PLACES[g.w.place]}`;
+    const when = `${g.w.days.map((d) => DAYS[d]).join(I18n.t('ep6.daySep'))} ${Grow.timeText(g.w)} · ${Grow.placeText(g.w)}`;
     const stops = [{ letter: 'G', tag: I18n.t('ep6.mapDest'), name: st.destLabel, big: true }];
     stops.push({ letter: 'W', tag: `${I18n.t('ep6.mapW')} · ${when}`, name: label(wp) });
     g.o.picks.forEach((p, i) => {

@@ -166,7 +166,9 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 .map-stop .info { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; border: 1px solid #2a3150; background: #141a33; }
 .map-stop .no { font-size: 10px; letter-spacing: 0.16em; color: var(--muted); }
 .map-stop .name { font-size: 15px; font-weight: 700; }
+.map-stop .what { font-size: 12px; color: #c4c9de; }
 .map-stop .state { font-size: 11px; color: var(--muted); }
+.ai-badge { display: inline-block; margin-left: 8px; padding: 1px 6px; font-size: 11px; font-weight: 700; color: #e8dcff; background: #2a1f4a; border: 1px solid #8a5ad0; vertical-align: 2px; }
 .map-stop.done .dot { background: var(--mapc); color: #0b0c16; }
 .map-stop.done .state { color: var(--line); }
 .map-stop.next .info { border-color: var(--amber); background: #2a2110; }
@@ -375,3 +377,4 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 .coach-bar { position: sticky; bottom: -16px; margin: 6px -4px 0; padding: 8px 4px; background: var(--panel); border-top: 1px solid #2a3150; }
 .coach-bar .coach-chips { margin: 0 0 6px; }
 .coach-card .grow-scale { margin-top: 2px; }
+.own-field { margin-top: 6px; font-size: 13px; padding: 7px 10px; }
