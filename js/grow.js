@@ -1,6 +1,6 @@
 // 6화 GROW: 노바가 옆에서 돕는다.
-// G 목표(3화 종착역) → R 현실(지금 몇 걸음 왔나, 0~10) → O 탐색(하고 싶은 걸 쓰면 방법 아이디어를 떠올려 줌) → W 실행 계획(언제·어디서·무엇 + 만약 ~하면)
-// 아이디어 생성은 기기 안에서 낱말을 보고 우회 노선 카드를 고르는 방식이다. 학생이 쓴 글은 어디로도 보내지 않는다.
+// G 목표(3화 종착역) → R 현실·O 탐색(노바와 코칭 대화, coach.js) → W 실행 계획(언제·어디서·무엇 + 만약 ~하면)
+// 기기 안 아이디어 생성기: 낱말을 보고 우회 노선 카드를 고른다 (AI 도우미를 끈 학생, AI가 실패했을 때).
 (function () {
   const $ = (sel) => document.querySelector(sel);
   const lang = () => (I18n.lang === 'en' ? 'en' : 'ko');
@@ -36,8 +36,10 @@
   }
 
   // 점수: 글에서 찾은 태그(가장 큼) + 그림자 태그 + 5화에 썼던 카드 + 약간의 무작위
-  function ideas(text, ctx, exclude = [], n = 6) {
+  function ideas(text, ctx, exclude = [], n = 6, tried = []) {
     const a = analyze(text);
+    const triedW = {};
+    tried.forEach((x) => (x.tags || []).forEach((tg) => (triedW[tg] = (triedW[tg] || 0) + (x.good ? 1.5 : -1))));
     const has = Object.keys(a.tags).length > 0;
     const shadowTags = {};
     ctx.mambas.forEach((m, i) => m.tags.forEach((t) => (shadowTags[t] = (shadowTags[t] || 0) + (i === 0 ? 2 : 1))));
@@ -49,6 +51,7 @@
         c.tags.forEach((t) => {
           s += (a.tags[t] || 0) * 3;
           s += (shadowTags[t] || 0) * (has ? 0.4 : 1);
+          s += triedW[t] || 0;
         });
         if (a.subject && c.tags.includes('method')) s += 1.2;
         if (used.includes(c.id)) s += 0.8;
@@ -93,6 +96,8 @@
     paintNova();
   }
 
+  const analyzeTags = (text) => Object.keys(analyze(text).tags);
+
   function chipRow(box, items, isOn, onTap) {
     box.innerHTML = '';
     items.forEach((it) => {
@@ -112,17 +117,21 @@
     const L = lang();
     const prev = ctx.prev || {};
     const st = {
-      r: prev.r !== undefined ? prev.r : null,
+      r: null,
       text: (prev.o && prev.o.text) || '',
       shown: [],
       analysis: { tags: {}, subject: '' },
-      picks: (prev.o && prev.o.picks ? prev.o.picks.slice() : []), // { id } 또는 { own: '글' }
+      picks: [], // { id } 또는 { own: '글' } 또는 { ai: {...} }
       rerolls: 0,
       generated: 0,
       aiCalls: 0,
       aiOk: 0,
       busy: false,
       crisis: false,
+      tried: [],
+      chat: {},
+      aiTurns: 0,
+      answered: 0,
       w: Object.assign({ pick: 0, days: [], time: null, place: null }, prev.w || {}),
       plan: Object.assign({ m: null, c: null }, prev.plan || {}),
     };
@@ -164,228 +173,6 @@
         h.querySelector('strong').textContent = ctx.dest;
         body.appendChild(h);
         tip('ep6.tipG', { dest: ctx.dest });
-      };
-
-      const renderR = () => {
-        body.innerHTML = '';
-        const q = document.createElement('p');
-        q.className = 'grow-q';
-        q.textContent = Story.josa(I18n.t('ep6.rQ').replace('{dest}', ctx.dest));
-        body.appendChild(q);
-        const scale = document.createElement('div');
-        scale.className = 'grow-scale';
-        for (let i = 0; i <= 10; i++) {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.textContent = i;
-          b.setAttribute('aria-pressed', String(st.r === i));
-          b.onclick = () => {
-            st.r = i;
-            Sound.play('blip');
-            $('#grow-error').hidden = true;
-            renderR();
-            tip(i <= 3 ? 'ep6.tipRLow' : i <= 6 ? 'ep6.tipRMid' : 'ep6.tipRHigh', { n: i });
-          };
-          scale.appendChild(b);
-        }
-        body.appendChild(scale);
-        const ends = document.createElement('div');
-        ends.className = 'grow-scale-ends';
-        ends.innerHTML = '<span></span><span></span>';
-        ends.children[0].textContent = I18n.t('ep6.rLow');
-        ends.children[1].textContent = I18n.t('ep6.rHigh');
-        body.appendChild(ends);
-        const sh = document.createElement('p');
-        sh.className = 'grow-note';
-        sh.textContent = Story.josa(I18n.t('ep6.rShadow').replace('{name}', ctx.shadow));
-        body.appendChild(sh);
-        if (st.r === null) tip('ep6.tipR');
-      };
-
-      const renderO = (fresh) => {
-        body.innerHTML = '';
-        const q = document.createElement('label');
-        q.className = 'grow-q';
-        q.htmlFor = 'grow-o-input';
-        q.textContent = I18n.t('ep6.oQ');
-        body.appendChild(q);
-        const row = document.createElement('div');
-        row.className = 'grow-o-row';
-        row.innerHTML = '<input id="grow-o-input" class="field" maxlength="60" autocomplete="off"><button id="grow-gen" class="btn btn-gen" type="button"></button>';
-        body.appendChild(row);
-        const input = row.querySelector('input');
-        input.placeholder = I18n.t('ep6.oPh');
-        input.value = st.text;
-        row.querySelector('button').textContent = I18n.t(st.shown.length ? 'ep6.oMore' : 'ep6.oGen');
-        // AI 도우미 켜기 (학생이 직접 켰을 때만 글이 AI로 간다)
-        if (Ai.on()) {
-          const sw = document.createElement('label');
-          sw.className = 'ai-switch';
-          sw.innerHTML = '<input type="checkbox"><span class="ai-switch-text"><b></b><small></small></span>';
-          const cb = sw.querySelector('input');
-          cb.checked = !!Data.save.aiConsent;
-          sw.querySelector('b').textContent = I18n.t('ep6.aiSwitch').replace('{n}', Ai.left());
-          sw.querySelector('small').textContent = I18n.t('ep6.aiNote');
-          cb.onchange = () => {
-            Data.save.aiConsent = cb.checked;
-            Data.persist();
-            Sound.play('blip');
-            tip(cb.checked ? 'ep6.tipAiOn' : 'ep6.tipAiOff');
-          };
-          body.insertBefore(sw, row);
-        }
-        const localIdeas = () => {
-          const r = ideas(st.text, ctx, st.shown.filter((c) => c.id).map((c) => c.id).concat(st.picks.filter((p) => p.id).map((p) => p.id)));
-          st.analysis = r.analysis;
-          return r.cards.map((c) => ({ id: c.id, name: c[L].name, text: ideaText(c, r.analysis.subject), route: c.route, pick: { id: c.id, subject: r.analysis.subject } }));
-        };
-        const gen = async () => {
-          if (st.busy) return;
-          st.text = input.value.trim();
-          $('#grow-error').hidden = true;
-          // 위기 신호: 아이디어 대신 도움 받을 곳
-          if (Ai.crisis(st.text)) {
-            st.crisis = true;
-            st.shown = [];
-            renderO(false);
-            tip('ep6.tipCrisis');
-            return;
-          }
-          st.crisis = false;
-          if (st.shown.length) st.rerolls++;
-          st.generated++;
-          let viaAi = false;
-          if (Ai.on() && Data.save.aiConsent && Ai.left()) {
-            st.busy = true;
-            st.aiCalls++;
-            renderO(false);
-            tip('ep6.tipAiThinking');
-            const res = await Ai.ideas({ text: st.text, shadow: ctx.mambas.map((m) => m[L].word), r: st.r });
-            st.busy = false;
-            if (res.ok && res.safety) {
-              st.crisis = true;
-              st.shown = [];
-              renderO(false);
-              tip('ep6.tipCrisis');
-              return;
-            }
-            if (res.ok && res.ideas.length) {
-              st.aiOk++;
-              viaAi = true;
-              st.analysis = analyze(st.text);
-              st.shown = res.ideas.map((x) => ({ ai: true, name: x.name, text: x.act, why: x.why, route: HEART.includes(x.tag) ? 'heart' : 'study', pick: { ai: { name: x.name, act: x.act, tag: x.tag } } }));
-            }
-          }
-          if (!viaAi) st.shown = localIdeas();
-          Sound.play('sparkle');
-          renderO(true);
-          if (viaAi) return tip('ep6.tipAiDone');
-          if (st.aiCalls && Data.save.aiConsent) return tip('ep6.tipAiFail');
-          const found = Object.keys(st.analysis.tags)
-            .slice(0, 2)
-            .map((t) => Battle.data.tags[t][L]);
-          if (!st.text) tip('ep6.tipONone');
-          else if (found.length) tip('ep6.tipOFound', { tags: found.join(', '), subject: st.analysis.subject ? `${st.analysis.subject} ` : '' });
-          else tip('ep6.tipOGeneral');
-        };
-        const genBtn = row.querySelector('button');
-        genBtn.onclick = gen;
-        if (st.busy) {
-          genBtn.disabled = true;
-          genBtn.textContent = I18n.t('ep6.aiThinking');
-        }
-        input.onkeydown = (e) => {
-          if (e.key === 'Enter') gen();
-        };
-        input.oninput = () => (st.text = input.value);
-        // 위기 신호가 보였을 때
-        if (st.crisis) {
-          const box = document.createElement('div');
-          box.className = 'crisis-box';
-          box.innerHTML = '<strong></strong><p></p><p></p>';
-          box.querySelector('strong').textContent = I18n.t('ep6.crisisTitle');
-          box.querySelectorAll('p')[0].textContent = I18n.t('ep6.crisisBody');
-          box.querySelectorAll('p')[1].textContent = I18n.t('ep6.crisisHelp');
-          body.appendChild(box);
-        }
-        // 생성된 아이디어
-        if (st.shown.length) {
-          const list = document.createElement('div');
-          list.className = 'idea-list' + (fresh ? ' fresh' : '');
-          st.shown.forEach((it, i) => {
-            const on = st.picks.some((p) => same(p, it));
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'idea' + (it.ai ? ' ai' : '');
-            b.dataset.route = it.route;
-            b.style.setProperty('--d', `${i * 70}ms`);
-            b.setAttribute('aria-pressed', String(on));
-            b.innerHTML = '<em></em><strong></strong>';
-            b.querySelector('em').textContent = it.ai ? `✦ ${it.name}` : it.name;
-            b.querySelector('strong').textContent = it.text;
-            if (it.why) {
-              const w = document.createElement('small');
-              w.textContent = it.why;
-              b.appendChild(w);
-            }
-            b.onclick = () => {
-              const k = st.picks.findIndex((p) => same(p, it));
-              if (k >= 0) st.picks.splice(k, 1);
-              else if (st.picks.length >= 3) {
-                err(I18n.t('ep6.oMax'));
-                return;
-              } else st.picks.push(it.pick);
-              Sound.play(k >= 0 ? 'blip' : 'select');
-              $('#grow-error').hidden = true;
-              renderO(false);
-              if (k < 0) tip('ep6.tipOPick', { name: it.name });
-            };
-            list.appendChild(b);
-          });
-          body.appendChild(list);
-        }
-        // 직접 쓴 방법 추가
-        const own = document.createElement('button');
-        own.type = 'button';
-        own.className = 'link-btn';
-        own.textContent = I18n.t('ep6.oOwn');
-        own.onclick = () => {
-          const v = input.value.trim();
-          if (!v) {
-            err(I18n.t('ep6.oOwnEmpty'));
-            return;
-          }
-          if (st.picks.length >= 3) {
-            err(I18n.t('ep6.oMax'));
-            return;
-          }
-          if (!st.picks.some((p) => p.own === v)) st.picks.push({ own: v.slice(0, 40) });
-          Sound.play('select');
-          $('#grow-error').hidden = true;
-          renderO(false);
-        };
-        body.appendChild(own);
-        // 고른 것
-        const chosen = document.createElement('div');
-        chosen.className = 'grow-chosen';
-        const head = document.createElement('div');
-        head.className = 'grow-chosen-head';
-        head.textContent = I18n.t('ep6.oChosen').replace('{n}', st.picks.length);
-        chosen.appendChild(head);
-        st.picks.forEach((p, i) => {
-          const r = document.createElement('div');
-          r.className = 'grow-chosen-row';
-          r.innerHTML = '<span></span><button type="button" aria-label="x">×</button>';
-          r.querySelector('span').textContent = pickLabel(p);
-          r.querySelector('button').onclick = () => {
-            st.picks.splice(i, 1);
-            Sound.play('blip');
-            renderO(false);
-          };
-          chosen.appendChild(r);
-        });
-        body.appendChild(chosen);
-        if (!fresh && !st.shown.length && !st.picks.length) tip('ep6.tipO');
       };
 
       const renderW1 = () => {
@@ -487,8 +274,10 @@
         $('#grow-back').hidden = step === 0;
         $('#grow-next').textContent = I18n.t(step === steps.length - 1 ? 'ep6.growDone' : 'ep6.growNext');
         if (k === 'g') renderG();
-        if (k === 'r') renderR();
-        if (k === 'o') renderO(false);
+        if (k === 'r' || k === 'o') {
+          tip(k === 'r' ? 'ep6.tipRChat' : 'ep6.tipOChat');
+          Coach.stage(k, { body, tip, onDone: () => {} }, ctx, st);
+        }
         if (k === 'w1') {
           renderW1();
           tip('ep6.tipW1');
@@ -507,12 +296,7 @@
       };
       $('#grow-next').onclick = () => {
         const k = steps[step];
-        if (k === 'r' && st.r === null) return err(I18n.t('ep6.rError'));
-        if (k === 'o') {
-          const v = ($('#grow-o-input') || {}).value;
-          if (v !== undefined) st.text = v.trim();
-          if (!st.picks.length) return err(I18n.t('ep6.oError'));
-        }
+        if ((k === 'r' || k === 'o') && !(st.chat[k] && st.chat[k].done)) return err(I18n.t('ep6.coachWait'));
         if (k === 'w1' && (!st.w.days.length || st.w.time === null || st.w.place === null)) return err(I18n.t('ep6.wError'));
         if (k === 'w2' && (!st.plan.m || !st.plan.c)) return err(I18n.t('ep6.planError'));
         if (step < steps.length - 1) {
@@ -526,6 +310,9 @@
         $('#grow-screen').hidden = true;
         resolve({
           r: st.r,
+          tried: st.tried.map((x) => ({ text: x.text, good: x.good, idx: x.idx === undefined ? null : x.idx, aiEx: !!x.aiEx })),
+          answered: st.answered,
+          aiTurns: st.aiTurns,
           o: { text: st.text, picks: st.picks.slice(), tags: Object.keys(st.analysis.tags), subject: !!st.analysis.subject, generated: st.generated, rerolls: st.rerolls, ai: !!Data.save.aiConsent, aiCalls: st.aiCalls, aiOk: st.aiOk },
           w: Object.assign({}, st.w),
           plan: Object.assign({}, st.plan),
@@ -562,5 +349,5 @@
     return Story.josa(I18n.t('ep6.planSentence').replace('{if}', m ? m[L].word : '______').replace('{then}', c ? c[L].act : '______'));
   }
 
-  window.Grow = { run, ideas, analyze, ideaText, actionSentence, ifSentence };
+  window.Grow = { run, ideas, analyze, analyzeTags, ideaText, actionSentence, ifSentence };
 })();

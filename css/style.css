@@ -351,3 +351,27 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 .crisis-box { margin-top: 10px; padding: 12px 14px; background: #2a1420; border: 1px solid #c0577f; border-left: 4px solid #ff8fb8; }
 .crisis-box strong { display: block; font-size: 15px; color: #ffd0e0; margin-bottom: 6px; }
 .crisis-box p { margin: 4px 0 0; font-size: 13px; line-height: 1.6; color: #f3e6ec; }
+
+/* 노바 코칭 대화 */
+.coach-log { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 4px; }
+.bubble { max-width: 86%; padding: 9px 12px; font-size: 14px; line-height: 1.6; white-space: pre-line; }
+.bubble.nova { align-self: flex-start; background: #1a1f38; border: 1px solid #39436e; border-left: 3px solid #ffcf4a; color: #f3f4fa; }
+.bubble.me { align-self: flex-end; background: #0f2e2b; border: 1px solid #2f8f80; color: #e6fff9; }
+.bubble.typing { color: #ffcf4a; letter-spacing: 2px; animation: blink 0.9s steps(2, start) infinite; }
+.coach-card { align-self: stretch; padding: 10px; background: #0c0f1c; border: 1px dashed #39436e; }
+.coach-card.locked { opacity: 0.75; }
+.coach-row { display: flex; gap: 6px; }
+.coach-row .field { flex: 1; min-width: 0; }
+.form-panel .coach-row .btn { width: auto; margin: 0; flex: none; padding: 8px 14px; }
+.coach-card-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+.form-panel .coach-card-btns .btn { margin: 0; font-size: 13px; }
+.coach-exlist { margin-top: 6px; }
+.chip-ai { border-color: #8a5ad0; color: #e8dcff; }
+.tried-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.tried-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 4px; align-items: center; padding: 6px 8px; background: #141a33; font-size: 13px; }
+.tried-row .thumb { background: #10131f; border: 1px solid #39436e; padding: 4px 8px; cursor: pointer; font-size: 14px; filter: grayscale(1); opacity: 0.6; }
+.tried-row .thumb[aria-pressed='true'] { filter: none; opacity: 1; border-color: #ffcf4a; background: #231d10; }
+.tried-row .x { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; }
+.coach-bar { position: sticky; bottom: -16px; margin: 6px -4px 0; padding: 8px 4px; background: var(--panel); border-top: 1px solid #2a3150; }
+.coach-bar .coach-chips { margin: 0 0 6px; }
+.coach-card .grow-scale { margin-top: 2px; }

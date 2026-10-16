@@ -896,6 +896,13 @@
     const wp = gw.o.picks[gw.w.pick] || gw.o.picks[0];
     Data.send('ep6_result', {
       r: gw.r,
+      r_tried: gw.tried.length,
+      r_good: gw.tried.filter((x) => x.good === true).length,
+      r_bad: gw.tried.filter((x) => x.good === false).length,
+      r_ex: gw.tried.filter((x) => x.idx !== null).map((x) => x.idx).join(','),
+      r_ai_ex: gw.tried.filter((x) => x.aiEx).length,
+      coach_answered: gw.answered,
+      coach_ai_turns: gw.aiTurns,
       o_tags: gw.o.tags.join(','),
       o_subject: gw.o.subject ? 1 : 0,
       o_generated: gw.o.generated,
