@@ -782,7 +782,7 @@
   }
   function planText(pl) {
     const L = I18n.lang === 'en' ? 'en' : 'ko';
-    return Story.josa(I18n.t('ep6.planSentence').replace('{if}', Mamba.card(pl.m)[L].word).replace('{then}', Battle.card(pl.c)[L].name));
+    return Story.josa(I18n.t('ep6.planSentence').replace('{if}', Mamba.card(pl.m)[L].word).replace('{then}', Battle.card(pl.c)[L].act));
   }
   function routeInfo() {
     const sv = Data.save;

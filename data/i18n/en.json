@@ -353,7 +353,7 @@
     "planLead": "Pick one shadow from stop 4 and one detour card from stop 5.",
     "planIf": "If … shows up",
     "planThen": "I will …",
-    "planSentence": "If {if} shows up, I will do “{then}.”",
+    "planSentence": "If {if} shows up, I will {then}.",
     "planError": "Please pick both.",
     "planGo": "That's my promise",
     "stationTitle": "What is this station called?",

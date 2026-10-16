@@ -95,7 +95,7 @@
         $('#plan-preview').textContent = Story.josa(
           I18n.t('ep6.planSentence')
             .replace('{if}', mm ? mm[L].word : '______')
-            .replace('{then}', cc ? cc[L].name : '______')
+            .replace('{then}', cc ? cc[L].act : '______')
         );
       };
       $('#plan-go').onclick = () => {
