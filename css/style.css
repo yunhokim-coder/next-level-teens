@@ -340,3 +340,14 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
   .gstep { font-size: 10px; padding: 5px; gap: 4px; }
   .grow-scale button { font-size: 12px; padding: 8px 0; }
 }
+.ai-switch { display: flex; align-items: flex-start; gap: 10px; margin: 2px 0 8px; padding: 8px 10px; background: #1a1430; border: 1px solid #5a3a8a; cursor: pointer; }
+.ai-switch input { margin-top: 3px; width: 18px; height: 18px; accent-color: #8a5ad0; flex: none; }
+.ai-switch-text { display: flex; flex-direction: column; gap: 3px; }
+.ai-switch-text b { font-size: 13px; color: #e8dcff; }
+.ai-switch-text small { font-size: 11px; line-height: 1.5; color: #b3a8d0; }
+.btn-gen:disabled { opacity: 0.7; cursor: wait; }
+.idea.ai { --c: #c9a8ff; }
+.idea small { font-size: 11px; color: #b3b9d0; line-height: 1.45; }
+.crisis-box { margin-top: 10px; padding: 12px 14px; background: #2a1420; border: 1px solid #c0577f; border-left: 4px solid #ff8fb8; }
+.crisis-box strong { display: block; font-size: 15px; color: #ffd0e0; margin-bottom: 6px; }
+.crisis-box p { margin: 4px 0 0; font-size: 13px; line-height: 1.6; color: #f3e6ec; }

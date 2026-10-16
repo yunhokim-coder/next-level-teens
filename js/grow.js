@@ -119,12 +119,18 @@
       picks: (prev.o && prev.o.picks ? prev.o.picks.slice() : []), // { id } 또는 { own: '글' }
       rerolls: 0,
       generated: 0,
+      aiCalls: 0,
+      aiOk: 0,
+      busy: false,
+      crisis: false,
       w: Object.assign({ pick: 0, days: [], time: null, place: null }, prev.w || {}),
       plan: Object.assign({ m: null, c: null }, prev.plan || {}),
     };
     const steps = ['g', 'r', 'o', 'w1', 'w2'];
     let step = 0;
-    const pickLabel = (p) => (p.own ? p.own : ideaText(Battle.card(p.id), p.subject || ''));
+    const pickLabel = (p) => (p.own ? p.own : p.ai ? p.ai.act : ideaText(Battle.card(p.id), p.subject || ''));
+    const HEART = ['calm', 'selfworth', 'motivation', 'relation'];
+    const same = (p, it) => (it.ai ? !!p.ai && p.ai.act === it.text : p.id === it.id);
     const DAYS = I18n.t('ep6.days').split('|');
     const TIMES = I18n.t('ep6.times').split('|');
     const PLACES = I18n.t('ep6.places').split('|');
@@ -211,53 +217,128 @@
         input.placeholder = I18n.t('ep6.oPh');
         input.value = st.text;
         row.querySelector('button').textContent = I18n.t(st.shown.length ? 'ep6.oMore' : 'ep6.oGen');
-        const gen = () => {
+        // AI 도우미 켜기 (학생이 직접 켰을 때만 글이 AI로 간다)
+        if (Ai.on()) {
+          const sw = document.createElement('label');
+          sw.className = 'ai-switch';
+          sw.innerHTML = '<input type="checkbox"><span class="ai-switch-text"><b></b><small></small></span>';
+          const cb = sw.querySelector('input');
+          cb.checked = !!Data.save.aiConsent;
+          sw.querySelector('b').textContent = I18n.t('ep6.aiSwitch').replace('{n}', Ai.left());
+          sw.querySelector('small').textContent = I18n.t('ep6.aiNote');
+          cb.onchange = () => {
+            Data.save.aiConsent = cb.checked;
+            Data.persist();
+            Sound.play('blip');
+            tip(cb.checked ? 'ep6.tipAiOn' : 'ep6.tipAiOff');
+          };
+          body.insertBefore(sw, row);
+        }
+        const localIdeas = () => {
+          const r = ideas(st.text, ctx, st.shown.filter((c) => c.id).map((c) => c.id).concat(st.picks.filter((p) => p.id).map((p) => p.id)));
+          st.analysis = r.analysis;
+          return r.cards.map((c) => ({ id: c.id, name: c[L].name, text: ideaText(c, r.analysis.subject), route: c.route, pick: { id: c.id, subject: r.analysis.subject } }));
+        };
+        const gen = async () => {
+          if (st.busy) return;
           st.text = input.value.trim();
-          const r = ideas(st.text, ctx, st.shown.map((c) => c.id).concat(st.picks.filter((p) => p.id).map((p) => p.id)));
+          $('#grow-error').hidden = true;
+          // 위기 신호: 아이디어 대신 도움 받을 곳
+          if (Ai.crisis(st.text)) {
+            st.crisis = true;
+            st.shown = [];
+            renderO(false);
+            tip('ep6.tipCrisis');
+            return;
+          }
+          st.crisis = false;
           if (st.shown.length) st.rerolls++;
           st.generated++;
-          st.analysis = r.analysis;
-          st.shown = r.cards;
+          let viaAi = false;
+          if (Ai.on() && Data.save.aiConsent && Ai.left()) {
+            st.busy = true;
+            st.aiCalls++;
+            renderO(false);
+            tip('ep6.tipAiThinking');
+            const res = await Ai.ideas({ text: st.text, shadow: ctx.mambas.map((m) => m[L].word), r: st.r });
+            st.busy = false;
+            if (res.ok && res.safety) {
+              st.crisis = true;
+              st.shown = [];
+              renderO(false);
+              tip('ep6.tipCrisis');
+              return;
+            }
+            if (res.ok && res.ideas.length) {
+              st.aiOk++;
+              viaAi = true;
+              st.analysis = analyze(st.text);
+              st.shown = res.ideas.map((x) => ({ ai: true, name: x.name, text: x.act, why: x.why, route: HEART.includes(x.tag) ? 'heart' : 'study', pick: { ai: { name: x.name, act: x.act, tag: x.tag } } }));
+            }
+          }
+          if (!viaAi) st.shown = localIdeas();
           Sound.play('sparkle');
           renderO(true);
-          const found = Object.keys(r.analysis.tags)
+          if (viaAi) return tip('ep6.tipAiDone');
+          if (st.aiCalls && Data.save.aiConsent) return tip('ep6.tipAiFail');
+          const found = Object.keys(st.analysis.tags)
             .slice(0, 2)
             .map((t) => Battle.data.tags[t][L]);
           if (!st.text) tip('ep6.tipONone');
-          else if (found.length) tip('ep6.tipOFound', { tags: found.join(', '), subject: r.analysis.subject ? `${r.analysis.subject} ` : '' });
+          else if (found.length) tip('ep6.tipOFound', { tags: found.join(', '), subject: st.analysis.subject ? `${st.analysis.subject} ` : '' });
           else tip('ep6.tipOGeneral');
         };
-        row.querySelector('button').onclick = gen;
+        const genBtn = row.querySelector('button');
+        genBtn.onclick = gen;
+        if (st.busy) {
+          genBtn.disabled = true;
+          genBtn.textContent = I18n.t('ep6.aiThinking');
+        }
         input.onkeydown = (e) => {
           if (e.key === 'Enter') gen();
         };
         input.oninput = () => (st.text = input.value);
+        // 위기 신호가 보였을 때
+        if (st.crisis) {
+          const box = document.createElement('div');
+          box.className = 'crisis-box';
+          box.innerHTML = '<strong></strong><p></p><p></p>';
+          box.querySelector('strong').textContent = I18n.t('ep6.crisisTitle');
+          box.querySelectorAll('p')[0].textContent = I18n.t('ep6.crisisBody');
+          box.querySelectorAll('p')[1].textContent = I18n.t('ep6.crisisHelp');
+          body.appendChild(box);
+        }
         // 생성된 아이디어
         if (st.shown.length) {
           const list = document.createElement('div');
           list.className = 'idea-list' + (fresh ? ' fresh' : '');
-          st.shown.forEach((c, i) => {
-            const on = st.picks.some((p) => p.id === c.id);
+          st.shown.forEach((it, i) => {
+            const on = st.picks.some((p) => same(p, it));
             const b = document.createElement('button');
             b.type = 'button';
-            b.className = 'idea';
-            b.dataset.route = c.route;
+            b.className = 'idea' + (it.ai ? ' ai' : '');
+            b.dataset.route = it.route;
             b.style.setProperty('--d', `${i * 70}ms`);
             b.setAttribute('aria-pressed', String(on));
             b.innerHTML = '<em></em><strong></strong>';
-            b.querySelector('em').textContent = c[L].name;
-            b.querySelector('strong').textContent = ideaText(c, st.analysis.subject);
+            b.querySelector('em').textContent = it.ai ? `✦ ${it.name}` : it.name;
+            b.querySelector('strong').textContent = it.text;
+            if (it.why) {
+              const w = document.createElement('small');
+              w.textContent = it.why;
+              b.appendChild(w);
+            }
             b.onclick = () => {
-              const k = st.picks.findIndex((p) => p.id === c.id);
+              const k = st.picks.findIndex((p) => same(p, it));
               if (k >= 0) st.picks.splice(k, 1);
               else if (st.picks.length >= 3) {
                 err(I18n.t('ep6.oMax'));
                 return;
-              } else st.picks.push({ id: c.id, subject: st.analysis.subject });
+              } else st.picks.push(it.pick);
               Sound.play(k >= 0 ? 'blip' : 'select');
               $('#grow-error').hidden = true;
               renderO(false);
-              if (k < 0) tip('ep6.tipOPick', { name: c[L].name });
+              if (k < 0) tip('ep6.tipOPick', { name: it.name });
             };
             list.appendChild(b);
           });
@@ -445,7 +526,7 @@
         $('#grow-screen').hidden = true;
         resolve({
           r: st.r,
-          o: { text: st.text, picks: st.picks.slice(), tags: Object.keys(st.analysis.tags), subject: !!st.analysis.subject, generated: st.generated, rerolls: st.rerolls },
+          o: { text: st.text, picks: st.picks.slice(), tags: Object.keys(st.analysis.tags), subject: !!st.analysis.subject, generated: st.generated, rerolls: st.rerolls, ai: !!Data.save.aiConsent, aiCalls: st.aiCalls, aiOk: st.aiOk },
           w: Object.assign({}, st.w),
           plan: Object.assign({}, st.plan),
         });
@@ -463,8 +544,8 @@
     const DAYS = I18n.t('ep6.days').split('|');
     const TIMES = I18n.t('ep6.times').split('|');
     const PLACES = I18n.t('ep6.places').split('|');
-    const what = p.own ? p.own : Battle.card(p.id)[L].act;
-    const hasSubj = p.subject && !p.own && Battle.card(p.id).tags.includes('method');
+    const what = p.own ? p.own : p.ai ? p.ai.act : Battle.card(p.id)[L].act;
+    const hasSubj = p.subject && p.id && Battle.card(p.id).tags.includes('method');
     const subj = hasSubj ? (L === 'en' ? ` (${p.subject})` : `${p.subject} `) : '';
     const days = s.w.days.length ? s.w.days.map((d) => DAYS[d]).join(I18n.t('ep6.daySep')) : '__';
     return I18n.t('ep6.actionSentence')

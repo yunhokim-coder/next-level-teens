@@ -808,14 +808,14 @@
   function routeStops(st, e6) {
     const L = st.L;
     const g = e6.grow;
-    const label = (p) => (p.own ? p.own : Grow.ideaText(Battle.card(p.id), p.subject || ''));
+    const label = (p) => (p.own ? p.own : p.ai ? p.ai.act : Grow.ideaText(Battle.card(p.id), p.subject || ''));
     const DAYS = I18n.t('ep6.days').split('|');
     const TIMES = I18n.t('ep6.times').split('|');
     const PLACES = I18n.t('ep6.places').split('|');
     const wp = g.o.picks[g.w.pick] || g.o.picks[0];
     const when = `${g.w.days.map((d) => DAYS[d]).join(I18n.t('ep6.daySep'))} ${TIMES[g.w.time]} · ${PLACES[g.w.place]}`;
     const stops = [{ letter: 'G', tag: I18n.t('ep6.mapDest'), name: st.destLabel, big: true }];
-    stops.push({ letter: 'W', tag: `${I18n.t('ep6.mapW')} · ${when}`, name: wp.own ? wp.own : Grow.ideaText(Battle.card(wp.id), wp.subject || '') });
+    stops.push({ letter: 'W', tag: `${I18n.t('ep6.mapW')} · ${when}`, name: label(wp) });
     g.o.picks.forEach((p, i) => {
       if (i !== g.w.pick) stops.push({ letter: 'O', tag: I18n.t('ep6.mapO'), name: label(p) });
     });
@@ -900,8 +900,11 @@
       o_subject: gw.o.subject ? 1 : 0,
       o_generated: gw.o.generated,
       o_rerolls: gw.o.rerolls,
-      o_picks: gw.o.picks.map((p) => (p.own ? 'own' : p.id)).join(','),
-      w_pick: wp.own ? 'own' : wp.id,
+      o_picks: gw.o.picks.map((p) => (p.own ? 'own' : p.ai ? `ai:${p.ai.tag}` : p.id)).join(','),
+      o_ai: gw.o.ai ? 1 : 0,
+      o_ai_calls: gw.o.aiCalls,
+      o_ai_ok: gw.o.aiOk,
+      w_pick: wp.own ? 'own' : wp.ai ? `ai:${wp.ai.tag}` : wp.id,
       w_days: gw.w.days.length,
       w_time: gw.w.time,
       w_place: gw.w.place,

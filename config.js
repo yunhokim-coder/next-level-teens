@@ -10,6 +10,10 @@ window.APP_CONFIG = {
   // Google Apps Script 웹앱 URL. 비워두면 보내지 않는다.
   APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzawhsBj9z2f-KI7yxViqlzvydD98nP3Em4gsNl4O6ZZLPdfeNMt9GexsXYSnFadm4k/exec',
 
+  // AI 아이디어 도우미 (6화 O 단계). true이고 학생이 켰을 때만 Apps Script를 거쳐 Claude에게 묻는다.
+  // API 키는 Apps Script의 스크립트 속성(ANTHROPIC_API_KEY)에 둔다. 키가 없거나 실패하면 기기 안 생성기를 쓴다.
+  AI_IDEAS: true,
+
   // 처음 열었을 때 언어 ('ko' 또는 'en'). 학생이 메뉴에서 바꾸면 그 기기에 기억된다.
   DEFAULT_LANG: 'ko',
   LANGS: ['ko', 'en'],

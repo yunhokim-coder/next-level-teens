@@ -114,7 +114,7 @@
     "tag": "Before boarding",
     "title": "Okay to record your answers anonymously?",
     "l1": "Your choices in the game (grade, gender, how your grades are going, survey answers) are recorded without your name. They are only used to improve the game and for research.",
-    "l2": "We never ask for your name, student ID, or contact info. Anything you type stays on this device.",
+    "l2": "We never ask your name, student ID or contacts. What you write stays on this device, except: if you turn on the 'AI helper' at the last stop, that short text is sent to an AI to make ideas (it isn't stored).",
     "l3": "You can play the same game even if you say no. Then nothing is recorded.",
     "l4": "You can stop at any time.",
     "yes": "Agree and start",
@@ -409,6 +409,18 @@
     "tipW2": "Last one: decide now what you'll do when {name} shows up again, so you don't have to think in the moment.",
     "mapW": "W this week",
     "mapO": "O option",
-    "mapR": "R start · now {n}/10"
+    "mapR": "R start · now {n}/10",
+    "aiSwitch": "✦ Turn on AI helper ({n} left)",
+    "aiNote": "When on, your short text and shadow names go to an AI (Claude) to make ideas. Don't write names, contacts or your school. Ideas still come when it's off.",
+    "tipAiOn": "AI helper is on. I'll make fresh ideas from what you wrote.",
+    "tipAiOff": "I'll pick from the cards myself, no AI. That works well too.",
+    "tipAiThinking": "Hmm... thinking about what you wrote. One moment!",
+    "aiThinking": "Thinking...",
+    "tipAiDone": "✦ These are fresh ideas just for you. Pick one to three you like.",
+    "tipAiFail": "The AI couldn't answer right now, so I picked from the cards myself.",
+    "tipCrisis": "What you wrote worries me. Right now you matter more than any study plan.",
+    "crisisTitle": "You don't have to handle this alone",
+    "crisisBody": "It sounds really hard. Please tell an adult you trust (a parent, teacher or school counselor).",
+    "crisisHelp": "In Korea: Youth Counseling 1388 (call 1388, text #1388), 24 hours. In an emergency call 112 or 119. Elsewhere, call your local emergency number."
   }
 }
