@@ -1,0 +1,206 @@
+{
+  "note": "사전·사후 같은 3문항 + 사후 만족도 3문항. 1~5점. 연구자 개발 임시 문항이며 정식 척도는 지도교수와 확정한다.",
+  "scale": {
+    "ko": [
+      "전혀 아니다",
+      "아니다",
+      "보통이다",
+      "그렇다",
+      "매우 그렇다"
+    ],
+    "en": [
+      "Not at all",
+      "Not really",
+      "So-so",
+      "Yes",
+      "Very much"
+    ]
+  },
+  "motivation": [
+    {
+      "id": "m1",
+      "ko": "지금 공부하고 싶은 마음이 든다",
+      "en": "Right now, I feel like studying"
+    },
+    {
+      "id": "m2",
+      "ko": "나는 공부를 잘 해낼 수 있을 것 같다",
+      "en": "I think I can do well in my studies"
+    },
+    {
+      "id": "m3",
+      "ko": "공부가 막힐 때 어떻게 하면 될지 안다",
+      "en": "When studying gets hard, I know what to do"
+    }
+  ],
+  "satisfaction": [
+    {
+      "id": "s1",
+      "ko": "이 게임은 재미있었다",
+      "en": "This game was fun"
+    },
+    {
+      "id": "s2",
+      "ko": "내 공부에 도움이 될 것 같다",
+      "en": "It will help with my studying"
+    },
+    {
+      "id": "s3",
+      "ko": "친구에게 추천하고 싶다",
+      "en": "I'd recommend it to a friend"
+    }
+  ],
+  "grades": [
+    {
+      "id": "m1",
+      "ko": "중학교 1학년",
+      "en": "Middle school, 1st year"
+    },
+    {
+      "id": "m2",
+      "ko": "중학교 2학년",
+      "en": "Middle school, 2nd year"
+    },
+    {
+      "id": "m3",
+      "ko": "중학교 3학년",
+      "en": "Middle school, 3rd year"
+    },
+    {
+      "id": "h1",
+      "ko": "고등학교 1학년",
+      "en": "High school, 1st year"
+    },
+    {
+      "id": "h2",
+      "ko": "고등학교 2학년",
+      "en": "High school, 2nd year"
+    },
+    {
+      "id": "h3",
+      "ko": "고등학교 3학년",
+      "en": "High school, 3rd year"
+    },
+    {
+      "id": "other",
+      "ko": "그 밖 (선생님, 보호자 등)",
+      "en": "Other (teacher, parent, etc.)"
+    },
+    {
+      "id": "na",
+      "ko": "밝히지 않음",
+      "en": "Prefer not to say"
+    }
+  ],
+  "gender": [
+    {
+      "id": "f",
+      "ko": "여성",
+      "en": "Female"
+    },
+    {
+      "id": "m",
+      "ko": "남성",
+      "en": "Male"
+    },
+    {
+      "id": "na",
+      "ko": "밝히지 않음",
+      "en": "Prefer not to say"
+    }
+  ],
+  "achievement": [
+    {
+      "id": "5",
+      "ko": "상위권",
+      "en": "Top"
+    },
+    {
+      "id": "4",
+      "ko": "중상위권",
+      "en": "Upper-middle"
+    },
+    {
+      "id": "3",
+      "ko": "중위권",
+      "en": "Middle"
+    },
+    {
+      "id": "2",
+      "ko": "중하위권",
+      "en": "Lower-middle"
+    },
+    {
+      "id": "1",
+      "ko": "하위권",
+      "en": "Bottom"
+    },
+    {
+      "id": "na",
+      "ko": "밝히지 않음",
+      "en": "Prefer not to say"
+    }
+  ],
+  "nameParts": {
+    "a": {
+      "ko": [
+        "새벽의",
+        "조용한",
+        "빠른",
+        "느긋한",
+        "반짝이는",
+        "단단한",
+        "푸른",
+        "한밤의",
+        "멀리 가는",
+        "따뜻한",
+        "용감한",
+        "차분한"
+      ],
+      "en": [
+        "Dawn",
+        "Quiet",
+        "Swift",
+        "Easygoing",
+        "Shining",
+        "Steady",
+        "Blue",
+        "Midnight",
+        "Far-going",
+        "Warm",
+        "Brave",
+        "Calm"
+      ]
+    },
+    "b": {
+      "ko": [
+        "여행자",
+        "기관사",
+        "승객",
+        "고양이",
+        "호랑이",
+        "토끼",
+        "별",
+        "라디오",
+        "나침반",
+        "고래",
+        "여우",
+        "열차"
+      ],
+      "en": [
+        "Traveler",
+        "Driver",
+        "Rider",
+        "Cat",
+        "Tiger",
+        "Rabbit",
+        "Star",
+        "Radio",
+        "Compass",
+        "Whale",
+        "Fox",
+        "Train"
+      ]
+    }
+  }
+}

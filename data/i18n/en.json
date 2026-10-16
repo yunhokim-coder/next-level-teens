@@ -1,0 +1,120 @@
+{
+  "names": {
+    "narrator": "",
+    "nova": "Nova",
+    "jam": "Jam",
+    "voice": "???"
+  },
+  "title": {
+    "sub": "Today's Study, Tomorrow's Station",
+    "start": "PRESS START",
+    "credit": "© 2026 Yunho Kim · DEMO"
+  },
+  "hud": {
+    "passenger": "PASSENGER",
+    "sound": "Sound on/off"
+  },
+  "look": {
+    "left": "Left",
+    "right": "Right",
+    "hint": "◀ ▶ look around · tap what you're curious about · check the board"
+  },
+  "walk": {
+    "hint": "◀ ▶ or tap the floor to walk · head for the stairs"
+  },
+  "scene": {
+    "boardNext": "NEXT",
+    "boardDest": "TO",
+    "boardUnknown": "TBD",
+    "exit": "EXIT",
+    "ticketFrom": "FROM · No-Name Stn",
+    "ticketTo": "TO ·",
+    "toPlatform": "OTHER SIDE",
+    "dreamSign": "Tomorrow"
+  },
+  "hot": {
+    "vending": "Text scrolls across the vending machine: \"Line of the day: Well begun is half done. ...That's only half true. The other half is starting again.\"",
+    "poster": "A study tip ad: \"Close the book and try to recall it. Whatever you can't recall is what you don't know yet.\"",
+    "sign": "The station sign is blank, as if it's waiting for someone to write a name.",
+    "graffiti": "Someone wrote: \"I decide my next stop.\" The ink still looks fresh.",
+    "lost": "Lost and found notice: \"In storage: 12 umbrellas, one earbud, plenty of lost motivation. Please bring ID.\"",
+    "tip2": "An ad: \"One hour on three different days beats three hours in one night. Your brain likes spacing.\"",
+    "wall": "Notes stuck to the wall: \"Today flopped, tomorrow who knows\", \"I hate math but I'm doing it\", \"Getting this far is a big deal\""
+  },
+  "ep1": {
+    "d1": "...your next stop is...",
+    "d2": "...yours to dec—",
+    "n1": "Clunk. Your eyes open. You dozed off on the last train and rode it to the end of the line.",
+    "n2": "An empty platform. 11:58 p.m.",
+    "n3": "There's a ticket in your hand. But the TO line is blank.",
+    "n4": "Let's look around first.",
+    "board": "Next train --:--. Destination TBD. ...Is that even a thing?",
+    "nova1": "You're still here. Missed the last train?",
+    "nova2": "Don't worry. I'm the station guide at this hour. Call me Nova.",
+    "c1a": "I guess. I fell asleep and ended up here",
+    "c1b": "Where am I?",
+    "nova3a": "Happens to everyone. When you're tired, you ride past your stop.",
+    "nova3b": "Line City. It's where the lines that only run at night all meet.",
+    "nova4": "Everyone here rides their own line. But lately black shadows keep showing up on the tracks, and the trains stop dead.",
+    "nova5": "And this station has no name, right? It'll stay blank until you decide.",
+    "jam1": "...mmh. Let's just go home. You did a lot today. Tomorrow's fine, isn't it?",
+    "c2a": "...Maybe",
+    "c2b": "Who are you?",
+    "jam2a": "Right? I knew you'd get it.",
+    "jam2b": "Me? I'm the one who shows up whenever you're tired. Call me Jam.",
+    "nova6a": "That's Jam. Everyone has that voice. Not a bad kid, but always wants to stop.",
+    "nova6b": "Yep, Jam. Everyone has that voice. Resting isn't always wrong, which is what makes it tricky.",
+    "nova7": "The first train's almost here. Let's go to the other platform. You can start your line there.",
+    "nova8": "Walk the tunnel on your own. Feel free to read what's on the walls.",
+    "arrive1": "A light approaches in the distance. The first train. The sky is a little less black.",
+    "nova9": "Here it is. This train has no fixed destination. A line appears each time you ride it.",
+    "nova10": "See you at the next stop. That's where you'll see yourself for the first time. Reflected in the window."
+  },
+  "clear": {
+    "stop": "STOP 1",
+    "title": "First Train · CLEAR",
+    "next": "Next stop: your character, reflected in the train window",
+    "demo": "That's the end of the demo.",
+    "replay": "Start over",
+    "toSurvey": "On to the last questions"
+  },
+  "consent": {
+    "tag": "Before boarding",
+    "title": "Okay to record your answers anonymously?",
+    "l1": "Your choices in the game (grade, gender, how your grades are going, survey answers) are recorded without your name. They are only used to improve the game and for research.",
+    "l2": "We never ask for your name, student ID, or contact info. Anything you type stays on this device.",
+    "l3": "You can play the same game even if you say no. Then nothing is recorded.",
+    "l4": "You can stop at any time.",
+    "yes": "Agree and start",
+    "no": "Start without agreeing"
+  },
+  "setup": {
+    "tag": "Ticket",
+    "title": "Passenger info",
+    "name": "Passenger name (pick one, not your real name)",
+    "random": "🎲 Random",
+    "grade": "Grade",
+    "choose": "Tap to choose",
+    "gender": "Gender",
+    "achievement": "How are your grades these days, roughly?",
+    "achievementHelp": "Compared with your class or grade. It doesn't need to be exact.",
+    "error": "Please choose your grade, gender, and grade level. You can pick \"Prefer not to say\".",
+    "code": "My anonymous code",
+    "go": "Board"
+  },
+  "survey": {
+    "lead": "There are no right answers. Pick what feels true right now.",
+    "error": "Please answer every question.",
+    "go": "Next",
+    "preTag": "Pre-trip check",
+    "preTitle": "How are you right now?",
+    "postTag": "Post-trip check",
+    "postTitle": "How are you right now?",
+    "satisfactionTag": "Last question",
+    "satisfactionTitle": "How was the trip?"
+  },
+  "thanks": {
+    "title": "Thanks, passenger",
+    "body": "Your line has just begun. You decide the next stop."
+  }
+}
