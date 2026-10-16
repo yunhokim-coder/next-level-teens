@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>NEXT LINE</title>
   <meta name="description" content="NEXT LINE: 공부, 내일의 역">
-  <meta name="app-version" content="20261017l">
+  <meta name="app-version" content="20261017n">
   <link rel="preload" href="assets/fonts/Galmuri11.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=20261017l">
+  <link rel="stylesheet" href="css/style.css?v=20261017n">
 </head>
 <body>
   <div id="app">
@@ -244,6 +244,42 @@
           <button id="name-go" class="btn btn-primary" type="button" data-i18n="ep4.nameGo"></button>
         </div>
       </div>
+      <!-- 5화 우회 노선 배틀: 손패, 크게 보기, 전체 카드, 오늘의 우회 노선 -->
+      <div id="hand-screen" class="overlay" hidden>
+        <div class="hand-wrap">
+          <div id="hand-attack" class="hand-attack"></div>
+          <p class="hand-lead" data-i18n="ep5.handLead"></p>
+          <div id="hand-fan" class="hand-fan"></div>
+          <button id="hand-deck" class="btn" type="button" data-i18n="ep5.deck"></button>
+        </div>
+      </div>
+      <div id="zoom-screen" class="overlay" hidden>
+        <div class="panel zoom-panel">
+          <div id="zoom-card" class="zoom-card"></div>
+          <p id="zoom-match" class="zoom-match" hidden></p>
+          <button id="zoom-use" class="btn btn-primary" type="button" data-i18n="ep5.use"></button>
+          <button id="zoom-back" class="btn" type="button" data-i18n="ep5.back"></button>
+        </div>
+      </div>
+      <div id="deck-screen" class="overlay" hidden>
+        <div class="panel form-panel">
+          <div class="clear-stop" data-i18n="ep5.tag"></div>
+          <h2 data-i18n="ep5.deckTitle"></h2>
+          <p class="muted" data-i18n="ep5.deckLead"></p>
+          <div id="deck-tabs" class="tabs"></div>
+          <div id="deck-grid" class="mamba-grid"></div>
+          <button id="deck-close" class="btn" type="button" data-i18n="ep5.deckClose"></button>
+        </div>
+      </div>
+      <div id="route-screen" class="overlay" hidden>
+        <div class="panel form-panel">
+          <div class="clear-stop" data-i18n="ep5.tag"></div>
+          <h2 data-i18n="ep5.routeTitle"></h2>
+          <p class="muted" data-i18n="ep5.routeLead"></p>
+          <div id="route-list" class="route-list"></div>
+          <button id="route-go" class="btn btn-primary" type="button" data-i18n="ep5.routeGo"></button>
+        </div>
+      </div>
 
       <!-- 끝 인사 -->
       <div id="thanks-screen" class="overlay" hidden>
@@ -286,16 +322,17 @@
     </div>
   </div>
 
-  <script src="config.js?v=20261017l"></script>
-  <script src="js/i18n.js?v=20261017l"></script>
-  <script src="js/sound.js?v=20261017l"></script>
-  <script src="js/data.js?v=20261017l"></script>
-  <script src="js/story.js?v=20261017l"></script>
-  <script src="js/chars.js?v=20261017l"></script>
-  <script src="js/game.js?v=20261017l"></script>
-  <script src="js/quiz.js?v=20261017l"></script>
-  <script src="js/station.js?v=20261017l"></script>
-  <script src="js/mamba.js?v=20261017l"></script>
-  <script src="js/main.js?v=20261017l"></script>
+  <script src="config.js?v=20261017n"></script>
+  <script src="js/i18n.js?v=20261017n"></script>
+  <script src="js/sound.js?v=20261017n"></script>
+  <script src="js/data.js?v=20261017n"></script>
+  <script src="js/story.js?v=20261017n"></script>
+  <script src="js/chars.js?v=20261017n"></script>
+  <script src="js/game.js?v=20261017n"></script>
+  <script src="js/quiz.js?v=20261017n"></script>
+  <script src="js/station.js?v=20261017n"></script>
+  <script src="js/mamba.js?v=20261017n"></script>
+  <script src="js/battle.js?v=20261017n"></script>
+  <script src="js/main.js?v=20261017n"></script>
 </body>
 </html>

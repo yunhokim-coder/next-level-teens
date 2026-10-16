@@ -57,6 +57,17 @@
     quake: 0, // 화면 흔들림 세기
     alarm: false,
     wreck: -1, // 선로가 부서진 뒤 흐른 시간 (-1 아직)
+    beam: 0,
+    beamColor: '#ffffff',
+    beamBig: false,
+    hit: 0,
+    lunge: 0,
+    detour: 0, // 우회 선로가 놓인 정도 0~1
+    detourT: 0,
+    detourLit: false,
+    hp: 1,
+    hpT: 1,
+    hpShow: false,
   };
 
   // ---------- 그리기 도구 ----------
@@ -631,24 +642,27 @@
     });
     return out;
   })();
-  function drawRocks(x) {
+  function drawRocks(x, base = 130, u = 1, settled = false) {
     ROCKS.forEach((k) => {
       const tt = S.wreck - k.d;
-      if (tt <= 0) return;
-      const y = Math.min(k.y, -20 + 260 * tt * tt);
-      const rx = Math.round(x + k.x - k.s / 2);
-      const ry = Math.round(y - k.s);
-      r(rx, ry, k.s, k.s, '#5d5650');
-      r(rx + 2, ry - 2, k.s - 4, 2, '#5d5650');
-      r(rx + 2, ry, k.s - 6, 3, '#857c72');
-      r(rx, ry + k.s - 3, k.s, 3, '#3b3631');
-      r(rx + k.s - 3, ry + 2, 3, k.s - 2, '#47413b');
+      if (!settled && tt <= 0) return;
+      const y0 = settled ? k.y : Math.min(k.y, -20 + 260 * tt * tt);
+      const y = base + (y0 - 130) * u;
+      const sz = Math.max(3, Math.round(k.s * u));
+      const rx = Math.round(x + k.x * u - sz / 2);
+      const ry = Math.round(y - sz);
+      const e = Math.max(1, Math.round(2 * u));
+      r(rx, ry, sz, sz, '#5d5650');
+      r(rx + e, ry - e, sz - e * 2, e, '#5d5650');
+      r(rx + e, ry, sz - e * 3, Math.max(1, Math.round(3 * u)), '#857c72');
+      r(rx, ry + sz - e - 1, sz, e + 1, '#3b3631');
+      r(rx + sz - e - 1, ry + e, e + 1, sz - e, '#47413b');
     });
   }
 
   // 선로에서 솟는 검은 그림자: 물결치는 몸통, 노란 눈. 고른 카드가 많을수록 크다.
-  function drawShadow(x, a) {
-    const size = 0.8 + Math.min(1, (S.shadowSize || 3) / 9) * 0.6;
+  function drawShadow(x, a, base = 128, k = 1, label = true) {
+    const size = (0.8 + Math.min(1, (S.shadowSize || 3) / 9) * 0.6) * k;
     const rise = a * 46 * size;
     g.globalAlpha = Math.min(1, a * 1.2);
     // 기운
@@ -656,27 +670,111 @@
     for (let i = 0; i < 14; i++) {
       const ox = Math.sin(t * 2 + i) * 18 * size;
       const oy = (t * 20 + i * 9) % 40;
-      g.fillRect(Math.round(x + ox), Math.round(122 - rise - oy + 20), 2, 2);
+      g.fillRect(Math.round(x + ox), Math.round(base - 6 - rise - oy + 20), 2, 2);
     }
     // 몸통: 아래에서 위로 굵기가 줄어드는 마디
-    for (let k = 0; k < 9; k++) {
-      const yy = 128 - (rise * k) / 8;
-      const xx = x + Math.sin(t * 2.2 + k * 0.7) * 6 * size;
-      const rad = (14 - k) * size;
+    for (let j = 0; j < 9; j++) {
+      const yy = base - (rise * j) / 8;
+      const xx = x + Math.sin(t * 2.2 + j * 0.7) * 6 * size;
+      const rad = (14 - j) * size;
       r(xx - rad, yy - 5, rad * 2, 8, '#06060b');
     }
     // 머리
     const hx = x + Math.sin(t * 2.2 + 6) * 6 * size;
-    const hy = 128 - rise - 6;
+    const hy = base - rise - 6;
     r(hx - 12 * size, hy - 6 * size, 24 * size, 12 * size, '#06060b');
     r(hx - 7 * size, hy - 2 * size, 4, 3, '#ffcf4a');
     r(hx + 3 * size, hy - 2 * size, 4, 3, '#ffcf4a');
     g.globalAlpha = 1;
-    if (S.shadowName && a > 0.6) {
+    if (label && S.shadowName && a > 0.6) {
       g.font = '7px Galmuri11, monospace';
       const tw = g.measureText(S.shadowName).width;
       r(hx - tw / 2 - 4, hy - 26 * size, tw + 8, 11, 'rgba(8,8,16,0.85)');
       text(S.shadowName, hx, hy - 25 * size, '#ffcf4a', 7, 'center');
+    }
+  }
+
+  // ---------- 5화 배틀 (1인칭, 끊긴 선로 정면): 바위 더미 위로 그림자, 오른쪽으로 우회 선로가 놓인다 ----------
+  const HZ = 86;
+  const DETOUR = 26; // 우회 선로 침목 수
+  function bez(p) {
+    const q = 1 - p;
+    return { x: q * q * 262 + 2 * q * p * 318 + p * p * 196, y: q * q * 180 + 2 * q * p * 112 + p * p * 92 };
+  }
+  function drawBattle() {
+    sky(S.phase);
+    sunMoon(S.phase);
+    g.save();
+    g.translate(0, -24);
+    skyline(S.phase);
+    g.restore();
+    // 고가 선로 (원근)
+    const bed = mix('#1a1e2c', '#4a5068', S.phase);
+    r(0, HZ, W, H - HZ, mix('#0a0d18', '#262c40', S.phase));
+    for (let y = HZ; y < H; y++) {
+      const d = (y - HZ) / (H - HZ);
+      const hw = 10 + d * 150;
+      r(160 - hw, y, hw * 2, 1, bed);
+      const z = 1 / (d + 0.08);
+      const hole = y > 100 && y < 116;
+      if (hole) r(160 - hw * 0.62, y, hw * 1.24, 1, '#05060b');
+      else if (Math.floor(z * 6) % 2 === 0) r(160 - hw * 0.55, y, hw * 1.1, 1, '#2a2118');
+      if (!hole) {
+        const rx = hw * 0.42;
+        const rw = Math.max(1, Math.round(d * 4));
+        r(Math.round(160 - rx), y, rw, 1, '#9aa0b6');
+        r(Math.round(160 + rx - rw), y, rw, 1, '#9aa0b6');
+      }
+      // 난간
+      r(160 - hw - 2, y, 2, 1, '#c9a43a');
+      r(160 + hw, y, 2, 1, '#c9a43a');
+    }
+    // 우회 선로: 하나씩 놓이고, 다 놓이면 불이 들어온다
+    const col = S.lineColor || C.line;
+    const built = Math.floor(DETOUR * S.detour + 0.001);
+    for (let i = 0; i < built; i++) {
+      const p = bez(i / (DETOUR - 1));
+      const d = (p.y - HZ) / (H - HZ);
+      const w = 3 + d * 18;
+      r(p.x - w, p.y, w * 2, Math.max(1, Math.round(1 + d * 3)), '#3a2f22');
+      const lit = S.detourLit && Math.floor(t * 8 - i * 0.5) % 4 === 0;
+      r(p.x - w * 0.8, p.y - 1, Math.max(1, Math.round(1 + d * 2)), 2, lit ? '#ffffff' : col);
+      r(p.x + w * 0.8 - 1, p.y - 1, Math.max(1, Math.round(1 + d * 2)), 2, lit ? '#ffffff' : col);
+    }
+    if (built > 0 && built < DETOUR) {
+      const p = bez((built - 1) / (DETOUR - 1));
+      if (Math.floor(t * 6) % 2) r(p.x - 1, p.y - 6, 2, 2, '#fff6c8');
+    }
+    // 그림자와 바위
+    const k = 1.15 + S.lunge * 0.35;
+    const jit = Math.sin(t * 70) * 4 * S.hit;
+    if (S.shadow > 0.01) drawShadow(160 + jit, S.shadow, 106 + S.lunge * 8, k, false);
+    drawRocks(160, 118, 0.62, true);
+    // 빛줄기: 낸 카드의 색
+    if (S.beam > 0.02) {
+      const hy = 106 - 46 * k * S.shadow;
+      g.globalAlpha = Math.min(1, S.beam * 1.4);
+      g.strokeStyle = S.beamColor;
+      g.lineWidth = (S.beamBig ? 7 : 3) * S.beam;
+      g.beginPath();
+      g.moveTo(160, H);
+      g.lineTo(160 + jit, hy);
+      g.stroke();
+      g.fillStyle = S.beamColor;
+      const rad = (S.beamBig ? 22 : 11) * (1.2 - S.beam);
+      g.beginPath();
+      g.arc(160 + jit, hy, rad, 0, Math.PI * 2);
+      g.fill();
+      g.globalAlpha = 1;
+    }
+    // 그림자 기운 막대
+    if (S.hpShow) {
+      g.font = '7px Galmuri11, monospace';
+      const name = S.shadowName || '';
+      r(100, 6, 120, 20, 'rgba(8,8,16,0.8)');
+      text(name, 160, 8, '#ffcf4a', 7, 'center');
+      r(106, 18, 108, 4, '#2a2140');
+      r(106, 18, Math.round(108 * Math.max(0, S.hp)), 4, '#8a5ad0');
     }
   }
 
@@ -813,6 +911,11 @@
     S.ride += dt * 60 * S.speed;
     S.quake = Math.max(0, S.quake - dt * 0.9);
     if (S.wreck >= 0) S.wreck += dt;
+    S.beam = Math.max(0, S.beam - dt * 1.3);
+    S.hit = Math.max(0, S.hit - dt * 1.6);
+    S.lunge = Math.max(0, S.lunge - dt * 1.4);
+    S.detour += (S.detourT - S.detour) * Math.min(1, dt * 2.5);
+    S.hp += (S.hpT - S.hp) * Math.min(1, dt * 3);
     if (S.scene === 'arrival') S.train = Math.min(1, S.train + dt * 0.35);
     if (S.shadow !== undefined) S.shadow += ((S.shadowT || 0) - S.shadow) * Math.min(1, dt * 1.2);
     if ((S.scene === 'underpass' || S.scene === 'track') && S.walk) {
@@ -855,6 +958,7 @@
     else if (S.scene === 'train') drawTrain();
     else if (S.scene === 'hub') drawHub();
     else if (S.scene === 'track') drawTrack();
+    else if (S.scene === 'battle') drawBattle();
     if (S.dream) {
       // 꿈: 아침빛이 번지고 화면이 출렁인다
       g.globalAlpha = 0.35 + 0.1 * Math.sin(t * 1.5);
@@ -926,6 +1030,15 @@
       if (name === 'arrival') S.train = 0;
       S.speed = S.speedT = 1;
       S.alarm = false;
+      S.beam = S.hit = S.lunge = 0;
+      S.detour = S.detourT = 0;
+      S.detourLit = false;
+      S.hp = S.hpT = 1;
+      S.hpShow = false;
+      if (name === 'battle') {
+        S.shadow = S.shadowT = 0;
+        S.shadowName = '';
+      }
       S.wreck = -1;
       S.quake = 0;
       if (name === 'track') {
@@ -966,6 +1079,28 @@
     wreck() {
       S.wreck = 0;
       S.quake = 1.6;
+    },
+    // 배틀 연출
+    attack() {
+      S.lunge = 1;
+      S.quake = Math.max(S.quake, 0.5);
+    },
+    beam(color, big) {
+      S.beam = 1;
+      S.beamColor = color;
+      S.beamBig = big;
+      S.hit = 1;
+    },
+    hp(v, show = true) {
+      S.hpT = v;
+      S.hpShow = show;
+    },
+    detour(v) {
+      S.detourT = v;
+    },
+    detourLit(on) {
+      S.detourLit = on;
+      if (on) S.detour = S.detourT = 1;
     },
     tunnel(on) {
       S.tunnelT = on ? 1 : 0;

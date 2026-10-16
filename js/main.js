@@ -405,11 +405,9 @@
   }
 
   // ---------- 역 클리어: 다음 역이 있으면 이어서, 없으면 마지막 질문으로 ----------
-  const READY = [1, 2, 3, 4];
+  const READY = [1, 2, 3, 4, 5];
   function stopClear(ep) {
     Sound.play('clear');
-    Data.save.done[ep] = true;
-    Data.persist();
     const replay = !!Data.save.done[ep];
     Data.save.done[ep] = true;
     Data.persist();
@@ -674,7 +672,90 @@
     await stopClear(4);
   }
 
-  const EPISODES = { 1: () => ep1(), 2: () => ep2(), 3: () => ep3(), 4: () => ep4() };
+    // ---------- 5화: 우회 노선 배틀 (1인칭) ----------
+  async function ep5() {
+    await Promise.all([Mamba.load(), Battle.load()]);
+    const sv = Data.save;
+    const L = I18n.lang === 'en' ? 'en' : 'ko';
+    const color = sv.disc && Quiz.types[sv.disc.primary] ? Quiz.types[sv.disc.primary].color : null;
+    const e4 = sv.ep4 && sv.ep4.cards && sv.ep4.cards.length ? sv.ep4 : { cards: [31, 16, 1], freq: {}, name: I18n.t('ep5.fallbackName') };
+    const attacks = Mamba.byFrequency(e4.cards, e4.freq || {});
+    const full = Mamba.join(Mamba.card(attacks[0])[L].word, e4.name);
+    await Game.fadeTo(1);
+    Game.scene('battle', { phase: 0.78 });
+    Game.setChar(sv.avatar || null, color);
+    Game.shadowName = full;
+    await Game.fadeTo(0);
+    await say([n('ep5.n1'), n('ep5.n2')]);
+    Sound.play('rumble');
+    Game.shadow(1, attacks.length);
+    Game.attack();
+    await sleep(1100);
+    Game.hp(1);
+    await say([
+      { who: 'shadow', name: full, key: 'ep5.shadow0' },
+      nova('ep5.tut1'),
+      nova('ep5.tut2'),
+      nova('ep5.tut3'),
+    ]);
+
+    const taunts = I18n.t('ep5.taunts').split('|');
+    const hand = [];
+    const used = [];
+    const turns = [];
+    let hp = 1;
+    for (let i = 0; i < attacks.length; i++) {
+      const m = Mamba.card(attacks[i]);
+      Game.attack();
+      Sound.play('rumble');
+      await sleep(500);
+      await say([{ who: 'shadow', name: full, key: 'ep5.attackLine', vars: { desc: m[L].desc, taunt: taunts[i % taunts.length] } }]);
+      Battle.deal(hand, used, m.tags);
+      const { id, browsed } = await Battle.choose(m, hand, used);
+      used.push(id);
+      if (hand.includes(id)) hand.splice(hand.indexOf(id), 1);
+      const c = Battle.card(id);
+      const hitTags = Battle.overlap(c.tags, m.tags);
+      const hit = hitTags.length > 0;
+      Game.beam(c.route === 'heart' ? '#ff8fb8' : '#5ee0c8', hit);
+      Sound.play(hit ? 'powerup' : 'sparkle');
+      hp -= (hit ? 1 : 0.5) / attacks.length;
+      Game.hp(Math.max(0.06, hp));
+      Game.detour(((i + 1) / attacks.length) * 0.9);
+      await sleep(1000);
+      const vars = { card: c[L].name, word: m[L].word, tags: Battle.tagNames(hit ? hitTags : m.tags) };
+      await say([nova(hit ? 'ep5.hit' : 'ep5.miss', { vars })].concat(i === 0 ? [nova('ep5.tut4')] : []));
+      turns.push({ m: m.id, c: id, hit, browsed });
+    }
+
+    // 우회 선로 완성: 불이 들어오고 그림자는 작아진다
+    Game.hp(0);
+    Game.shadow(0.3);
+    Game.detourLit(true);
+    Sound.play('clear');
+    await sleep(1200);
+    await say([
+      n('ep5.end1'),
+      { who: 'shadow', name: full, key: 'ep5.shadowEnd' },
+      nova('ep5.end2', { vars: { name: full } }),
+      nova('ep5.end3'),
+    ]);
+    await Battle.summary(turns, Mamba.card);
+    await say([nova('ep5.end4')]);
+    Data.save.ep5 = { turns };
+    Data.persist();
+    Data.send('ep5_result', {
+      turns: turns.map((tn) => `${tn.m}>${tn.c}:${tn.hit ? 1 : 0}${tn.browsed ? 'd' : ''}`).join(' '),
+      total: turns.length,
+      hits: turns.filter((tn) => tn.hit).length,
+      deck: turns.filter((tn) => tn.browsed).length,
+      heart: turns.filter((tn) => Battle.card(tn.c).route === 'heart').length,
+      study: turns.filter((tn) => Battle.card(tn.c).route === 'study').length,
+    });
+    await stopClear(5);
+  }
+
+  const EPISODES = { 1: () => ep1(), 2: () => ep2(), 3: () => ep3(), 4: () => ep4(), 5: () => ep5() };
 
   function showTitle() {
     Game.scene('title', { phase: 0 });

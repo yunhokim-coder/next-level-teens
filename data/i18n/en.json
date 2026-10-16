@@ -100,6 +100,10 @@
     "ep4": {
       "title": "Shadows on the Track · CLEAR",
       "next": "Next stop: the detour battle, with study strategies"
+    },
+    "ep5": {
+      "title": "Detour Battle · CLEAR",
+      "next": "Next stop: Route Map. Name the nameless station"
     }
   },
   "consent": {
@@ -276,5 +280,37 @@
     "t5": "What was that?! Something's up ahead. Let's go look!",
     "shadow2": "...You think giving me a name changes anything? You're not getting through.",
     "nova7": "There's more than one line. At the next stop, let's find a detour around these rocks."
+  },
+  "ep5": {
+    "n1": "In front of the broken track. A pile of rocks blocks the way. The sky is almost fully light.",
+    "n2": "From behind the rocks, the black shadow rises again.",
+    "shadow0": "You again? I told you, this way is blocked.",
+    "tut1": "Time to use detour cards. Each time the shadow attacks, play one card to lay a way around.",
+    "tut2": "See the colored tags on the attack card? Play a card with the same tag and it hits harder. Matches glow yellow.",
+    "tut3": "Don't like the four in your hand? You can pick from all the cards. You can't lose. Take your time.",
+    "tut4": "That's how it works. Each card lays one more piece of the detour.",
+    "attackLine": "...{desc}. {taunt}",
+    "taunts": "So just give up.|It won't work anyway.|Just rest today.|You're not getting past me.|You can do it tomorrow.",
+    "hit": "Perfect fit! The {tags} tag on “{card}” hit {word} right where it counts.",
+    "miss": "You got around it. But against {word}, a card with the {tags} tag works better.",
+    "end1": "The last tie goes down and lights blink on along the detour, one by one. A way opens past the rocks.",
+    "shadowEnd": "...Tch. So there's more than one way.",
+    "end2": "See? {name} won't vanish. It'll show up again. But now you know the way around.",
+    "end3": "Here are the detours you laid today.",
+    "end4": "At the next stop, pick the ones you'll really use and finish your route map. Almost there.",
+    "fallbackName": "Shadow",
+    "tag": "Detour",
+    "attack": "Shadow attack",
+    "handLead": "Tap a card to look closer and play it. More matching tags, bigger effect.",
+    "deck": "Pick from all cards",
+    "use": "Detour with this card",
+    "back": "Choose again",
+    "zoomHit": "★ Tags match! Bigger effect.",
+    "deckTitle": "All 55 detour cards",
+    "deckLead": "Yellow tags match this attack.",
+    "deckClose": "Back to my hand",
+    "routeTitle": "Detours you laid today",
+    "routeLead": "The card you played for each shadow attack. ★ means the tags matched.",
+    "routeGo": "Next"
   }
 }

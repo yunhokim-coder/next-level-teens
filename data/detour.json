@@ -1,0 +1,914 @@
+{
+ "note": "5화 우회 노선 카드 55장 (마음 노선 20·공부 노선 35). docs/cards-draft.md에서 tools/make_detour.py로 만든다. tags가 블랙맘바 카드의 tags와 겹치면 효과가 크다.",
+ "routes": [
+  {
+   "id": "heart",
+   "ko": "마음 노선",
+   "en": "Heart Line"
+  },
+  {
+   "id": "study",
+   "ko": "공부 노선",
+   "en": "Study Line"
+  }
+ ],
+ "tags": {
+  "calm": {
+   "ko": "진정",
+   "en": "Calm",
+   "color": "#6fc3ff"
+  },
+  "selfworth": {
+   "ko": "자신감",
+   "en": "Self-worth",
+   "color": "#ff8fb8"
+  },
+  "motivation": {
+   "ko": "동기",
+   "en": "Drive",
+   "color": "#ffb44a"
+  },
+  "relation": {
+   "ko": "관계",
+   "en": "People",
+   "color": "#b48cff"
+  },
+  "focus": {
+   "ko": "집중",
+   "en": "Focus",
+   "color": "#5ee0c8"
+  },
+  "start": {
+   "ko": "시작",
+   "en": "Start",
+   "color": "#9be36a"
+  },
+  "plan": {
+   "ko": "계획",
+   "en": "Plan",
+   "color": "#ffe06a"
+  },
+  "method": {
+   "ko": "공부법",
+   "en": "Method",
+   "color": "#ff7a6a"
+  }
+ },
+ "cards": [
+  {
+   "id": 1,
+   "route": "heart",
+   "tags": [
+    "calm"
+   ],
+   "ko": {
+    "name": "4초 호흡",
+    "desc": "4초 들이쉬고 4초 멈추고 4초 내쉬기를 세 번. 긴장한 몸부터 내려놓는다"
+   },
+   "en": {
+    "name": "4-Second Breathing",
+    "desc": "Breathe in for 4, hold for 4, out for 4. Three times. Let your tense body settle first"
+   }
+  },
+  {
+   "id": 2,
+   "route": "heart",
+   "tags": [
+    "calm"
+   ],
+   "ko": {
+    "name": "불안 메모",
+    "desc": "시험 전 걱정을 종이에 3분 동안 다 써 버린다. 머릿속 자리가 생긴다"
+   },
+   "en": {
+    "name": "Worry Dump",
+    "desc": "Before a test, write every worry on paper for 3 minutes. It frees up room in your head"
+   }
+  },
+  {
+   "id": 3,
+   "route": "heart",
+   "tags": [
+    "selfworth"
+   ],
+   "ko": {
+    "name": "친구에게 하듯",
+    "desc": "나에게 하는 말을 친구에게 하듯 바꿔 본다. \"그럴 수 있지, 다음에 고치자\""
+   },
+   "en": {
+    "name": "Like a Friend",
+    "desc": "Talk to yourself the way you'd talk to a friend. \"That happens. Fix it next time\""
+   }
+  },
+  {
+   "id": 4,
+   "route": "heart",
+   "tags": [
+    "selfworth",
+    "motivation"
+   ],
+   "ko": {
+    "name": "아직",
+    "desc": "\"못해\"가 아니라 \"아직 못해\". 실력은 고정이 아니라 늘어난다"
+   },
+   "en": {
+    "name": "Not Yet",
+    "desc": "Not \"I can't\" but \"I can't yet.\" Skill isn't fixed. It grows"
+   }
+  },
+  {
+   "id": 5,
+   "route": "heart",
+   "tags": [
+    "selfworth"
+   ],
+   "ko": {
+    "name": "나와 비교",
+    "desc": "비교는 남이 아니라 지난주의 나와 한다"
+   },
+   "en": {
+    "name": "Compare to Me",
+    "desc": "Compare yourself with last week's you, not with others"
+   }
+  },
+  {
+   "id": 6,
+   "route": "heart",
+   "tags": [
+    "motivation"
+   ],
+   "ko": {
+    "name": "왜 이걸",
+    "desc": "이 공부가 내 종착역에 어떻게 이어지는지 한 줄로 써 본다"
+   },
+   "en": {
+    "name": "Why This",
+    "desc": "Write one line on how this subject connects to your final station"
+   }
+  },
+  {
+   "id": 7,
+   "route": "heart",
+   "tags": [
+    "selfworth",
+    "motivation"
+   ],
+   "ko": {
+    "name": "작은 승리 기록",
+    "desc": "오늘 해낸 것 하나를 기록한다. 쌓이면 증거가 된다"
+   },
+   "en": {
+    "name": "Small Wins Log",
+    "desc": "Write down one thing you got done today. They pile up into proof"
+   }
+  },
+  {
+   "id": 8,
+   "route": "heart",
+   "tags": [
+    "relation",
+    "method"
+   ],
+   "ko": {
+    "name": "질문은 권리",
+    "desc": "모르는 걸 묻는 건 약한 게 아니라 빨리 가는 방법이다"
+   },
+   "en": {
+    "name": "Asking Is a Right",
+    "desc": "Asking about what you don't know isn't weak. It's the fast way"
+   }
+  },
+  {
+   "id": 9,
+   "route": "heart",
+   "tags": [
+    "relation",
+    "calm"
+   ],
+   "ko": {
+    "name": "털어놓기",
+    "desc": "믿을 수 있는 한 사람에게 힘든 걸 말해 본다. 혼자 버틸 필요는 없다"
+   },
+   "en": {
+    "name": "Talk It Out",
+    "desc": "Tell one person you trust what's hard. You don't have to hold it alone"
+   }
+  },
+  {
+   "id": 10,
+   "route": "heart",
+   "tags": [
+    "relation",
+    "start"
+   ],
+   "ko": {
+    "name": "공부 메이트",
+    "desc": "친구와 시간을 정해 같이 공부하고 서로 체크한다"
+   },
+   "en": {
+    "name": "Study Buddy",
+    "desc": "Set a time with a friend, study together and check on each other"
+   }
+  },
+  {
+   "id": 11,
+   "route": "heart",
+   "tags": [
+    "calm",
+    "plan"
+   ],
+   "ko": {
+    "name": "쉬는 것도 계획",
+    "desc": "쉬는 시간을 미리 정해 두면 죄책감 없이 쉴 수 있다"
+   },
+   "en": {
+    "name": "Rest Is a Plan",
+    "desc": "Plan your breaks ahead and you can rest without guilt"
+   }
+  },
+  {
+   "id": 12,
+   "route": "heart",
+   "tags": [
+    "focus",
+    "calm"
+   ],
+   "ko": {
+    "name": "수면 지키기",
+    "desc": "잠을 줄여서 공부하면 기억이 저장되지 않는다. 자는 시간부터 정한다"
+   },
+   "en": {
+    "name": "Protect Sleep",
+    "desc": "Cut sleep to study and memories don't get saved. Set bedtime first"
+   }
+  },
+  {
+   "id": 13,
+   "route": "heart",
+   "tags": [
+    "calm",
+    "start"
+   ],
+   "ko": {
+    "name": "몸 먼저",
+    "desc": "5분 걷기나 스트레칭으로 몸부터 깨운다. 기분은 몸을 따라온다"
+   },
+   "en": {
+    "name": "Body First",
+    "desc": "Wake your body with 5 minutes of walking or stretching. Mood follows the body"
+   }
+  },
+  {
+   "id": 14,
+   "route": "heart",
+   "tags": [
+    "calm"
+   ],
+   "ko": {
+    "name": "감정에 이름",
+    "desc": "\"지금 나는 불안하다\"처럼 기분에 이름을 붙이면 조금 가라앉는다"
+   },
+   "en": {
+    "name": "Name the Feeling",
+    "desc": "Saying \"I feel anxious right now\" helps it settle a little"
+   }
+  },
+  {
+   "id": 15,
+   "route": "heart",
+   "tags": [
+    "selfworth",
+    "method"
+   ],
+   "ko": {
+    "name": "망친 시험 다시 보기",
+    "desc": "망친 시험에서 배운 점 하나만 찾는다. 실패가 데이터가 된다"
+   },
+   "en": {
+    "name": "Review the Bad Test",
+    "desc": "Find just one lesson in a test that went badly. Failure becomes data"
+   }
+  },
+  {
+   "id": 16,
+   "route": "heart",
+   "tags": [
+    "relation",
+    "calm"
+   ],
+   "ko": {
+    "name": "기대 대화",
+    "desc": "부담되는 기대를 부모님이나 선생님과 솔직하게 나눠 본다"
+   },
+   "en": {
+    "name": "Expectation Talk",
+    "desc": "Talk honestly with parents or teachers about the pressure you feel"
+   }
+  },
+  {
+   "id": 17,
+   "route": "heart",
+   "tags": [
+    "motivation",
+    "selfworth"
+   ],
+   "ko": {
+    "name": "미래의 나에게",
+    "desc": "종착역에 선 나에게 응원 한마디를 짧게 써 둔다"
+   },
+   "en": {
+    "name": "Note to Future Me",
+    "desc": "Write a short cheer to the you standing at your final station"
+   }
+  },
+  {
+   "id": 18,
+   "route": "heart",
+   "tags": [
+    "motivation"
+   ],
+   "ko": {
+    "name": "좋아하는 것과 잇기",
+    "desc": "좋아하는 것(게임, 음악, 운동)과 과목의 연결점을 찾아본다"
+   },
+   "en": {
+    "name": "Link What You Love",
+    "desc": "Find links between what you love (games, music, sports) and a subject"
+   }
+  },
+  {
+   "id": 19,
+   "route": "heart",
+   "tags": [
+    "start",
+    "selfworth"
+   ],
+   "ko": {
+    "name": "완벽 대신 완료",
+    "desc": "80%만 해도 끝내는 연습. 끝낸 경험이 쌓여야 실력이 된다"
+   },
+   "en": {
+    "name": "Done Over Perfect",
+    "desc": "Practice finishing at 80%. Finished work is what builds skill"
+   }
+  },
+  {
+   "id": 20,
+   "route": "heart",
+   "tags": [
+    "selfworth",
+    "focus"
+   ],
+   "ko": {
+    "name": "비교 앱 쉬기",
+    "desc": "시험 기간에는 비교를 부르는 앱을 잠시 지우거나 숨긴다"
+   },
+   "en": {
+    "name": "Pause Comparison Apps",
+    "desc": "During exams, hide or delete the apps that make you compare"
+   }
+  },
+  {
+   "id": 21,
+   "route": "study",
+   "tags": [
+    "start"
+   ],
+   "ko": {
+    "name": "5분만 시작",
+    "desc": "딱 5분만 하자고 시작한다. 시작이 제일 무겁다"
+   },
+   "en": {
+    "name": "Just 5 Minutes",
+    "desc": "Start with \"just 5 minutes.\" Starting is the heaviest part"
+   }
+  },
+  {
+   "id": 22,
+   "route": "study",
+   "tags": [
+    "start",
+    "plan"
+   ],
+   "ko": {
+    "name": "첫 줄 정하기",
+    "desc": "책상에 앉자마자 할 첫 문제를 미리 정해 둔다"
+   },
+   "en": {
+    "name": "First Line Ready",
+    "desc": "Decide the first problem you'll do before you sit down"
+   }
+  },
+  {
+   "id": 23,
+   "route": "study",
+   "tags": [
+    "focus",
+    "start"
+   ],
+   "ko": {
+    "name": "뽀모도로",
+    "desc": "25분 집중하고 5분 쉬기를 반복한다"
+   },
+   "en": {
+    "name": "Pomodoro",
+    "desc": "Focus for 25 minutes, rest for 5, repeat"
+   }
+  },
+  {
+   "id": 24,
+   "route": "study",
+   "tags": [
+    "focus"
+   ],
+   "ko": {
+    "name": "폰 다른 방",
+    "desc": "공부할 땐 폰을 다른 방이나 가방 속에 둔다. 보이면 진다"
+   },
+   "en": {
+    "name": "Phone in Another Room",
+    "desc": "When you study, put your phone in another room or in your bag. If you see it, it wins"
+   }
+  },
+  {
+   "id": 25,
+   "route": "study",
+   "tags": [
+    "focus"
+   ],
+   "ko": {
+    "name": "알림 끄기",
+    "desc": "공부 시간에는 방해 금지 모드를 켠다"
+   },
+   "en": {
+    "name": "Notifications Off",
+    "desc": "Turn on Do Not Disturb while you study"
+   }
+  },
+  {
+   "id": 26,
+   "route": "study",
+   "tags": [
+    "focus"
+   ],
+   "ko": {
+    "name": "한 번에 하나",
+    "desc": "음악·채팅을 끄고 한 가지만 한다"
+   },
+   "en": {
+    "name": "One Thing at a Time",
+    "desc": "Turn off music and chats. Do one thing"
+   }
+  },
+  {
+   "id": 27,
+   "route": "study",
+   "tags": [
+    "focus",
+    "start"
+   ],
+   "ko": {
+    "name": "공부 자리",
+    "desc": "공부만 하는 자리를 정한다. 침대는 자는 곳"
+   },
+   "en": {
+    "name": "Study Spot",
+    "desc": "Pick a spot just for studying. The bed is for sleeping"
+   }
+  },
+  {
+   "id": 28,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "인출 연습",
+    "desc": "책을 덮고 기억나는 걸 써 본다. 꺼내 볼수록 오래 남는다"
+   },
+   "en": {
+    "name": "Retrieval Practice",
+    "desc": "Close the book and write what you remember. The more you pull it out, the longer it stays"
+   }
+  },
+  {
+   "id": 29,
+   "route": "study",
+   "tags": [
+    "method",
+    "plan"
+   ],
+   "ko": {
+    "name": "간격 반복",
+    "desc": "오늘, 3일 뒤, 1주 뒤에 다시 본다. 한 번에 몰아 보는 것보다 오래 간다"
+   },
+   "en": {
+    "name": "Spaced Review",
+    "desc": "Look again today, in 3 days and in a week. It lasts longer than cramming"
+   }
+  },
+  {
+   "id": 30,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "셀프 테스트",
+    "desc": "시험 보듯 문제를 직접 만들어 풀어 본다"
+   },
+   "en": {
+    "name": "Self-Test",
+    "desc": "Make your own questions and solve them like a real test"
+   }
+  },
+  {
+   "id": 31,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "설명해 보기",
+    "desc": "친구나 빈 방에 대고 설명해 본다. 막히는 곳이 모르는 곳이다"
+   },
+   "en": {
+    "name": "Explain It",
+    "desc": "Explain it to a friend or an empty room. Where you get stuck is what you don't know"
+   }
+  },
+  {
+   "id": 32,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "오답 노트",
+    "desc": "틀린 문제에 \"왜 틀렸는지\"를 한 줄 적는다"
+   },
+   "en": {
+    "name": "Mistake Notes",
+    "desc": "For each wrong answer, write one line on why it was wrong"
+   }
+  },
+  {
+   "id": 33,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "섞어 풀기",
+    "desc": "한 유형만 몰아 풀지 말고 여러 유형을 섞어 푼다"
+   },
+   "en": {
+    "name": "Mix It Up",
+    "desc": "Don't drill one problem type. Mix several types together"
+   }
+  },
+  {
+   "id": 34,
+   "route": "study",
+   "tags": [
+    "method",
+    "focus"
+   ],
+   "ko": {
+    "name": "질문 만들며 읽기",
+    "desc": "읽기 전에 \"이 단원에서 뭘 알아야 하지?\" 질문부터 만든다"
+   },
+   "en": {
+    "name": "Read with Questions",
+    "desc": "Before reading, ask \"What do I need to know from this unit?\""
+   }
+  },
+  {
+   "id": 35,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "한 장 요약",
+    "desc": "단원을 한 장에 그림이나 표로 정리한다"
+   },
+   "en": {
+    "name": "One-Page Summary",
+    "desc": "Put a whole unit on one page as a drawing or table"
+   }
+  },
+  {
+   "id": 36,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "아는 척 체크",
+    "desc": "공부 끝에 \"설명할 수 있나?\"를 스스로 점검한다"
+   },
+   "en": {
+    "name": "Fake-Knowing Check",
+    "desc": "At the end, check: \"Can I explain this?\""
+   }
+  },
+  {
+   "id": 37,
+   "route": "study",
+   "tags": [
+    "plan"
+   ],
+   "ko": {
+    "name": "거꾸로 계획",
+    "desc": "시험 날부터 거꾸로 날짜별 할 일을 정한다"
+   },
+   "en": {
+    "name": "Plan Backward",
+    "desc": "Count back from test day and set tasks for each day"
+   }
+  },
+  {
+   "id": 38,
+   "route": "study",
+   "tags": [
+    "plan",
+    "start"
+   ],
+   "ko": {
+    "name": "할 일 쪼개기",
+    "desc": "\"수학 공부\"가 아니라 \"교과서 42~45쪽 문제\"처럼 쪼갠다"
+   },
+   "en": {
+    "name": "Break It Down",
+    "desc": "Not \"study math\" but \"textbook p. 42-45 problems\""
+   }
+  },
+  {
+   "id": 39,
+   "route": "study",
+   "tags": [
+    "plan",
+    "focus"
+   ],
+   "ko": {
+    "name": "만약 그러면",
+    "desc": "\"만약 폰이 보고 싶으면, 물 한 잔 마시고 5분 더 한다\"처럼 미리 정한다"
+   },
+   "en": {
+    "name": "If-Then",
+    "desc": "Decide ahead: \"If I want my phone, I'll drink some water and do 5 more minutes\""
+   }
+  },
+  {
+   "id": 40,
+   "route": "study",
+   "tags": [
+    "plan"
+   ],
+   "ko": {
+    "name": "주간 점검",
+    "desc": "일요일 10분, 이번 주 계획을 지켰는지 보고 다음 주를 고친다"
+   },
+   "en": {
+    "name": "Weekly Check",
+    "desc": "Ten minutes on Sunday: did the plan work? Fix next week"
+   }
+  },
+  {
+   "id": 41,
+   "route": "study",
+   "tags": [
+    "focus",
+    "method"
+   ],
+   "ko": {
+    "name": "수업이 1회독",
+    "desc": "수업 시간에 집중하는 게 가장 싼 공부다. 수업 후 5분 복습"
+   },
+   "en": {
+    "name": "Class Is Round One",
+    "desc": "Focusing in class is the cheapest studying. Review for 5 minutes after"
+   }
+  },
+  {
+   "id": 42,
+   "route": "study",
+   "tags": [
+    "motivation",
+    "start"
+   ],
+   "ko": {
+    "name": "할 일 다음 보상",
+    "desc": "정한 만큼 하고 나서 보상(게임, 간식)을 한다"
+   },
+   "en": {
+    "name": "Reward After",
+    "desc": "Do the set amount first, then the reward (game, snack)"
+   }
+  },
+  {
+   "id": 43,
+   "route": "study",
+   "tags": [
+    "start",
+    "plan"
+   ],
+   "ko": {
+    "name": "습관에 붙이기",
+    "desc": "이미 하는 일 다음에 붙인다. \"저녁 먹고 나면 단어 20개\""
+   },
+   "en": {
+    "name": "Stack a Habit",
+    "desc": "Attach it to something you already do. \"After dinner, 20 words\""
+   }
+  },
+  {
+   "id": 44,
+   "route": "study",
+   "tags": [
+    "relation",
+    "method"
+   ],
+   "ko": {
+    "name": "도움 지도",
+    "desc": "막히면 물어볼 사람과 자료(선생님, 친구, 인강)를 미리 적어 둔다"
+   },
+   "en": {
+    "name": "Help Map",
+    "desc": "Write down who and what to ask when stuck (teacher, friend, online class)"
+   }
+  },
+  {
+   "id": 45,
+   "route": "study",
+   "tags": [
+    "plan"
+   ],
+   "ko": {
+    "name": "시간 대신 분량",
+    "desc": "\"3시간 공부\" 대신 \"문제 20개\"처럼 분량으로 목표를 정한다"
+   },
+   "en": {
+    "name": "Amount, Not Hours",
+    "desc": "Set goals like \"20 problems\" instead of \"3 hours\""
+   }
+  },
+  {
+   "id": 46,
+   "route": "study",
+   "tags": [
+    "plan"
+   ],
+   "ko": {
+    "name": "타임 블록",
+    "desc": "하루를 덩어리로 나누고 덩어리마다 과목을 하나씩 넣는다"
+   },
+   "en": {
+    "name": "Time Blocks",
+    "desc": "Split the day into blocks and put one subject in each"
+   }
+  },
+  {
+   "id": 47,
+   "route": "study",
+   "tags": [
+    "plan",
+    "focus"
+   ],
+   "ko": {
+    "name": "어려운 것 먼저",
+    "desc": "집중이 잘 되는 시간에 가장 어려운 과목을 한다"
+   },
+   "en": {
+    "name": "Hardest First",
+    "desc": "Do the hardest subject when your focus is best"
+   }
+  },
+  {
+   "id": 48,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "개념 먼저",
+    "desc": "문제부터 풀지 말고 개념을 한 번 정리한 뒤 푼다"
+   },
+   "en": {
+    "name": "Concept First",
+    "desc": "Sort out the concept once before jumping into problems"
+   }
+  },
+  {
+   "id": 49,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "내 예시 만들기",
+    "desc": "배운 개념에 내가 만든 예시를 하나씩 붙인다"
+   },
+   "en": {
+    "name": "My Own Example",
+    "desc": "Attach an example you made up to each new concept"
+   }
+  },
+  {
+   "id": 50,
+   "route": "study",
+   "tags": [
+    "method"
+   ],
+   "ko": {
+    "name": "개념 지도",
+    "desc": "개념끼리 어떻게 이어지는지 마인드맵으로 그린다"
+   },
+   "en": {
+    "name": "Concept Map",
+    "desc": "Draw a mind map of how the ideas connect"
+   }
+  },
+  {
+   "id": 51,
+   "route": "study",
+   "tags": [
+    "method",
+    "plan"
+   ],
+   "ko": {
+    "name": "자투리 카드",
+    "desc": "버스나 쉬는 시간에 단어·공식 카드 10장을 넘겨 본다"
+   },
+   "en": {
+    "name": "Pocket Cards",
+    "desc": "Flip through 10 word or formula cards on the bus or at break"
+   }
+  },
+  {
+   "id": 52,
+   "route": "study",
+   "tags": [
+    "method",
+    "calm"
+   ],
+   "ko": {
+    "name": "실전 리허설",
+    "desc": "실제 시험 시간을 재고 기출 문제를 풀어 본다. 실전이 덜 무섭다"
+   },
+   "en": {
+    "name": "Test Rehearsal",
+    "desc": "Time yourself on a past paper like the real test. The real one gets less scary"
+   }
+  },
+  {
+   "id": 53,
+   "route": "study",
+   "tags": [
+    "relation",
+    "start"
+   ],
+   "ko": {
+    "name": "공부 인증",
+    "desc": "친구와 공부 인증 사진을 주고받으며 서로 지켜본다"
+   },
+   "en": {
+    "name": "Study Check-In",
+    "desc": "Send study photos back and forth with a friend and keep each other going"
+   }
+  },
+  {
+   "id": 54,
+   "route": "study",
+   "tags": [
+    "focus",
+    "start"
+   ],
+   "ko": {
+    "name": "2분 리셋",
+    "desc": "공부 전 2분 동안 책상을 비우고 필요한 것만 둔다"
+   },
+   "en": {
+    "name": "2-Minute Reset",
+    "desc": "Clear your desk for 2 minutes before studying. Keep only what you need"
+   }
+  },
+  {
+   "id": 55,
+   "route": "study",
+   "tags": [
+    "relation",
+    "method"
+   ],
+   "ko": {
+    "name": "질문 하나 들고",
+    "desc": "쉬는 시간에 질문 하나를 들고 선생님께 간다"
+   },
+   "en": {
+    "name": "Bring One Question",
+    "desc": "At break, take one question to your teacher"
+   }
+  }
+ ]
+}
