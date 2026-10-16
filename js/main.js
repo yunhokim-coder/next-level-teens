@@ -8,11 +8,18 @@
   // ---------- 화면 크기: 320×180 정수배 확대, 대화창은 그림 아래 ----------
   function fit() {
     const portrait = window.innerHeight > window.innerWidth;
+    // 폰 가로: 그림을 화면 높이에 꽉 채우고 대화창은 그림 위에 겹친다 (PC는 그대로)
+    const touch = window.matchMedia('(pointer: coarse)').matches;
+    const mland = !portrait && touch && window.innerHeight <= 560;
     document.body.classList.toggle('portrait', portrait);
-    const raw = portrait
-      ? Math.min(window.innerWidth / Game.W, (window.innerHeight * 0.62) / Game.H)
-      : Math.min(window.innerWidth / Game.W, (window.innerHeight - 110) / Game.H);
-    const scale = raw >= 2 ? Math.floor(raw) : raw;
+    document.body.classList.toggle('touch', touch);
+    document.body.classList.toggle('mland', mland);
+    const raw = mland
+      ? Math.min(window.innerWidth / Game.W, window.innerHeight / Game.H)
+      : portrait
+        ? Math.min(window.innerWidth / Game.W, (window.innerHeight * 0.62) / Game.H)
+        : Math.min(window.innerWidth / Game.W, (window.innerHeight - 110) / Game.H);
+    const scale = raw >= 2 && !mland ? Math.floor(raw) : raw;
     const w = Math.floor(Game.W * scale);
     stage.style.width = `${w}px`;
     stage.style.height = `${Math.floor(Game.H * scale)}px`;
