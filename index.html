@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>NEXT LINE</title>
   <meta name="description" content="NEXT LINE: 공부, 내일의 역">
-  <meta name="app-version" content="20261017w">
+  <meta name="app-version" content="20261017y">
   <link rel="preload" href="assets/fonts/Galmuri11.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=20261017w">
+  <link rel="stylesheet" href="css/style.css?v=20261017y">
 </head>
 <body>
   <div id="app">
@@ -281,35 +281,26 @@
         </div>
       </div>
       <!-- 6화 노선도 완성 -->
-      <div id="ways-screen" class="overlay" hidden>
+      <div id="grow-screen" class="overlay" hidden>
         <div class="panel form-panel grow-panel">
           <div class="clear-stop" data-i18n="ep6.tag"></div>
-          <h2 id="grow-title"></h2>
-          <p class="muted" data-i18n="ep6.waysLead"></p>
-          <div id="grow-route" class="grow-route"></div>
-          <div class="grow-legend" data-i18n="ep6.legend"></div>
-          <div id="grow-edit" class="grow-edit">
-            <label id="grow-label" class="field-label" for="grow-input"></label>
-            <input id="grow-input" class="field" maxlength="40" autocomplete="off">
-            <button id="grow-ideas-btn" class="link-btn" type="button" data-i18n="ep6.ideas"></button>
-            <div id="grow-ideas" class="chips" hidden></div>
+          <div id="grow-steps" class="grow-steps">
+            <div class="gstep" data-k="g"><b>G</b><span data-i18n="ep6.stepG"></span></div>
+            <div class="gstep" data-k="r"><b>R</b><span data-i18n="ep6.stepR"></span></div>
+            <div class="gstep" data-k="o"><b>O</b><span data-i18n="ep6.stepO"></span></div>
+            <div class="gstep" data-k="w"><b>W</b><span data-i18n="ep6.stepW"></span></div>
           </div>
-          <div id="ways-error" class="error" hidden data-i18n="ep6.waysError"></div>
-          <button id="ways-go" class="btn btn-primary" type="button"></button>
-        </div>
-      </div>
-      <div id="plan-screen" class="overlay" hidden>
-        <div class="panel form-panel">
-          <div class="clear-stop" data-i18n="ep6.tag"></div>
-          <h2><span class="grow-badge">W</span> <span data-i18n="ep6.planTitle"></span></h2>
-          <p class="muted" data-i18n="ep6.planLead"></p>
-          <p class="field-label" data-i18n="ep6.planIf"></p>
-          <div id="plan-if" class="chips"></div>
-          <p class="field-label" data-i18n="ep6.planThen"></p>
-          <div id="plan-then" class="chips"></div>
-          <p id="plan-preview" class="plan-preview"></p>
-          <div id="plan-error" class="error" hidden data-i18n="ep6.planError"></div>
-          <button id="plan-go" class="btn btn-primary" type="button" data-i18n="ep6.planGo"></button>
+          <div class="grow-nova-row">
+            <canvas id="grow-nova" width="88" height="128" aria-hidden="true"></canvas>
+            <div id="grow-tip" class="grow-tip"></div>
+          </div>
+          <h2 id="grow-title"></h2>
+          <div id="grow-body"></div>
+          <div id="grow-error" class="error" hidden></div>
+          <div class="grow-btns">
+            <button id="grow-back" class="btn" type="button" data-i18n="ep6.growBack"></button>
+            <button id="grow-next" class="btn btn-primary" type="button"></button>
+          </div>
         </div>
       </div>
       <div id="station-screen" class="overlay" hidden>
@@ -383,18 +374,19 @@
     </div>
   </div>
 
-  <script src="config.js?v=20261017w"></script>
-  <script src="js/i18n.js?v=20261017w"></script>
-  <script src="js/sound.js?v=20261017w"></script>
-  <script src="js/data.js?v=20261017w"></script>
-  <script src="js/story.js?v=20261017w"></script>
-  <script src="js/chars.js?v=20261017w"></script>
-  <script src="js/game.js?v=20261017w"></script>
-  <script src="js/quiz.js?v=20261017w"></script>
-  <script src="js/station.js?v=20261017w"></script>
-  <script src="js/mamba.js?v=20261017w"></script>
-  <script src="js/battle.js?v=20261017w"></script>
-  <script src="js/finale.js?v=20261017w"></script>
-  <script src="js/main.js?v=20261017w"></script>
+  <script src="config.js?v=20261017y"></script>
+  <script src="js/i18n.js?v=20261017y"></script>
+  <script src="js/sound.js?v=20261017y"></script>
+  <script src="js/data.js?v=20261017y"></script>
+  <script src="js/story.js?v=20261017y"></script>
+  <script src="js/chars.js?v=20261017y"></script>
+  <script src="js/game.js?v=20261017y"></script>
+  <script src="js/quiz.js?v=20261017y"></script>
+  <script src="js/station.js?v=20261017y"></script>
+  <script src="js/mamba.js?v=20261017y"></script>
+  <script src="js/battle.js?v=20261017y"></script>
+  <script src="js/grow.js?v=20261017y"></script>
+  <script src="js/finale.js?v=20261017y"></script>
+  <script src="js/main.js?v=20261017y"></script>
 </body>
 </html>

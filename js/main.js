@@ -326,7 +326,7 @@
     Data.save.done.demo = true;
     Data.persist();
     $('#thanks-code').textContent = Data.save.code;
-    $('#thanks-routemap').hidden = !Data.save.ep6;
+    $('#thanks-routemap').hidden = !(Data.save.ep6 && Data.save.ep6.grow);
     $('#thanks-screen').hidden = false;
     Sound.play('clear');
   }
@@ -780,10 +780,6 @@
     const detours = ids.length ? ids : [24, 21, 28];
     return { L, destLabel, order, shadow, detours };
   }
-  function planText(pl) {
-    const L = I18n.lang === 'en' ? 'en' : 'ko';
-    return Story.josa(I18n.t('ep6.planSentence').replace('{if}', Mamba.card(pl.m)[L].word).replace('{then}', Battle.card(pl.c)[L].act));
-  }
   // 프로필 카드: 겉모습, DISC 1·2순위, 강점, 연료 게이지, 공부 팁, 종착역
   function profileInfo(st, color) {
     const sv = Data.save;
@@ -808,6 +804,24 @@
       dest: st.destLabel,
     };
   }
+  // 노선도 역: 위 G 종착역 → W 이번 주 실행 → O 찾은 방법들 → 아래 R 출발역(지금 나)
+  function routeStops(st, e6) {
+    const L = st.L;
+    const g = e6.grow;
+    const label = (p) => (p.own ? p.own : Grow.ideaText(Battle.card(p.id), p.subject || ''));
+    const DAYS = I18n.t('ep6.days').split('|');
+    const TIMES = I18n.t('ep6.times').split('|');
+    const PLACES = I18n.t('ep6.places').split('|');
+    const wp = g.o.picks[g.w.pick] || g.o.picks[0];
+    const when = `${g.w.days.map((d) => DAYS[d]).join(I18n.t('ep6.daySep'))} ${TIMES[g.w.time]} · ${PLACES[g.w.place]}`;
+    const stops = [{ letter: 'G', tag: I18n.t('ep6.mapDest'), name: st.destLabel, big: true }];
+    stops.push({ letter: 'W', tag: `${I18n.t('ep6.mapW')} · ${when}`, name: wp.own ? wp.own : Grow.ideaText(Battle.card(wp.id), wp.subject || '') });
+    g.o.picks.forEach((p, i) => {
+      if (i !== g.w.pick) stops.push({ letter: 'O', tag: I18n.t('ep6.mapO'), name: label(p) });
+    });
+    stops.push({ letter: 'R', tag: I18n.t('ep6.mapR').replace('{n}', g.r), name: e6.station, big: true });
+    return stops;
+  }
   function routeInfo() {
     const sv = Data.save;
     const st = story6();
@@ -818,11 +832,9 @@
       type: sv.disc ? I18n.t('hud.type').replace('{code}', `${sv.disc.primary}${sv.disc.secondary || ''}`) : '',
       avatar: sv.avatar || null,
       color,
-      station: e6.station,
-      ways: e6.ways,
-      dest: st.destLabel,
+      stops: routeStops(st, e6),
       shadow: st.shadow,
-      plan: planText(e6.plan),
+      plan: Grow.ifSentence(e6.grow.plan),
       detours: st.detours.map((id) => Battle.card(id)[st.L].name),
       profile: profileInfo(st, color),
     };
@@ -848,15 +860,18 @@
     await sleep(700);
     await say([
       nova('ep6.nova1'),
-      nova('ep6.g', { vars: { dest: st.destLabel } }),
-      nova('ep6.r', { vars: { name: st.shadow } }),
-      nova('ep6.o'),
+      nova('ep6.growIntro'),
     ]);
     const prev = sv.ep6 || {};
-    const w = await Finale.ways(prev.ways, { dest: st.destLabel, now: I18n.t('ep6.nowText'), color });
-    await say([nova('ep6.oDone', { vars: { w1: w.ways[0] } }), nova('ep6.w')]);
-    const pl = await Finale.plan(st.order.map((id) => Mamba.card(id)), st.detours.map((id) => Battle.card(id)), prev.plan);
-    await say([nova('ep6.wDone', { vars: { plan: planText(pl) } }), nova('ep6.s1')]);
+    const gw = await Grow.run({
+      dest: st.destLabel,
+      shadow: st.shadow,
+      mambas: st.order.map((id) => Mamba.card(id)),
+      detours: st.detours.map((id) => Battle.card(id)),
+      color,
+      prev: prev.grow,
+    });
+    await say([nova('ep6.wDone', { vars: { plan: Grow.actionSentence({ picks: gw.o.picks, w: gw.w }) } }), nova('ep6.s1')]);
     const short = st.destLabel.length > 8 ? st.destLabel.slice(0, 8) : st.destLabel;
     const ideas = I18n.t('ep6.stationIdeas').split('|').map((x) => x.replace('{dest}', short));
     const named = await Finale.station(ideas, prev.station);
@@ -874,11 +889,22 @@
       nova('ep6.nova2', { vars: { station: named.name, dest: st.destLabel } }),
       nova('ep6.nova3'),
     ]);
-    Data.save.ep6 = { ways: w.ways, plan: pl, station: named.name };
+    Data.save.ep6 = { grow: gw, station: named.name };
     Data.persist();
+    const pl = gw.plan;
     const hit = Battle.overlap(Battle.card(pl.c).tags, Mamba.card(pl.m).tags).length > 0;
+    const wp = gw.o.picks[gw.w.pick] || gw.o.picks[0];
     Data.send('ep6_result', {
-      ways_ideas: w.ideas.map((b) => (b ? 1 : 0)).join(''),
+      r: gw.r,
+      o_tags: gw.o.tags.join(','),
+      o_subject: gw.o.subject ? 1 : 0,
+      o_generated: gw.o.generated,
+      o_rerolls: gw.o.rerolls,
+      o_picks: gw.o.picks.map((p) => (p.own ? 'own' : p.id)).join(','),
+      w_pick: wp.own ? 'own' : wp.id,
+      w_days: gw.w.days.length,
+      w_time: gw.w.time,
+      w_place: gw.w.place,
       plan: `${pl.m}>${pl.c}`,
       plan_hit: hit ? 1 : 0,
       named: named.idea >= 0 ? `idea${named.idea}` : 'own',

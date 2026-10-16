@@ -1252,6 +1252,20 @@
       return POSTERS.find((q) => Math.abs(S.walker.x - q.x) < 30) || null;
     },
     focus() {},
+    // 패널 옆에 노바를 그린다 (6화 GROW 도우미)
+    paintNova(canvas) {
+      const old = g;
+      const c = canvas.getContext('2d');
+      c.setTransform(1, 0, 0, 1, 0, 0);
+      c.clearRect(0, 0, canvas.width, canvas.height);
+      c.setTransform(canvas.width / 44, 0, 0, canvas.width / 44, 0, 0);
+      g = c;
+      try {
+        drawNova(22, 0, 2);
+      } finally {
+        g = old;
+      }
+    },
     set boardDest(v) {
       S.boardDest = v;
     },

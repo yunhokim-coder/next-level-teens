@@ -1,5 +1,5 @@
-// 6화 노선도 완성: 경유역 3개(O), "만약 ~하면 ~한다"(W), 역 이름 붙이기, 나의 노선도 그리기·저장·인쇄.
-// 학생이 쓴 글(경유역, 역 이름)은 기기에만 저장하고 보내지 않는다.
+// 6화 노선도 완성: 역 이름 붙이기, 나의 노선도·프로필 카드 그리기·저장·인쇄. (GROW 단계는 grow.js)
+// 학생이 쓴 글(탐색 글, 직접 쓴 방법, 역 이름)은 기기에만 저장하고 보내지 않는다.
 (function () {
   const $ = (sel) => document.querySelector(sel);
   const lang = () => (I18n.lang === 'en' ? 'en' : 'ko');
@@ -8,178 +8,6 @@
     $(id).hidden = false;
     const p = $(`${id} .form-panel`);
     if (p) p.scrollTop = 0;
-  }
-
-  // ---------- GROW 노선: 지금 여기(R) → 경유역 3개(O) → 종착역(G) ----------
-  // 역을 눌러 하나씩 채운다. 채운 역까지 선로에 불이 들어온다.
-  function ways(prev = [], ctx = {}) {
-    const keys = ['w1', 'w2', 'w3'];
-    const vals = keys.map((k, i) => prev[i] || '');
-    const used = [false, false, false];
-    let cur = Math.max(0, vals.findIndex((v) => !v));
-    if (vals.every((v) => v)) cur = 0;
-    return new Promise((resolve) => {
-      const route = $('#grow-route');
-      route.style.setProperty('--gc', ctx.color || 'var(--line)');
-      $('#grow-title').textContent = I18n.t('ep6.waysTitle').replace('{dest}', ctx.dest || '');
-      const input = $('#grow-input');
-      const save = () => {
-        vals[cur] = input.value.trim().slice(0, 40);
-      };
-      const render = () => {
-        route.innerHTML = '<div class="grow-fill"></div>';
-        const stops = [
-          { cls: 'start lit', letter: 'R', when: I18n.t('ep6.now'), text: ctx.now || '' },
-          ...keys.map((k, i) => ({ cls: (vals[i] ? 'lit' : '') + (i === cur ? ' cur' : ''), letter: 'O', when: I18n.t(`ep6.${k}Short`), text: vals[i], i })),
-          { cls: 'end' + (vals.every((v) => v) ? ' lit' : ''), letter: 'G', when: I18n.t('ep6.mapDestShort'), text: ctx.dest || '' },
-        ];
-        stops.forEach((st) => {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = `grow-stop ${st.cls}`;
-          b.innerHTML = '<span class="grow-letter"></span><span class="grow-dot"></span><span class="grow-when"></span><span class="grow-text"></span>';
-          b.querySelector('.grow-letter').textContent = st.letter;
-          b.querySelector('.grow-when').textContent = st.when;
-          const tx = b.querySelector('.grow-text');
-          tx.textContent = st.text || I18n.t('ep6.tapToWrite');
-          if (!st.text) tx.classList.add('empty');
-          if (st.i === undefined) b.disabled = true;
-          else
-            b.onclick = () => {
-              save();
-              cur = st.i;
-              Sound.play('blip');
-              render();
-              input.focus();
-            };
-          route.appendChild(b);
-        });
-        // 불 들어온 선로: 앞에서부터 이어서 채운 역까지
-        let n = 0;
-        while (n < 3 && vals[n]) n++;
-        const lit = vals.every((v) => v) ? 4 : n;
-        route.querySelector('.grow-fill').style.width = `${(80 * lit) / 4}%`;
-        const k = keys[cur];
-        $('#grow-label').textContent = I18n.t(`ep6.${k}`);
-        input.placeholder = I18n.t(`ep6.${k}Ph`);
-        input.value = vals[cur];
-        const box = $('#grow-ideas');
-        box.innerHTML = '';
-        I18n.t(`ep6.${k}Ideas`)
-          .split('|')
-          .forEach((idea) => {
-            const c = document.createElement('button');
-            c.type = 'button';
-            c.className = 'chip';
-            c.textContent = idea;
-            c.onclick = () => {
-              input.value = idea;
-              used[cur] = true;
-              save();
-              Sound.play('blip');
-              $('#ways-error').hidden = true;
-              render();
-            };
-            box.appendChild(c);
-          });
-        const done = vals.every((v) => v);
-        $('#ways-go').textContent = I18n.t(done ? 'ep6.waysGo' : 'ep6.nextStop');
-      };
-      input.oninput = () => {
-        used[cur] = false;
-        $('#ways-error').hidden = true;
-        save();
-        // 글자를 쓰는 동안 노선 위 이름만 바꾼다 (입력 칸 포커스 유지)
-        const el = $('#grow-route').querySelectorAll('.grow-stop')[cur + 1].querySelector('.grow-text');
-        el.textContent = vals[cur] || I18n.t('ep6.tapToWrite');
-        el.classList.toggle('empty', !vals[cur]);
-      };
-      input.onkeydown = (e) => {
-        if (e.key === 'Enter') $('#ways-go').click();
-      };
-      $('#grow-ideas-btn').onclick = () => {
-        Sound.play('blip');
-        $('#grow-ideas').hidden = false;
-        $('#grow-ideas-btn').hidden = true;
-      };
-      $('#ways-go').onclick = () => {
-        save();
-        if (!vals[cur]) {
-          $('#ways-error').hidden = false;
-          Sound.play('poof');
-          return;
-        }
-        const next = vals.findIndex((v) => !v);
-        if (next >= 0) {
-          cur = next;
-          Sound.play('select');
-          $('#grow-ideas').hidden = true;
-          $('#grow-ideas-btn').hidden = false;
-          render();
-          input.focus();
-          return;
-        }
-        Sound.play('powerup');
-        $('#ways-screen').hidden = true;
-        resolve({ ways: vals.slice(), ideas: used.slice() });
-      };
-      $('#ways-error').hidden = true;
-      $('#grow-ideas').hidden = true;
-      $('#grow-ideas-btn').hidden = false;
-      render();
-      open('#ways-screen');
-    });
-  }
-
-  // ---------- 만약 ~하면 ~한다 ----------
-  // mambas: 4화 블랙맘바 카드, cards: 5화에 낸 우회 노선 카드 (태그가 맞았던 것 먼저)
-  function plan(mambas, cards, prev = {}) {
-    const L = lang();
-    let m = mambas.find((c) => c.id === prev.m) ? prev.m : null;
-    let c = cards.find((x) => x.id === prev.c) ? prev.c : null;
-    return new Promise((resolve) => {
-      const render = () => {
-        const fill = (box, list, cur, set) => {
-          box.innerHTML = '';
-          list.forEach((item) => {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'chip';
-            b.setAttribute('aria-pressed', String(item.id === cur));
-            b.textContent = item.label;
-            b.onclick = () => {
-              set(item.id);
-              Sound.play('blip');
-              $('#plan-error').hidden = true;
-              render();
-            };
-            box.appendChild(b);
-          });
-        };
-        fill($('#plan-if'), mambas.map((x) => ({ id: x.id, label: x[L].word })), m, (v) => (m = v));
-        fill($('#plan-then'), cards.map((x) => ({ id: x.id, label: x[L].name })), c, (v) => (c = v));
-        const mm = mambas.find((x) => x.id === m);
-        const cc = cards.find((x) => x.id === c);
-        $('#plan-preview').textContent = Story.josa(
-          I18n.t('ep6.planSentence')
-            .replace('{if}', mm ? mm[L].word : '______')
-            .replace('{then}', cc ? cc[L].act : '______')
-        );
-      };
-      $('#plan-go').onclick = () => {
-        if (!m || !c) {
-          $('#plan-error').hidden = false;
-          Sound.play('poof');
-          return;
-        }
-        Sound.play('select');
-        $('#plan-screen').hidden = true;
-        resolve({ m, c });
-      };
-      $('#plan-error').hidden = true;
-      render();
-      open('#plan-screen');
-    });
   }
 
   // ---------- 이름 없는 역에 이름 붙이기 ----------
@@ -225,7 +53,7 @@
   }
 
   // ---------- 나의 노선도 그리기 ----------
-  // info = { passenger, type, avatar, color, station, ways[3], dest, shadow, plan, detours[] }
+  // info = { passenger, type, avatar, color, stops:[{letter, tag, name, big}] (위=종착역 → 아래=출발역), shadow, plan, detours[] }
   // 낱말 단위로 줄을 바꾼다. 한 낱말이 너무 길면 글자 단위로 자른다
   function wrap(g, str, maxW) {
     const lines = [];
@@ -325,23 +153,25 @@
     const lx = pad + 50;
     g.fillStyle = col;
     g.fillRect(lx - 9, top, 18, bottom - top);
-    const stops = [
-      { tag: I18n.t('ep6.mapDest'), name: info.dest, big: true },
-      { tag: I18n.t('ep6.mapW3'), name: info.ways[2] },
-      { tag: I18n.t('ep6.mapW2'), name: info.ways[1] },
-      { tag: I18n.t('ep6.mapW1'), name: info.ways[0] },
-      { tag: I18n.t('ep6.mapNow'), name: info.station, big: true },
-    ];
+    const stops = info.stops;
     const textW = tall ? W - lx - 120 : 430;
     stops.forEach((s, i) => {
       const y = top + ((bottom - top) * i) / (stops.length - 1);
       g.fillStyle = '#ffffff';
       g.beginPath();
-      g.arc(lx, y, s.big ? 30 : 22, 0, Math.PI * 2);
+      g.arc(lx, y, s.big ? 30 : 24, 0, Math.PI * 2);
       g.fill();
       g.lineWidth = 8;
       g.strokeStyle = col;
       g.stroke();
+      // GROW 글자
+      if (s.letter) {
+        g.fillStyle = '#0b0e1e';
+        g.font = F(s.big ? 26 : 22, true);
+        g.textAlign = 'center';
+        g.fillText(s.letter, lx, y - (s.big ? 13 : 11));
+        g.textAlign = 'left';
+      }
       g.fillStyle = col;
       g.font = F(22, true);
       g.fillText(s.tag, lx + 56, y - 40);
@@ -598,5 +428,5 @@
     });
   }
 
-  window.Finale = { ways, plan, station, draw, drawProfile, show };
+  window.Finale = { station, draw, drawProfile, show };
 })();

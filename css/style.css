@@ -130,7 +130,7 @@ body.portrait #dialog { min-height: 120px; }
 .q .seg button { padding: 7px 4px; font-size: 11px; }
 .q .seg button b { display: block; font-size: 15px; }
 /* 폼 화면은 그림 크기와 상관없이 화면 전체에 띄운다 (폰에서도 넉넉하게) */
-#consent-screen, #setup-screen, #survey-screen, #thanks-screen, #map-screen, #avatar-screen, #dest-screen, #mamba-screen, #freq-screen, #name-screen, #fuel-screen, #gauge-screen, #util-screen, #quiz-screen, #tie-screen, #result-screen, #hand-screen, #deck-screen, #route-screen, #ways-screen, #plan-screen, #station-screen, #routemap-screen { position: fixed; z-index: 20; }
+#consent-screen, #setup-screen, #survey-screen, #thanks-screen, #map-screen, #avatar-screen, #dest-screen, #mamba-screen, #freq-screen, #name-screen, #fuel-screen, #gauge-screen, #util-screen, #quiz-screen, #tie-screen, #result-screen, #hand-screen, #deck-screen, #route-screen, #station-screen, #routemap-screen { position: fixed; z-index: 20; }
 #zoom-screen { position: fixed; z-index: 25; }
 body.portrait #portrait { transform: scale(0.8); transform-origin: top left; }
 html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
@@ -281,8 +281,6 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 /* ---------- 6화 노선도 완성 ---------- */
 .link-btn { background: none; border: none; color: var(--amber); font-family: inherit; font-size: 13px; padding: 8px 0 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .chip[aria-pressed='true'] { border-color: #ffcf4a; background: #231d10; color: #ffcf4a; }
-#plan-then { margin-bottom: 4px; }
-#plan-screen .field-label { margin-top: 14px; }
 .plan-preview { margin: 14px 0 4px; padding: 10px 12px; background: #10131f; border-left: 4px solid var(--line); font-size: 15px; line-height: 1.6; color: #fff; }
 .routemap-panel { width: min(560px, 94%); }
 #routemap-canvas { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border: 1px solid #2a3150; margin: 4px 0 8px; }
@@ -296,25 +294,49 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
   #print-img { width: 100%; height: auto; }
 }
 
-/* GROW 노선 */
-.grow-panel { width: min(600px, 94%); }
-.grow-route { --gc: var(--line); position: relative; display: grid; grid-template-columns: repeat(5, 1fr); margin: 14px 0 4px; padding-top: 4px; }
-.grow-route::before { content: ''; position: absolute; left: 10%; right: 10%; top: 31px; height: 6px; background: #2a3150; }
-.grow-fill { position: absolute; left: 10%; top: 31px; height: 6px; background: var(--gc); transition: width 0.35s; }
-.grow-stop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--ink); font-family: inherit; cursor: pointer; padding: 0 2px; min-width: 0; }
-.grow-stop:disabled { cursor: default; }
-.grow-letter { font-size: 11px; font-weight: 700; color: var(--muted); height: 14px; }
-.grow-dot { width: 22px; height: 22px; border-radius: 50%; background: #10131f; border: 4px solid #39436e; z-index: 1; }
-.grow-stop.lit .grow-dot { border-color: var(--gc); background: #fff; }
-.grow-stop.lit .grow-letter { color: var(--gc); }
-.grow-stop.cur .grow-dot { box-shadow: 0 0 0 4px rgba(255, 207, 74, 0.45); border-color: #ffcf4a; }
-.grow-stop.end .grow-dot, .grow-stop.start .grow-dot { width: 28px; height: 28px; margin-top: -3px; }
-.grow-when { font-size: 11px; color: var(--amber); white-space: nowrap; }
-.grow-text { font-size: 12px; line-height: 1.35; color: #e6e9f5; text-align: center; word-break: keep-all; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; max-width: 100%; min-height: 1.35em; }
-.grow-text.empty { color: #5a6284; }
-.grow-stop.end .grow-text { color: #ffcf4a; font-weight: 700; }
-.grow-legend { font-size: 11px; color: var(--muted); text-align: center; margin: 6px 0 2px; }
-.grow-edit { margin-top: 6px; padding: 10px 12px; background: #10131f; border: 1px solid #2a3150; border-left: 4px solid #ffcf4a; }
-.grow-edit .field-label { margin-top: 0; }
-.grow-badge { display: inline-block; min-width: 1.4em; text-align: center; background: var(--line); color: #04201c; font-size: 0.8em; padding: 0 4px; }
-@media (max-width: 420px) { .grow-text { font-size: 10.5px; } .grow-when { font-size: 10px; } }
+/* GROW (노바가 돕는 G·R·O·W) */
+#grow-screen { position: fixed; z-index: 20; }
+.grow-panel { width: min(620px, 94%); }
+.grow-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 8px 0 10px; }
+.gstep { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: #10131f; border: 1px solid #2a3150; color: var(--muted); font-size: 12px; }
+.gstep b { display: inline-grid; place-items: center; width: 22px; height: 22px; background: #2a3150; color: #c4c9de; font-size: 13px; }
+.gstep.done b { background: var(--line); color: #04201c; }
+.gstep.cur { border-color: #ffcf4a; color: #fff; }
+.gstep.cur b { background: #ffcf4a; color: #1a1406; }
+.grow-nova-row { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 8px; }
+#grow-nova { width: 44px; height: 64px; image-rendering: pixelated; flex: none; }
+.grow-tip { position: relative; flex: 1; min-height: 44px; padding: 9px 12px; background: #1a1f38; border: 1px solid #39436e; font-size: 13px; line-height: 1.55; color: #f3f4fa; }
+.grow-tip::before { content: ''; position: absolute; left: -7px; bottom: 12px; border: 6px solid transparent; border-right-color: #39436e; border-left: 0; }
+.grow-big { padding: 16px; background: #10131f; border-left: 4px solid #ffcf4a; }
+.grow-big-tag { display: block; font-size: 12px; color: var(--amber); margin-bottom: 6px; }
+.grow-big strong { font-size: 20px; color: #fff; }
+.grow-q { display: block; margin: 12px 0 6px; font-size: 13px; color: var(--amber); }
+.grow-scale { display: grid; grid-template-columns: repeat(11, 1fr); gap: 3px; }
+.grow-scale button { padding: 9px 0; background: #141a33; color: var(--ink); border: 1px solid #39436e; font-family: inherit; font-size: 13px; cursor: pointer; }
+.grow-scale button[aria-pressed='true'] { background: #ffcf4a; color: #1a1406; border-color: #ffcf4a; font-weight: 700; }
+.grow-scale-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
+.grow-note { margin: 12px 0 0; font-size: 12px; color: #c9a8ff; }
+.grow-o-row { display: flex; gap: 6px; }
+.grow-o-row .field { flex: 1; min-width: 0; }
+.form-panel .btn.btn-gen, .btn-gen { flex: none; width: auto; display: inline-block; margin: 0; padding: 8px 12px; font-size: 13px; background: #2a1f4a; border-color: #8a5ad0; color: #e8dcff; }
+.idea-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+.idea { --c: #5ee0c8; text-align: left; display: flex; flex-direction: column; gap: 3px; padding: 8px 10px; background: #10131f; color: var(--ink); border: 1px solid #39436e; border-left: 4px solid var(--c); font-family: inherit; cursor: pointer; }
+.idea[data-route='heart'] { --c: #ff8fb8; }
+.idea em { font-style: normal; font-size: 11px; color: var(--c); }
+.idea strong { font-size: 13px; font-weight: 400; line-height: 1.45; }
+.idea[aria-pressed='true'] { border-color: #ffcf4a; border-left-color: #ffcf4a; background: #231d10; }
+.idea-list.fresh .idea { animation: ideaIn 0.35s both; animation-delay: var(--d); }
+@keyframes ideaIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.grow-chosen { margin-top: 10px; padding: 8px 10px; background: #0c0f1c; border: 1px dashed #39436e; }
+.grow-chosen-head { font-size: 12px; color: var(--amber); margin-bottom: 4px; }
+.grow-chosen-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; font-size: 13px; border-top: 1px solid #1d2238; }
+.grow-chosen-row button { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; }
+.plan-preview { white-space: pre-line; }
+.grow-btns { display: grid; grid-template-columns: 1fr 2fr; gap: 6px; margin-top: 10px; }
+.grow-btns .btn { margin-top: 0; }
+.grow-btns #grow-back[hidden] + #grow-next { grid-column: 1 / -1; }
+@media (max-width: 420px) {
+  .idea-list { grid-template-columns: 1fr; }
+  .gstep { font-size: 10px; padding: 5px; gap: 4px; }
+  .grow-scale button { font-size: 12px; padding: 8px 0; }
+}
