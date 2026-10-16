@@ -1,26 +1,29 @@
 {
-  "note": "3화 종착역: 미래의 나(가능한 자기), 연료 게이지(자기결정성 연속선), 유용성 질문. docs/cards-draft.md 1·2절에서 옮김.",
+  "note": "3화 종착역: 미래의 나(가능한 자기). 기준 시점은 \"스무 살쯤의 나\"(학년과 상관없이 같은 이정표). 예시는 Holland RIASEC 6유형에서 2개씩(진로 검사가 아니라 떠오르지 않을 때의 힌트). 연료 게이지(자기결정성 연속선), 유용성 질문.",
   "destinations": [
     {
-      "id": "1",
-      "ko": "누군가를 돕고 지키는 사람",
+      "id": "R1",
+      "riasec": "R",
+      "ko": "손과 몸으로 직접 만들고 고치는 사람",
       "short": {
-        "ko": "돕는 사람",
-        "en": "Helper"
+        "ko": "고치는 사람",
+        "en": "Builder"
       },
-      "en": "Someone who helps and protects others"
+      "en": "Someone who builds and fixes things with their hands"
     },
     {
-      "id": "2",
-      "ko": "내가 만든 걸 세상에 보여주는 사람",
+      "id": "R2",
+      "riasec": "R",
+      "ko": "자연·동물·운동처럼 밖에서 움직이는 사람",
       "short": {
-        "ko": "만드는 사람",
-        "en": "Maker"
+        "ko": "밖에서 뛰는 사람",
+        "en": "Outdoorer"
       },
-      "en": "Someone who shows the world what they make"
+      "en": "Someone who works outdoors, with nature, animals or sports"
     },
     {
-      "id": "3",
+      "id": "I1",
+      "riasec": "I",
       "ko": "궁금한 걸 끝까지 파고드는 사람",
       "short": {
         "ko": "파고드는 사람",
@@ -29,34 +32,8 @@
       "en": "Someone who digs into what they wonder about"
     },
     {
-      "id": "4",
-      "ko": "사람들을 이끌고 일을 성사시키는 사람",
-      "short": {
-        "ko": "이끄는 사람",
-        "en": "Leader"
-      },
-      "en": "Someone who leads people and gets things done"
-    },
-    {
-      "id": "5",
-      "ko": "몸과 기술로 무언가를 해내는 사람",
-      "short": {
-        "ko": "해내는 사람",
-        "en": "Doer"
-      },
-      "en": "Someone who gets things done with body and skill"
-    },
-    {
-      "id": "6",
-      "ko": "사람의 마음을 움직이는 말과 글을 쓰는 사람",
-      "short": {
-        "ko": "쓰는 사람",
-        "en": "Writer"
-      },
-      "en": "Someone whose words move people's hearts"
-    },
-    {
-      "id": "7",
+      "id": "I2",
+      "riasec": "I",
       "ko": "문제를 숫자와 논리로 푸는 사람",
       "short": {
         "ko": "푸는 사람",
@@ -65,25 +42,58 @@
       "en": "Someone who solves problems with numbers and logic"
     },
     {
-      "id": "8",
-      "ko": "세계를 무대로 움직이는 사람",
+      "id": "A1",
+      "riasec": "A",
+      "ko": "내가 만든 걸 세상에 보여주는 사람",
       "short": {
-        "ko": "세계로 가는 사람",
-        "en": "Globetrotter"
+        "ko": "만드는 사람",
+        "en": "Maker"
       },
-      "en": "Someone who works on a world stage"
+      "en": "Someone who shows the world what they make"
     },
     {
-      "id": "9",
-      "ko": "가족과 주변 사람을 든든하게 챙기는 사람",
+      "id": "A2",
+      "riasec": "A",
+      "ko": "말과 글로 사람의 마음을 움직이는 사람",
       "short": {
-        "ko": "챙기는 사람",
-        "en": "Caretaker"
+        "ko": "쓰는 사람",
+        "en": "Writer"
       },
-      "en": "Someone who looks after family and the people around them"
+      "en": "Someone whose words move people's hearts"
     },
     {
-      "id": "10",
+      "id": "S1",
+      "riasec": "S",
+      "ko": "누군가를 돕고 가르치는 사람",
+      "short": {
+        "ko": "돕는 사람",
+        "en": "Helper"
+      },
+      "en": "Someone who helps and teaches others"
+    },
+    {
+      "id": "S2",
+      "riasec": "S",
+      "ko": "사람들의 마음을 돌보는 사람",
+      "short": {
+        "ko": "돌보는 사람",
+        "en": "Carer"
+      },
+      "en": "Someone who looks after people's hearts"
+    },
+    {
+      "id": "E1",
+      "riasec": "E",
+      "ko": "사람들을 이끌고 일을 해내는 사람",
+      "short": {
+        "ko": "이끄는 사람",
+        "en": "Leader"
+      },
+      "en": "Someone who leads people and gets things done"
+    },
+    {
+      "id": "E2",
+      "riasec": "E",
       "ko": "내 일을 스스로 만들어 가는 사람",
       "short": {
         "ko": "길을 만드는 사람",
@@ -92,22 +102,24 @@
       "en": "Someone who creates their own work"
     },
     {
-      "id": "11",
-      "ko": "자연과 생명을 다루는 사람",
+      "id": "C1",
+      "riasec": "C",
+      "ko": "복잡한 걸 깔끔하게 정리하고 계획하는 사람",
       "short": {
-        "ko": "생명을 돌보는 사람",
-        "en": "Naturalist"
+        "ko": "정리하는 사람",
+        "en": "Planner"
       },
-      "en": "Someone who works with nature and living things"
+      "en": "Someone who organizes and plans complex things"
     },
     {
-      "id": "12",
-      "ko": "한 분야에서 \"그건 저 사람한테 물어봐\"라는 말을 듣는 사람",
+      "id": "C2",
+      "riasec": "C",
+      "ko": "믿고 맡길 수 있는 꼼꼼한 사람",
       "short": {
-        "ko": "전문가",
-        "en": "Expert"
+        "ko": "믿음직한 사람",
+        "en": "Anchor"
       },
-      "en": "Someone people go to as the expert in a field"
+      "en": "A careful person others can count on"
     }
   ],
   "gauges": [

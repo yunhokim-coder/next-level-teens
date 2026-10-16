@@ -189,8 +189,8 @@
   "ep3": {
     "n1": "The train stops at a huge transfer station. Through the skylight the sky is a little brighter.",
     "nova1": "This is where you choose your final station. See the route map? The end of your line is still foggy.",
-    "nova2": "Not a job title. Pick who you want to be five years from now.",
-    "nova3": "No right answer. If you don't know, 'not sure yet' is fine. A foggy station is still a station.",
+    "nova2": "Picture yourself around twenty. Done with school, becoming an adult. Who do you want to be then?",
+    "nova3": "It doesn't have to be a job. No right answer. If you don't know, 'not sure yet' is fine. A foggy station is still a station.",
     "destSet": "{dest}. Nice. The end of your line just lit up.",
     "destFog": "That's okay. Let's leave it foggy. Sometimes it clears as you go.",
     "nova4": "Now let's see what you run on. Everyone's fuel is different. Pick everything that sounds like you.",
@@ -205,11 +205,11 @@
     "nova6": "Great. Now you have a final station. All that’s left is the way there.",
     "nova7": "But something always blocks the way. Let's meet it at the next stop.",
     "destTag": "Final station",
-    "destTitle": "Five years from now, who do you want to be?",
-    "destLead": "It doesn't have to be a job. Pick the one that pulls you most.",
-    "destOwn": "Write your own (stays on this device)",
+    "destTitle": "Around twenty, who do you want to be?",
+    "destLead": "Write it in your own words. It doesn't have to be a job.",
+    "destOwn": "My final station (stays on this device)",
     "destOwnPh": "e.g. Someone who makes people laugh",
-    "ok": "OK",
+    "ok": "Go to this station",
     "destUnknown": "Not sure yet (foggy station)",
     "fogStation": "Foggy Station",
     "fuelTag": "Fuel gauge",
@@ -224,6 +224,10 @@
     "utilOwn": "Write your own (optional, stays on this device)",
     "utilOwnPh": "e.g. Good English lets me meet more people",
     "utilError": "Pick at least one or write your own.",
-    "utilTitleFog": "Even with the station still foggy, how might what you study now help you?"
+    "utilTitleFog": "Even with the station still foggy, how might what you study now help you?",
+    "destIdeas": "No ideas? See examples",
+    "destIdeasHide": "Hide examples",
+    "destIdeasLead": "Tap one to put it in the box above. Feel free to edit it.",
+    "destEmpty": "Write your station or pick an example."
   }
 }

@@ -583,6 +583,7 @@
     Data.persist();
     Data.send('ep3_result', {
       destination: dest.id,
+      riasec: dest.riasec || '',
       fuel: checked.join(','),
       counts: Station.data.gauges.map((gg) => `${gg.id}:${fuel.count[gg.id]}`).join(' '),
       main: main.join(','),

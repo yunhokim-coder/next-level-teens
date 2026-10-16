@@ -16,12 +16,15 @@
   }
 
   // ---------- 종착역 ----------
+  // 직접 쓰기가 기본. 떠오르지 않으면 예시(Holland RIASEC 6유형 × 2)를 펼쳐 골라 칸에 채운 뒤 고칠 수 있다.
   function pickDest(prev) {
     const L = lang();
     return new Promise((resolve) => {
+      const input = $('#dest-own');
       const box = $('#dest-options');
+      let fromExample = null; // 예시를 고른 뒤 고치지 않았으면 그 예시 id로 기록
       box.innerHTML = '';
-      const choose = (value) => {
+      const done = (value) => {
         Sound.play('select');
         $('#dest-screen').hidden = true;
         resolve(value);
@@ -31,21 +34,48 @@
         b.type = 'button';
         b.className = 'dest-opt';
         b.textContent = d[L];
-        b.onclick = () => choose({ id: d.id, label: d.short[L] });
+        b.setAttribute('aria-pressed', 'false');
+        b.onclick = () => {
+          input.value = d[L];
+          fromExample = d;
+          box.querySelectorAll('.dest-opt').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+          $('#dest-error').hidden = true;
+          Sound.play('blip');
+        };
         box.appendChild(b);
       });
-      const own = $('#dest-own');
-      own.value = (prev && prev.own) || '';
+      input.value = (prev && prev.label && prev.id !== 'unknown' && prev.label) || '';
+      input.oninput = () => {
+        fromExample = null;
+        box.querySelectorAll('.dest-opt').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+        $('#dest-error').hidden = true;
+      };
+      const ideas = $('#dest-ideas');
+      const ideasBox = $('#dest-ideas-box');
+      ideasBox.hidden = true;
+      ideas.setAttribute('aria-expanded', 'false');
+      ideas.textContent = I18n.t('ep3.destIdeas');
+      ideas.onclick = () => {
+        ideasBox.hidden = !ideasBox.hidden;
+        ideas.setAttribute('aria-expanded', String(!ideasBox.hidden));
+        ideas.textContent = I18n.t(ideasBox.hidden ? 'ep3.destIdeas' : 'ep3.destIdeasHide');
+        Sound.play('blip');
+      };
+      $('#dest-error').hidden = true;
       $('#dest-own-go').onclick = () => {
-        const v = own.value.trim().slice(0, 24);
+        const v = input.value.trim().slice(0, 30);
         if (!v) {
-          own.focus();
+          $('#dest-error').hidden = false;
+          Sound.play('poof');
+          input.focus();
           return;
         }
-        choose({ id: 'own', label: v, own: v });
+        if (fromExample && v === fromExample[L]) done({ id: fromExample.id, riasec: fromExample.riasec, label: fromExample.short[L] });
+        else done({ id: 'own', label: v, own: v });
       };
-      $('#dest-unknown').onclick = () => choose({ id: 'unknown', label: I18n.t('ep3.fogStation') });
+      $('#dest-unknown').onclick = () => done({ id: 'unknown', label: I18n.t('ep3.fogStation') });
       open('#dest-screen');
+      setTimeout(() => input.focus(), 50);
     });
   }
 
