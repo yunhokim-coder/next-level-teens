@@ -23,7 +23,7 @@
 3. 코드 편집 → 기본 코드를 지우고 `cloudflare/worker.js` 내용을 붙여 넣기 → 배포.
 4. Worker 설정(Settings) → 변수 및 비밀(Variables and Secrets) → 추가: 유형 **비밀(Secret)**, 이름 `ANTHROPIC_API_KEY`, 값 = API 키 → 배포.
 5. `https://next-line-ai.<계정>.workers.dev` 를 브라우저로 열어 `"key": true`가 보이면 성공.
-6. 그 주소를 `config.js`의 `AI_URL`에 넣는다.
+6. 그 주소를 `config.js`의 `AI_URL`에 넣는다. (현재: https://next-line-ai.ch6rrb.workers.dev/)
 
 ## 안전장치
 
