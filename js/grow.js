@@ -129,6 +129,8 @@
       busy: false,
       crisis: false,
       tried: [],
+      goal: null,
+      strength: '',
       chat: {},
       aiTurns: 0,
       answered: 0,
@@ -164,15 +166,19 @@
           });
       };
 
-      const renderG = () => {
-        body.innerHTML = '';
-        const h = document.createElement('div');
-        h.className = 'grow-big';
-        h.innerHTML = '<span class="grow-big-tag"></span><strong></strong>';
-        h.querySelector('span').textContent = I18n.t('ep6.mapDest');
-        h.querySelector('strong').textContent = ctx.dest;
-        body.appendChild(h);
-        tip('ep6.tipG', { dest: ctx.dest });
+      // 위쪽 목표 띠: 종착역(가치) › 이 노선의 목표
+      const goalBar = () => {
+        const el = $('#grow-goal');
+        if (!st.goal || steps[step] === 'g') {
+          el.hidden = true;
+          return;
+        }
+        el.innerHTML = '<span class="gb-dest"></span><span class="gb-goal"></span>';
+        el.querySelector('.gb-dest').textContent = `🚩 ${ctx.dest}`;
+        const g = el.querySelector('.gb-goal');
+        if (st.goal.same) g.remove();
+        else g.textContent = `🎯 ${st.goal.text}`;
+        el.hidden = false;
       };
 
       const renderW1 = () => {
@@ -293,10 +299,10 @@
         $('#grow-title').textContent = I18n.t(`ep6.title_${k}`);
         $('#grow-back').hidden = step === 0;
         $('#grow-next').textContent = I18n.t(step === steps.length - 1 ? 'ep6.growDone' : 'ep6.growNext');
-        if (k === 'g') renderG();
-        if (k === 'r' || k === 'o') {
-          tip(k === 'r' ? 'ep6.tipRChat' : 'ep6.tipOChat');
-          Coach.stage(k, { body, tip, onDone: () => {} }, ctx, st);
+        goalBar();
+        if (k === 'g' || k === 'r' || k === 'o') {
+          tip(k === 'g' ? 'ep6.tipGChat' : k === 'r' ? 'ep6.tipRChat' : 'ep6.tipOChat');
+          Coach.stage(k, { body, tip, onDone: () => {}, onGoal: () => {} }, ctx, st);
         }
         if (k === 'w1') {
           renderW1();
@@ -316,7 +322,7 @@
       };
       $('#grow-next').onclick = () => {
         const k = steps[step];
-        if ((k === 'r' || k === 'o') && !(st.chat[k] && st.chat[k].done)) return err(I18n.t('ep6.coachWait'));
+        if ((k === 'g' || k === 'r' || k === 'o') && !(st.chat[k] && st.chat[k].done)) return err(I18n.t('ep6.coachWait'));
         if (k === 'w1' && (!st.w.days.length || st.w.time === null || st.w.place === null)) return err(I18n.t('ep6.wError'));
         if (k === 'w2' && (!st.plan.m || !st.plan.c)) return err(I18n.t('ep6.planError'));
         if (step < steps.length - 1) {
@@ -329,6 +335,7 @@
         clearInterval(tipTimer);
         $('#grow-screen').hidden = true;
         resolve({
+          goal: st.goal,
           r: st.r,
           tried: st.tried.map((x) => ({ text: x.text, good: x.good, idx: x.idx === undefined ? null : x.idx, aiEx: !!x.aiEx })),
           answered: st.answered,

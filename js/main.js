@@ -820,10 +820,12 @@
     const DAYS = I18n.t('ep6.days').split('|');
     const wp = g.o.picks[g.w.pick] || g.o.picks[0];
     const when = `${g.w.days.map((d) => DAYS[d]).join(I18n.t('ep6.daySep'))} ${Grow.timeText(g.w)} · ${Grow.placeText(g.w)}`;
-    // 위에서부터 G·R·O·W 순서
+    // 위에서부터 ★종착역(가치) · G 목표 · R · O · W. 목표가 종착역과 같으면 G가 종착역 자리에 선다
     const short = (p) => (p.own ? p.own : p.ai ? p.ai.name : Battle.card(p.id)[L].name);
+    const goal = g.goal && !g.goal.same ? g.goal.text : '';
     return [
-      { letter: 'G', tag: I18n.t('ep6.mapDest'), name: st.destLabel, big: true },
+      { letter: goal ? '★' : 'G', tag: I18n.t('ep6.mapDest'), name: st.destLabel, big: true },
+      ...(goal ? [{ letter: 'G', tag: I18n.t('ep6.mapG'), name: goal }] : []),
       { letter: 'R', tag: I18n.t('ep6.mapR').replace('{n}', g.r), name: e6.station },
       { letter: 'O', tag: I18n.t('ep6.mapO'), name: g.o.picks.map(short).join(' · ') },
       { letter: 'W', tag: `${I18n.t('ep6.mapW')} · ${when}`, name: label(wp) },
@@ -902,6 +904,9 @@
     const hit = Battle.overlap(Battle.card(pl.c).tags, Mamba.card(pl.m).tags).length > 0;
     const wp = gw.o.picks[gw.w.pick] || gw.o.picks[0];
     Data.send('ep6_result', {
+      g_same: gw.goal && gw.goal.same ? 1 : 0,
+      g_ex: gw.goal && gw.goal.idx !== null && gw.goal.idx !== undefined ? gw.goal.idx : '',
+      g_ai_ex: gw.goal && gw.goal.aiEx ? 1 : 0,
       r: gw.r,
       r_tried: gw.tried.length,
       r_good: gw.tried.filter((x) => x.good === true).length,

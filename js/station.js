@@ -17,6 +17,17 @@
 
   // ---------- 종착역 ----------
   // 직접 쓰기가 기본. 떠오르지 않으면 예시(Holland RIASEC 6유형 × 2)를 펼쳐 골라 칸에 채운 뒤 고칠 수 있다.
+  // 종착역은 "○○ 하는 사람" 틀로 받는다 (가치 수준의 큰 목표). 칸에는 틀을 뺀 부분만 쓴다
+  function unframe(text) {
+    const v = String(text).trim();
+    return lang() === 'en' ? v.replace(/^someone who\s*/i, '') : v.replace(/\s*사람$/, '');
+  }
+  function frame(text) {
+    const v = String(text).trim();
+    if (lang() === 'en') return /^someone\b/i.test(v) ? v : `Someone who ${v}`;
+    return /사람$/.test(v) ? v : `${v} 사람`;
+  }
+
   function pickDest(prev) {
     const L = lang();
     return new Promise((resolve) => {
@@ -36,7 +47,7 @@
         b.textContent = d[L];
         b.setAttribute('aria-pressed', 'false');
         b.onclick = () => {
-          input.value = d[L];
+          input.value = unframe(d[L]);
           fromExample = d;
           box.querySelectorAll('.dest-opt').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
           $('#dest-error').hidden = true;
@@ -44,7 +55,7 @@
         };
         box.appendChild(b);
       });
-      input.value = (prev && prev.label && prev.id !== 'unknown' && prev.label) || '';
+      input.value = (prev && prev.id === 'own' && prev.own ? unframe(prev.own) : '') || '';
       input.oninput = () => {
         fromExample = null;
         box.querySelectorAll('.dest-opt').forEach((x) => x.setAttribute('aria-pressed', 'false'));
@@ -70,8 +81,8 @@
           input.focus();
           return;
         }
-        if (fromExample && v === fromExample[L]) done({ id: fromExample.id, riasec: fromExample.riasec, label: fromExample.short[L] });
-        else done({ id: 'own', label: v, own: v });
+        if (fromExample && v === unframe(fromExample[L])) done({ id: fromExample.id, riasec: fromExample.riasec, label: fromExample.short[L] });
+        else done({ id: 'own', label: frame(v), own: frame(v) });
       };
       $('#dest-unknown').onclick = () => done({ id: 'unknown', label: I18n.t('ep3.fogStation') });
       open('#dest-screen');

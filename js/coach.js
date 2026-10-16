@@ -33,7 +33,7 @@
     body.innerHTML = '';
 
     // AI 도우미 스위치 (켜면 이 역의 대화가 AI로 간다)
-    if (Ai.on()) body.appendChild(aiSwitch(ui));
+    if (Ai.on()) body.appendChild(aiSwitch(ui, kind !== 'g'));
     const log = document.createElement('div');
     log.className = 'coach-log';
     body.appendChild(log);
@@ -99,7 +99,7 @@
         input.placeholder = ph || I18n.t('ep6.ansPh');
         const cbox = bar.querySelector('.coach-chips');
         cbox.innerHTML = '';
-        const done = async (text, skipped) => {
+        const done = async (text, skipped, chip) => {
           bar.hidden = true;
           Sound.play('select');
           await me(text);
@@ -109,16 +109,30 @@
             scroll();
             await nova(t('ep6.tipCrisis'));
           }
-          resolve({ text, skipped });
+          resolve({ text, skipped, chip });
         };
-        chips.forEach((c) => {
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'chip';
-          b.textContent = c;
-          b.onclick = () => done(c, true);
-          cbox.appendChild(b);
-        });
+        // 칩: 문자열이면 "건너뛰기"류, {label, answer}는 그 말로 대답, {label, action}은 칩을 바꾸는 버튼
+        const setChips = (list) => {
+          cbox.innerHTML = '';
+          list.forEach((c) => {
+            const o = typeof c === 'string' ? { label: c, skip: true } : c;
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'chip' + (o.ai ? ' chip-ai' : '') + (o.action ? ' chip-action' : '');
+            b.textContent = o.ai ? `✦ ${o.label}` : o.label;
+            b.onclick = async () => {
+              if (o.action) {
+                b.disabled = true;
+                await o.action(setChips, b);
+                scroll();
+                return;
+              }
+              done(o.label, !!o.skip, o);
+            };
+            cbox.appendChild(b);
+          });
+        };
+        setChips(chips);
         const send = () => {
           const v = input.value.trim();
           if (!v) return;
@@ -141,6 +155,7 @@
       const res = await Ai.call('coach', {
         turn,
         dest: ctx.dest,
+        goal: st.goal && !st.goal.same ? st.goal.text : '',
         shadow: ctx.mambas.map((m) => m[L].word),
         tried: st.tried.map((x) => ({ text: x.text, good: x.good })),
         r: st.r,
@@ -150,12 +165,12 @@
       if (res.ok && res.safety) {
         st.crisis = true;
         log.appendChild(crisisBox());
-        return t('ep6.tipCrisis');
+        return { reply: t('ep6.tipCrisis'), chips: [] };
       }
       if (res.ok && res.reply) {
         st.aiOk++;
         st.aiTurns++;
-        return res.reply;
+        return { reply: res.reply, chips: Array.isArray(res.chips) ? res.chips.slice(0, 3) : [] };
       }
       return null;
     };
@@ -175,48 +190,79 @@
       return Promise.resolve();
     }
 
-    const run = kind === 'r' ? runR : runO;
+    const run = kind === 'g' ? runG : kind === 'r' ? runR : runO;
     return run({ nova, me, ask, coach, log, scroll, ui, ctx, st, L }).then(() => {
       chat.done = true;
       ui.onDone();
     });
   }
 
-  // ---------- R: 지금까지 해 본 것 → 반영·질문 → 척도 → 해결중심 질문 → 요약 ----------
+  const goalOf = (st, ctx) => (st.goal && !st.goal.same ? st.goal.text : ctx.dest);
+
+  // ---------- G: 종착역(가치)을 이루기 위한 목표 ----------
+  async function runG(c) {
+    const { nova, ask, ctx, st, L } = c;
+    await nova(t('ep6.cG1', { dest: ctx.dest }));
+    await nova(t('ep6.cG2'));
+    const fixed = I18n.t('ep6.goalEx').split('|');
+    const examples = {
+      label: I18n.t('ep6.ideas'),
+      action: async (setChips, btn) => {
+        let list = null;
+        if (Ai.on() && Data.save.aiConsent && Ai.left() > 0 && !st.crisis) {
+          btn.textContent = I18n.t('ep6.aiThinking');
+          st.aiCalls++;
+          const res = await Ai.call('examples', { kind: 'goals', dest: ctx.dest, shadow: ctx.mambas.map((m) => m[L].word) });
+          if (res.ok && !res.safety && res.items && res.items.length) {
+            st.aiOk++;
+            list = res.items.map((x) => ({ label: x.text, answer: true, ai: true }));
+          }
+        }
+        if (!list) list = fixed.map((x, i) => ({ label: x, answer: true, idx: i }));
+        setChips([same].concat(list));
+      },
+    };
+    const same = { label: I18n.t('ep6.goalSame'), same: true };
+    const a = await ask({ ph: I18n.t('ep6.goalPh'), chips: [same, examples] });
+    st.goal = a.chip && a.chip.same ? { same: true, text: ctx.dest } : { same: false, text: a.text.slice(0, 40), idx: a.chip && a.chip.idx !== undefined ? a.chip.idx : null, aiEx: !!(a.chip && a.chip.ai) };
+    if (c.ui.onGoal) c.ui.onGoal();
+    await nova(st.goal.same ? t('ep6.cG3same', { dest: ctx.dest }) : t('ep6.cG3', { goal: st.goal.text }));
+  }
+
+  // ---------- R: 해 본 것 + 👍/👎 → 척도 → 코칭 한마디(반영 + 질문 하나, 답 후보 칩) ----------
   async function runR(c) {
     const { nova, me, ask, coach, ctx, st } = c;
-    await nova(t('ep6.cR1', { dest: ctx.dest }));
+    const goal = goalOf(st, ctx);
+    await nova(t('ep6.cR1', { goal }));
     st.tried = await triedWidget(c);
     const good = st.tried.filter((x) => x.good === true);
-    const bad = st.tried.filter((x) => x.good === false);
     await me(st.tried.length ? st.tried.map((x) => `${x.text} ${x.good ? '👍' : '👎'}`).join(' · ') : I18n.t('ep6.triedNone'));
 
-    // 반영 + 열린 질문
-    const r1 = (await coach('r1')) || (good.length ? t('ep6.cR2good', { item: good[0].text }) : bad.length ? t('ep6.cR2bad', { item: bad[0].text }) : t('ep6.cR2none'));
-    await nova(r1);
-    const a1 = await ask({ chips: [I18n.t('ep6.skipAns')] });
-    if (!a1.skipped) st.answered++;
-
     // 척도
-    await nova(t(a1.skipped ? 'ep6.cR3skip' : 'ep6.cR3', { dest: ctx.dest }));
+    await nova(t('ep6.cR3', { goal }));
     st.r = await scaleWidget(c);
     await me(t('ep6.rMe', { n: st.r }));
 
-    // 해결중심 질문: 0이 아니라 n인 건 뭐 덕분일까
-    const r2 = (await coach('r2')) || (st.r === 0 ? t('ep6.cR4zero') : t('ep6.cR4', { n: st.r }));
-    await nova(r2);
-    const a2 = await ask({ chips: [I18n.t('ep6.skipAns')] });
-    if (!a2.skipped) st.answered++;
-
-    // 요약 (정해진 문장: 학생 말을 그대로 되짚는다)
-    const strength = good.length ? good[0].text : !a2.skipped ? a2.text : '';
-    await nova(strength ? t('ep6.cR5', { n: st.r, s: strength }) : t('ep6.cR5plain', { n: st.r }));
+    // 코칭 한마디: 해 본 것과 점수를 엮어 반영하고, 해결중심 질문 하나
+    const ai = await coach('r');
+    const reply = ai
+      ? ai.reply
+      : st.r === 0
+        ? t('ep6.cR4zero')
+        : good.length
+          ? t('ep6.cR4good', { item: good[0].text, n: st.r })
+          : t('ep6.cR4', { n: st.r });
+    const chips = ai && ai.chips.length ? ai.chips.map((x) => ({ label: x, answer: true, ai: true })) : I18n.t(st.r === 0 ? 'ep6.rChipsZero' : 'ep6.rChips').split('|').map((x) => ({ label: x, answer: true }));
+    await nova(reply);
+    const a = await ask({ chips: chips.concat([I18n.t('ep6.skipAns')]) });
+    if (!a.skipped) st.answered++;
+    st.strength = good.length ? good[0].text : '';
   }
 
   // ---------- O: 무엇을 바꾸고 싶은지 → 반영 + 아이디어 → 고르기 → 마무리 ----------
   async function runO(c) {
     const { nova, ask, ctx, st, L } = c;
-    await nova(t('ep6.cO1', { n: st.r === null ? '' : st.r }));
+    await nova(st.strength ? t('ep6.cO1good', { n: st.r, s: st.strength, goal: goalOf(st, ctx) }) : t('ep6.cO1', { n: st.r, goal: goalOf(st, ctx) }));
     const a = await ask({ ph: I18n.t('ep6.oPh'), chips: [I18n.t('ep6.oNotSure')] });
     st.text = a.skipped ? '' : a.text;
     const picks = await ideasWidget(c);
@@ -449,6 +495,7 @@
           const res = await Ai.call('ideas', {
             text: st.text,
             dest: ctx.dest,
+            goal: st.goal && !st.goal.same ? st.goal.text : '',
             shadow: ctx.mambas.map((m) => m[L].word),
             tried: st.tried.map((x) => ({ text: x.text, good: x.good })),
             r: st.r,
@@ -524,9 +571,9 @@
     return box;
   }
 
-  function aiSwitch(ui) {
+  function aiSwitch(ui, compact) {
     const sw = document.createElement('label');
-    sw.className = 'ai-switch';
+    sw.className = 'ai-switch' + (compact ? ' compact' : '');
     sw.innerHTML = '<input type="checkbox"><span class="ai-switch-text"><b></b><small></small></span>';
     const cb = sw.querySelector('input');
     cb.checked = !!Data.save.aiConsent;

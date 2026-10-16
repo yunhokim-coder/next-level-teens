@@ -21,6 +21,7 @@
     const o = Object.assign({}, p);
     if (o.text !== undefined) o.text = scrub(o.text);
     if (o.dest !== undefined) o.dest = scrub(o.dest).slice(0, 40);
+    if (o.goal !== undefined) o.goal = scrub(o.goal).slice(0, 40);
     if (Array.isArray(o.history)) o.history = o.history.slice(-6).map((m) => ({ who: m.who, text: scrub(m.text).slice(0, 160) }));
     if (Array.isArray(o.tried)) o.tried = o.tried.slice(0, 8).map((t) => ({ text: scrub(t.text).slice(0, 30), good: t.good }));
     return o;

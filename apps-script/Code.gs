@@ -3,8 +3,8 @@
 //
 // 1) 데이터: 게임이 보낸 JSON을 이벤트 이름별 시트 탭(register, pre, post, ...)에 한 줄씩 쌓는다.
 // 2) AI 도우미: action이 'ideas'이면 Claude(Haiku 5.5)에게 묻는다. task에 따라
-//    'coach'    R 단계 노바의 코칭 한마디 (반영 + 열린 질문 하나)
-//    'examples' R 단계 "지금까지 해 본 것" 예시 (종착역에 맞춤)
+//    'coach'    R 단계 노바의 코칭 한마디 (반영 + 해결중심 질문 하나 + 답 후보 칩)
+//    'examples' G 단계 목표 예시(kind: goals) 또는 R 단계 "해 본 것" 예시 (종착역에 맞춤)
 //    'ideas'    O 단계 코칭 한마디 + 공부 방법 아이디어 5개
 //    API 키는 이 코드에 쓰지 않고 [프로젝트 설정 → 스크립트 속성]의 ANTHROPIC_API_KEY에만 둔다.
 //    학생이 쓴 글은 시트에 저장하지 않는다 (ai_log 탭에는 성공 여부·시간·토큰 수만).
@@ -93,6 +93,7 @@ function ideas(data) {
   };
   const input = {
     goal_station: short(data.dest, 40),
+    goal: short(data.goal, 40),
     shadow: (Array.isArray(data.shadow) ? data.shadow : []).slice(0, 9).map(function (x) {
       return short(x, 20);
     }),
@@ -101,8 +102,8 @@ function ideas(data) {
     }),
     progress_0_to_10: data.r === null || data.r === undefined ? null : Math.max(0, Math.min(10, Number(data.r) || 0)),
   };
+  if (task === 'examples') input.kind = data.kind === 'goals' ? 'goals' : 'tried';
   if (task === 'coach') {
-    input.turn = data.turn === 'r2' ? 'r2' : 'r1';
     input.conversation = (Array.isArray(data.history) ? data.history : []).slice(-6).map(function (m) {
       return { from: m && m.who === 'me' ? 'student' : 'nova', text: short(m && m.text, 160) };
     });
@@ -185,7 +186,16 @@ function shape(task, p) {
   const cut = function (v, n) {
     return String(v || '').slice(0, n);
   };
-  if (task === 'coach') return { ok: true, safety: false, reply: cut(p.reply, 220) };
+  if (task === 'coach') {
+    return {
+      ok: true,
+      safety: false,
+      reply: cut(p.reply, 220),
+      chips: (p.chips || []).slice(0, 3).map(function (x) {
+        return cut(x, 24);
+      }),
+    };
+  }
   if (task === 'examples') {
     return {
       ok: true,
@@ -224,8 +234,8 @@ const IDEA = {
 const SCHEMAS = {
   coach: {
     type: 'object',
-    properties: { safety: { type: 'boolean' }, reply: { type: 'string' } },
-    required: ['safety', 'reply'],
+    properties: { safety: { type: 'boolean' }, reply: { type: 'string' }, chips: { type: 'array', items: { type: 'string' } } },
+    required: ['safety', 'reply', 'chips'],
     additionalProperties: false,
   },
   examples: {
@@ -255,7 +265,7 @@ const COMMON = {
     '코칭 원칙: 학생이 답을 스스로 찾게 돕는다. 가르치거나 훈계하지 않는다. 학생이 한 말을 그대로 되짚어(반영) 들었다는 걸 보여 주고, 해 본 노력과 작은 성공을 구체적으로 인정한다. 질문은 한 번에 하나, 열린 질문으로 한다.',
     '해결중심 관점: 문제보다 이미 잘 된 순간, 학생이 가진 힘에 주목한다.',
     '하지 말 것: 비난, 다른 학생과 비교, 의학적 조언이나 진단, 부모·학교에 대한 판단, 학생이 말하지 않은 사실 지어내기.',
-    'goal_station은 학생이 정한 "스무 살쯤 되고 싶은 나", shadow는 요즘 학생을 막는 것들, tried는 학생이 해 본 것과 도움 여부(helped), progress_0_to_10은 학생이 느끼는 진행 정도야.',
+    'goal_station은 학생이 정한 "스무 살쯤 되고 싶은 나"(가치), goal은 그걸 이루기 위해 학생이 정한 목표(비어 있으면 goal_station을 목표로 삼은 것), shadow는 요즘 학생을 막는 것들, tried는 학생이 해 본 것과 도움 여부(helped), progress_0_to_10은 학생이 느끼는 진행 정도야.',
     '학생 글에 자해, 자살, 학대, 위험한 상황이 보이면 safety를 true로 하고 나머지는 비워. 그 밖에는 safety는 false.',
   ].join('\n'),
   en: [
@@ -263,7 +273,7 @@ const COMMON = {
     "Coaching principles: help the student find their own answers; don't lecture. Reflect back the student's own words so they feel heard, affirm specific efforts and small successes, and ask one open question at a time.",
     'Solution-focused: pay attention to moments that already went well and strengths the student already has.',
     "Never: blame, compare with other students, give medical or diagnostic advice, judge parents or school, or invent facts the student didn't say.",
-    'goal_station is the student\'s "who I want to be around age 20", shadow is what blocks them lately, tried is what they tried and whether it helped, progress_0_to_10 is how far along they feel.',
+    'goal_station is the student\'s "who I want to be around age 20" (a value), goal is the goal they set to get there (if empty, goal_station itself is the goal), shadow is what blocks them lately, tried is what they tried and whether it helped, progress_0_to_10 is how far along they feel.',
     'If the student\'s text suggests self-harm, suicide, abuse or danger, set safety to true and leave the rest empty. Otherwise safety is false.',
   ].join('\n'),
 };
@@ -271,35 +281,37 @@ const COMMON = {
 const TASKS = {
   coach: {
     ko: [
-      'turn이 r1이면: 학생이 tried에 적은 것을 보고 반응해. 도움 된 게 있으면 그걸 구체적으로 인정하고 "그때는 뭐가 달랐어?" 같은 열린 질문 하나. 도움 안 된 것만 있으면 시도한 것 자체를 인정하고 무엇이 어려웠는지 묻기. 아무것도 없으면 괜찮다고 말하고 그나마 잘 됐던 순간을 묻기.',
-      'turn이 r2이면: 학생이 고른 점수(progress_0_to_10)와 지금까지 대화를 이어서 반영하고, "0점이 아니라 n점인 건 뭐 덕분일까?" 같은 해결중심 질문 하나. 0점이면 여기까지 온 것을 인정하고 1점이 되려면 무엇이 있으면 좋을지 묻기.',
-      'reply는 두 문장 이내, 90자 이내, 마지막은 질문 하나로 끝내. 조언이나 방법 제안은 아직 하지 마.',
+      '학생은 goal(없으면 goal_station)에 가까워지려고 해 본 것(tried, 도움 여부)을 적고, 지금 몇 점쯤 왔는지(progress_0_to_10) 골랐어.',
+      'reply: 해 본 것과 점수를 엮어서 짧게 반영하고(도움 된 게 있으면 그걸 구체적으로 인정), "0점이 아니라 n점인 건 뭐 덕분일까?" 같은 해결중심 질문 하나로 끝내. 0점이면 솔직하게 말해 준 걸 인정하고 1점이 되려면 뭐가 있으면 좋을지 묻기. 두 문장 이내, 90자 이내. 조언은 하지 마.',
+      'chips: 그 질문에 학생이 누르기만 해도 되는 짧은 답 후보 3개(각 15자 이내, 학생 말투, 서로 다르게).',
     ].join('\n'),
     en: [
-      'If turn is r1: respond to what the student listed in tried. If something helped, affirm it specifically and ask one open question like "What was different then?". If nothing helped, affirm the effort itself and ask what was hard. If nothing was tried, say that\'s okay and ask about a moment that went a little better.',
-      'If turn is r2: reflect the score (progress_0_to_10) together with the conversation so far, and ask one solution-focused question like "What makes it n and not 0?". If it is 0, affirm that they came this far and ask what would help it become 1.',
-      'reply: at most two sentences, under 170 characters, ending with exactly one question. Do not give advice or suggest methods yet.',
+      'The student listed what they tried to get closer to goal (or goal_station if empty), whether each helped, and how far along they feel (progress_0_to_10).',
+      'reply: briefly reflect what they tried together with the score (affirm specifically anything that helped), and end with one solution-focused question like "What makes it n and not 0?". If it is 0, thank them for being honest and ask what would help it become 1. At most two sentences, under 170 characters. No advice.',
+      'chips: 3 short answer options the student could just tap (each under 30 characters, in the student\'s voice, different from each other).',
     ].join('\n'),
   },
   examples: {
     ko: [
-      '학생이 goal_station에 가까워지려고 이미 해 봤을 법한 일 6개를 만들어. 절반은 공부와 관련된 것, 절반은 goal_station과 직접 관련된 것(예: "사람들을 웃게 하는 사람"이면 "발표 연습해 보기").',
-      '각 text는 "~하기"로 끝나는 짧은 말(15자 이내), tag는 목록에서 가장 맞는 것.',
+      'kind가 goals이면: goal_station이라는 사람이 되기 위해 중고등학생이 세울 만한 가깝고 구체적인 목표 6개. 절반은 공부(성적·습관), 절반은 goal_station과 직접 관련된 것(예: "사람들을 웃게 하는 사람"이면 "학교 축제 무대 서기"). 각 text는 "~하기"로 끝나는 짧은 말(15자 이내).',
+      'kind가 tried이면: 학생이 goal(없으면 goal_station)에 가까워지려고 이미 해 봤을 법한 일 6개. 절반은 공부와 관련된 것, 절반은 목표와 직접 관련된 것. 각 text는 "~하기"로 끝나는 짧은 말(15자 이내).',
+      'tag는 목록에서 가장 맞는 것.',
     ].join('\n'),
     en: [
-      'List 6 things a student might already have tried to move toward goal_station. Half about studying, half directly about goal_station (e.g. for "someone who makes people laugh": "practicing presentations").',
-      'Each text is a short gerund phrase under 30 characters; tag is the best fit from the list.',
+      'If kind is goals: 6 near, concrete goals a middle or high school student could set to become goal_station. Half about studying (grades, habits), half directly about goal_station (e.g. for "someone who makes people laugh": "performing at the school festival"). Each text is a short phrase under 30 characters.',
+      'If kind is tried: 6 things the student might already have tried to move toward goal (or goal_station). Half about studying, half directly about the goal. Each text is a short gerund phrase under 30 characters.',
+      'tag is the best fit from the list.',
     ].join('\n'),
   },
   ideas: {
     ko: [
-      'student_wants_to_change는 학생이 한 칸 더 가려고 바꾸고 싶은 것이야 (비어 있으면 shadow와 tried를 보고 판단해).',
+      'student_wants_to_change는 학생이 goal(없으면 goal_station)에 한 칸 더 가려고 바꾸고 싶은 것이야 (비어 있으면 shadow와 tried를 보고 판단해). 아이디어는 그 goal에 맞춰.',
       'reply: 학생이 바꾸고 싶다고 한 말을 짧게 반영하고, 도움 됐던 tried가 있으면 그 힘을 이어 가자고 한 뒤 "이런 방법들은 어때?"처럼 고르기를 권하는 말. 두 문장 이내, 90자 이내.',
       'ideas: 일주일 안에 해 볼 수 있는 서로 다른 방법 5개. 도움 된 tried는 더 발전시키고, 도움 안 된 tried와 같은 방식은 피해. 학습과학 근거(인출 연습, 간격 반복, 섞어 풀기, 만약-그러면 계획, 할 일 쪼개기, 방해 요소 치우기, 나에게 친절하게 말하기, 도움 요청)를 우선해.',
       '각 아이디어: name은 2~6글자, act는 "~한다"로 끝나는 한 문장(마침표 없이 40자 이내, 작고 구체적으로), tag는 목록에서 가장 맞는 것, why는 노바의 짧은 한마디(50자 이내).',
     ].join('\n'),
     en: [
-      'student_wants_to_change is what the student wants to change to move one step closer (if empty, use shadow and tried).',
+      'student_wants_to_change is what the student wants to change to move one step closer to goal (or goal_station) (if empty, use shadow and tried). Fit the ideas to that goal.',
       'reply: briefly reflect what they want to change; if something in tried helped, suggest building on that strength; then invite them to pick, like "How about these?". At most two sentences, under 170 characters.',
       'ideas: 5 different methods doable within one week. Build on what helped; avoid approaches like the ones that did not help. Prefer evidence-based strategies (retrieval practice, spacing, interleaving, implementation intentions, breaking tasks down, removing distractions, self-compassion, asking for help).',
       'Each idea: name = 2-4 words; act = what the student will do, written to follow "I will" (lowercase start, no period, under 60 characters, small and concrete); tag = best fit from the list; why = a short line from Nova (under 70 characters).',
@@ -309,8 +321,9 @@ const TASKS = {
 
 // [실행] 버튼으로 AI 연결 확인 (예시 입력 사용): 실행 로그에 코칭 한마디와 아이디어가 찍힌다
 function testIdeas() {
-  const base = { action: 'ideas', code: 'TEST', lang: 'ko', dest: '사람들을 웃게 하는 사람', shadow: ['숏폼', '시험 공포'], tried: [{ text: '폰 멀리 두기', good: true }, { text: '벼락치기', good: false }], r: 4 };
-  Logger.log(JSON.stringify(ideas(Object.assign({ task: 'coach', turn: 'r1', history: [] }, base)), null, 2));
+  const base = { action: 'ideas', code: 'TEST', lang: 'ko', dest: '사람들을 웃게 하는 사람', goal: '학교 축제 무대 서기', shadow: ['숏폼', '시험 공포'], tried: [{ text: '폰 멀리 두기', good: true }, { text: '벼락치기', good: false }], r: 4 };
+  Logger.log(JSON.stringify(ideas(Object.assign({ task: 'examples', kind: 'goals' }, base)), null, 2));
+  Logger.log(JSON.stringify(ideas(Object.assign({ task: 'coach', history: [] }, base)), null, 2));
   Logger.log(JSON.stringify(ideas(Object.assign({ task: 'ideas', text: '수학 시험 때 폰 때문에 집중이 안 돼' }, base)), null, 2));
 }
 
