@@ -125,6 +125,7 @@
   }
 
   window.Story = {
+    josa,
     init() {
       dialog = $('#dialog');
       nameEl = $('#dialog-name');

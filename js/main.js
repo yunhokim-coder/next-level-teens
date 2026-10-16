@@ -326,6 +326,7 @@
     Data.save.done.demo = true;
     Data.persist();
     $('#thanks-code').textContent = Data.save.code;
+    $('#thanks-routemap').hidden = !Data.save.ep6;
     $('#thanks-screen').hidden = false;
     Sound.play('clear');
   }
@@ -405,7 +406,7 @@
   }
 
   // ---------- 역 클리어: 다음 역이 있으면 이어서, 없으면 마지막 질문으로 ----------
-  const READY = [1, 2, 3, 4, 5];
+  const READY = [1, 2, 3, 4, 5, 6];
   function stopClear(ep) {
     Sound.play('clear');
     const replay = !!Data.save.done[ep];
@@ -419,7 +420,7 @@
     $('#clear-stop').textContent = `STOP ${ep}`;
     $('#clear-title').textContent = I18n.t(`clear.ep${ep}.title`);
     $('#clear-next').textContent = I18n.t(`clear.ep${ep}.next`);
-    $('#clear-demo').hidden = READY.includes(ep + 1);
+    $('#clear-demo').hidden = READY.includes(ep + 1) || ep === STOPS[STOPS.length - 1];
     $('#replay-btn').textContent = I18n.t(action === 'next' ? 'clear.toNext' : action === 'survey' ? 'clear.toSurvey' : 'map.open');
     $('#clear-map').hidden = action === 'map';
     $('#clear-screen').hidden = false;
@@ -761,7 +762,113 @@
     await stopClear(5);
   }
 
-  const EPISODES = { 1: () => ep1(), 2: () => ep2(), 3: () => ep3(), 4: () => ep4(), 5: () => ep5() };
+  // ---------- 6화: 노선도 완성 (GROW + 실행 의도) ----------
+  // 앞 화에서 모은 것: 종착역(G), 그림자(R), 우회 노선 카드
+  function story6() {
+    const sv = Data.save;
+    const L = I18n.lang === 'en' ? 'en' : 'ko';
+    const dest = sv.ep3 && sv.ep3.dest ? sv.ep3.dest : null;
+    const destLabel = dest && dest.id !== 'unknown' ? dest.label : I18n.t('ep3.fogStation');
+    const e4 = sv.ep4 && sv.ep4.cards && sv.ep4.cards.length ? sv.ep4 : { cards: [31, 16, 1], freq: {}, name: I18n.t('ep5.fallbackName') };
+    const order = Mamba.byFrequency(e4.cards, e4.freq || {});
+    const shadow = Mamba.join(Mamba.card(order[0])[L].word, e4.name);
+    const turns = sv.ep5 && sv.ep5.turns ? sv.ep5.turns : [];
+    const ids = [];
+    turns.filter((tn) => tn.hit).concat(turns.filter((tn) => !tn.hit)).forEach((tn) => {
+      if (!ids.includes(tn.c)) ids.push(tn.c);
+    });
+    const detours = ids.length ? ids : [24, 21, 28];
+    return { L, destLabel, order, shadow, detours };
+  }
+  function planText(pl) {
+    const L = I18n.lang === 'en' ? 'en' : 'ko';
+    return Story.josa(I18n.t('ep6.planSentence').replace('{if}', Mamba.card(pl.m)[L].word).replace('{then}', Battle.card(pl.c)[L].name));
+  }
+  function routeInfo() {
+    const sv = Data.save;
+    const st = story6();
+    const color = sv.disc && Quiz.types[sv.disc.primary] ? Quiz.types[sv.disc.primary].color : null;
+    const e6 = sv.ep6;
+    return {
+      passenger: Data.nameText(),
+      type: sv.disc ? I18n.t('hud.type').replace('{code}', `${sv.disc.primary}${sv.disc.secondary || ''}`) : '',
+      avatar: sv.avatar || null,
+      color,
+      station: e6.station,
+      ways: e6.ways,
+      dest: st.destLabel,
+      shadow: st.shadow,
+      plan: planText(e6.plan),
+      detours: st.detours.map((id) => Battle.card(id)[st.L].name),
+    };
+  }
+
+  async function ep6() {
+    await Promise.all([Mamba.load(), Battle.load()]);
+    const sv = Data.save;
+    const st = story6();
+    const color = sv.disc && Quiz.types[sv.disc.primary] ? Quiz.types[sv.disc.primary].color : null;
+    await Game.fadeTo(1);
+    Game.scene('platform', { phase: 0.8 });
+    Game.setChar(sv.avatar || null, color);
+    if (sv.ep3 && sv.ep3.dest) showDest(sv.ep3.dest);
+    Game.signName = '';
+    Game.lookAt(480);
+    await Game.fadeTo(0);
+    Sound.play('rumble');
+    await say([n('ep6.n1'), n('ep6.n2')]);
+    Sound.play('select');
+    Game.novaEnter();
+    await sleep(700);
+    await say([
+      nova('ep6.nova1'),
+      nova('ep6.g', { vars: { dest: st.destLabel } }),
+      nova('ep6.r', { vars: { name: st.shadow } }),
+      nova('ep6.o'),
+    ]);
+    const prev = sv.ep6 || {};
+    const w = await Finale.ways(prev.ways);
+    await say([nova('ep6.oDone', { vars: { w1: w.ways[0] } }), nova('ep6.w')]);
+    const pl = await Finale.plan(st.order.map((id) => Mamba.card(id)), st.detours.map((id) => Battle.card(id)), prev.plan);
+    await say([nova('ep6.wDone', { vars: { plan: planText(pl) } }), nova('ep6.s1')]);
+    const short = st.destLabel.length > 8 ? st.destLabel.slice(0, 8) : st.destLabel;
+    const ideas = I18n.t('ep6.stationIdeas').split('|').map((x) => x.replace('{dest}', short));
+    const named = await Finale.station(ideas, prev.station);
+
+    // 이름판에 이름이 들어가고 해가 뜬다
+    Game.signName = named.name;
+    Sound.play('sparkle');
+    for (let p = 0.8; p <= 1.0001; p += 0.02) {
+      Game.phase(p);
+      await sleep(50);
+    }
+    Sound.play('powerup');
+    await say([
+      n('ep6.signLit', { vars: { name: named.name } }),
+      nova('ep6.nova2', { vars: { station: named.name, dest: st.destLabel } }),
+      nova('ep6.nova3'),
+    ]);
+    Data.save.ep6 = { ways: w.ways, plan: pl, station: named.name };
+    Data.persist();
+    const hit = Battle.overlap(Battle.card(pl.c).tags, Mamba.card(pl.m).tags).length > 0;
+    Data.send('ep6_result', {
+      ways_ideas: w.ideas.map((b) => (b ? 1 : 0)).join(''),
+      plan: `${pl.m}>${pl.c}`,
+      plan_hit: hit ? 1 : 0,
+      named: named.idea >= 0 ? `idea${named.idea}` : 'own',
+    });
+    await Finale.show(routeInfo(), (fmt) => Data.send('routemap', { format: fmt }));
+
+    // 첫 열차가 해를 향해 출발한다
+    await Game.fadeTo(1);
+    Game.scene('arrival', { phase: 1, leave: true });
+    await Game.fadeTo(0);
+    Sound.play('rumble');
+    await say([n('ep6.depart', { wait: 3200 }), nova('ep6.last')]);
+    await stopClear(6);
+  }
+
+  const EPISODES = { 1: () => ep1(), 2: () => ep2(), 3: () => ep3(), 4: () => ep4(), 5: () => ep5(), 6: () => ep6() };
 
   function showTitle() {
     Game.scene('title', { phase: 0 });
@@ -801,6 +908,13 @@
       Sound.unlock && Sound.unlock();
       Sound.play('start');
       start(true);
+    });
+    $('#thanks-routemap').addEventListener('click', async () => {
+      Sound.play('select');
+      $('#thanks-screen').hidden = true;
+      await Promise.all([Mamba.load(), Battle.load()]);
+      await Finale.show(routeInfo(), (fmt) => Data.send('routemap', { format: fmt, replay: true }));
+      $('#thanks-screen').hidden = false;
     });
     $('#thanks-replay').addEventListener('click', () => {
       Sound.play('select');

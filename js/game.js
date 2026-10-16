@@ -171,7 +171,7 @@
 
   function trainSide(x, y, len) {
     r(x, y, len, 18, '#c7cbd9');
-    r(x, y + 12, len, 3, C.line);
+    r(x, y + 12, len, 3, S.lineColor || C.line);
     r(x, y, len, 1, '#e9ecf4');
     for (let wx = x + 8; wx < x + len - 10; wx += 16) r(wx, y + 3, 10, 6, '#ffe39a');
     r(x - 6, y + 2, 6, 14, '#aeb3c4');
@@ -323,6 +323,23 @@
     }
     if (S.nova) drawNova(px(S.nova.x), 76);
     if (S.jam) drawJam(px(S.jam.x), S.jam.y);
+    // 아침빛: 천장 틈으로 햇살이 비스듬히 들어온다 (6화 해돋이)
+    if (lit > 0.5 && !S.dream) {
+      const a = (lit - 0.5) * 2;
+      g.globalAlpha = 0.18 * a;
+      r(0, 0, W, H, '#ffb070');
+      for (let x = 40; x < PANO; x += 120) {
+        g.globalAlpha = 0.16 * a;
+        g.fillStyle = '#ffe2a8';
+        g.beginPath();
+        g.moveTo(px(x), 0);
+        g.lineTo(px(x + 26), 0);
+        g.lineTo(px(x - 40), 180);
+        g.lineTo(px(x - 80), 180);
+        g.fill();
+      }
+      g.globalAlpha = 1;
+    }
   }
 
   // ---------- 노바 (야간 안내원) ----------
@@ -887,10 +904,11 @@
     sky(S.phase);
     skyline(S.phase);
     elevated(S.phase);
-    const tx = 330 - Math.min(1, S.train) * 250;
+    // 들어올 때는 오른쪽에서 멈춰 서고, 떠날 때(6화)는 나를 태우고 왼쪽으로 달려 나간다
+    const tx = S.leave ? 80 - Math.max(0, S.train - 1) * 420 : 330 - Math.min(1, S.train) * 250;
     trainSide(tx, 109, 200);
     // 승강장에 선 나 (작게)
-    drawWalkerSmall(60, 127);
+    if (!S.leave) drawWalkerSmall(60, 127);
   }
 
   function drawWalkerSmall(x, feetY) {
@@ -938,7 +956,7 @@
     S.detour += (S.detourT - S.detour) * Math.min(1, dt * 2.5);
     S.hp += (S.hpT - S.hp) * Math.min(1, dt * 3);
     if (S.run > 0 && S.run < 1.5) S.run += dt * 0.28;
-    if (S.scene === 'arrival') S.train = Math.min(1, S.train + dt * 0.35);
+    if (S.scene === 'arrival') S.train = S.leave ? Math.min(3, S.train + (S.train < 1.6 ? dt * 0.25 : dt * 0.6)) : Math.min(1, S.train + dt * 0.35);
     if (S.shadow !== undefined) S.shadow += ((S.shadowT || 0) - S.shadow) * Math.min(1, dt * 1.2);
     if ((S.scene === 'underpass' || S.scene === 'track') && S.walk) {
       const w = S.walker;
@@ -1049,7 +1067,10 @@
       if (name === 'underpass') {
         S.walker = { x: 40, dir: 1, moving: false, target: null, step: 0 };
       }
-      if (name === 'arrival') S.train = 0;
+      if (name === 'arrival') {
+        S.leave = !!opts.leave;
+        S.train = S.leave ? 1 : 0;
+      }
       S.speed = S.speedT = 1;
       S.alarm = false;
       S.beam = S.hit = S.lunge = 0;
