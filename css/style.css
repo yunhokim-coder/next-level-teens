@@ -182,3 +182,5 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 .avatar-opt canvas { width: 72px; height: 96px; image-rendering: pixelated; }
 .avatar-opt:hover, .avatar-opt:focus-visible { border-color: var(--line); outline: none; background: #0f2e2b; }
 @media (max-width: 420px) { .avatar-options { grid-template-columns: repeat(2, 1fr); } }
+
+.portrait-type { align-self: flex-start; margin-top: 2px; padding: 1px 6px; font-size: 11px; font-weight: 700; color: #0b0c16; background: var(--ptype, var(--line)); letter-spacing: 0.04em; }

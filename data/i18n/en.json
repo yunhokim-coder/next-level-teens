@@ -14,7 +14,8 @@
   },
   "hud": {
     "passenger": "PASSENGER",
-    "sound": "Sound on/off"
+    "sound": "Sound on/off",
+    "type": "Type {code}"
   },
   "look": {
     "left": "Left",

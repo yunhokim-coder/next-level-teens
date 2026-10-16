@@ -27,6 +27,18 @@
     $('#portrait').style.borderLeftColor = color || '';
   }
 
+  // 초상화 옆 유형 표시: 1·2순위를 붙여서 (예: SC형)
+  function showType(disc) {
+    const el = $('#portrait-type');
+    if (!disc) {
+      el.hidden = true;
+      return;
+    }
+    el.textContent = I18n.t('hud.type').replace('{code}', `${disc.primary}${disc.secondary || ''}`);
+    el.style.setProperty('--ptype', Quiz.types[disc.primary].color);
+    el.hidden = false;
+  }
+
   let toastTimer = null;
   function toast(msg, ms = 3800) {
     const el = $('#toast');
@@ -236,6 +248,7 @@
       const tp = Quiz.types[sv.disc.primary];
       Game.setChar(sv.avatar || null, tp.color);
       drawPortrait(sv.avatar || null, tp.color);
+      showType(sv.disc);
     }
   }
 
@@ -507,6 +520,7 @@
     // 성향 결과: 사람 역할 캐릭터 카드, 노선색 확정
     await say([nova('ep2.nova4')]);
     await showResult(res);
+    showType(res);
     // 겉모습: 성향과 상관없이 마음에 드는 동물을 고른다 (옷은 내 노선색)
     await say([nova('ep2.nova5', { vars: { line: tp[L].line } }), nova('ep2.nova6')]);
     const avatar = await pickAvatar(tp.color);
@@ -541,6 +555,7 @@
     $('#portrait-name').textContent = '???';
     Game.setChar(null, null);
     drawPortrait();
+    showType(null);
     $('#title-screen').hidden = false;
   }
 

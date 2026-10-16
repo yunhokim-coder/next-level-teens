@@ -14,7 +14,8 @@
   },
   "hud": {
     "passenger": "승객",
-    "sound": "소리 켜기/끄기"
+    "sound": "소리 켜기/끄기",
+    "type": "{code}형"
   },
   "look": {
     "left": "왼쪽",
