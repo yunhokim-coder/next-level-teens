@@ -51,6 +51,12 @@
     lids: 1, // 1 뜬 눈, 0 감은 눈
     lidsT: 1,
     dream: false,
+    ride: 0, // 창밖 풍경이 흘러간 거리
+    speed: 1, // 열차 속도 1 달림, 0 멈춤
+    speedT: 1,
+    quake: 0, // 화면 흔들림 세기
+    alarm: false,
+    wreck: -1, // 선로가 부서진 뒤 흐른 시간 (-1 아직)
   };
 
   // ---------- 그리기 도구 ----------
@@ -412,7 +418,8 @@
   // ---------- 열차 안 (1인칭, 맞은편 창문) ----------
   // 창문 밖으로 도시가 흐르고, 터널에 들어가면 창이 어두워지며 내 모습이 비친다.
   function drawTrain() {
-    const shake = Math.round(Math.sin(t * 22) * 0.6);
+    const shake = Math.round(Math.sin(t * 22) * 0.6 * S.speed);
+    const lurch = Math.max(0, S.speed - S.speedT) * 10; // 급정거: 손잡이가 앞으로 쏠린다
     // 천장, 손잡이 봉, 손잡이
     r(0, 0, W, 22, '#d9dde8');
     for (let x = 10; x < W; x += 60) r(x, 4, 40, 3, '#ffffff');
@@ -420,7 +427,7 @@
     r(0, 22, W, 2, '#9aa0b4');
     r(0, 28, W, 2, '#b8bdcc');
     for (let x = 30; x < W; x += 36) {
-      const sw = Math.round(Math.sin(t * 2 + x) * 1.5);
+      const sw = Math.round(Math.sin(t * 2 + x) * 1.5 * (0.3 + S.speed * 0.7) - lurch);
       r(x + sw, 30, 1, 8, '#7a8094');
       r(x - 3 + sw, 38, 7, 6, '#7a8094');
       r(x - 2 + sw, 39, 5, 4, '#d9dde8');
@@ -442,8 +449,8 @@
     // 창밖: 도시 (터널이면 어둠과 지나가는 불빛)
     if (S.tunnel < 1) {
       g.globalAlpha = 1 - S.tunnel;
-      r(wx, wy, ww, wh, '#141a3c');
-      const off = (t * 60) % 64;
+      r(wx, wy, ww, wh, mix('#141a3c', '#b9787a', Math.max(0, S.phase - 0.3)));
+      const off = S.ride % 64;
       const rand = rng(31);
       for (let k = -1; k < 6; k++) {
         const bx = wx + k * 64 - off;
@@ -488,6 +495,13 @@
     r(0, 138, W, 42, '#3a3f52');
     for (let x = 0; x < W; x += 24) r(x, 138, 1, 42, '#33384a');
     if (S.nova) drawNova(S.nova.x - (S.cam - W / 2), 52);
+    // 비상: 천장 등이 붉게 깜빡인다
+    if (S.alarm && Math.floor(t * 3) % 2 === 0) {
+      for (let x = 10; x < W; x += 60) r(x, 4, 40, 3, '#ff4a5a');
+      g.globalAlpha = 0.16;
+      r(0, 0, W, H, '#ff2a3a');
+      g.globalAlpha = 1;
+    }
   }
 
   // ---------- 환승역 (1인칭, 커다란 노선도 전광판, 천창 너머로 새벽) ----------
@@ -571,16 +585,27 @@
     for (let x = 0; x < TRACK; x += 14) r(px(x), 124, 8, 10, '#1b1712');
     r(0, 122, W, 2, '#8b90a6');
     r(0, 131, W, 2, '#8b90a6');
-    // 멈춰 선 내 열차
+    // 급정거한 내 열차 (왼쪽, 앞머리가 오른쪽). 문이 열려 있다
     const col = S.lineColor || C.line;
-    const tx = px(470);
-    r(tx, 94, 190, 26, '#c7cbd9');
-    r(tx, 110, 190, 3, col);
-    for (let k = 0; k < 10; k++) r(tx + 10 + k * 18, 98, 11, 8, '#ffe39a');
-    r(tx - 8, 96, 8, 22, '#aeb3c4');
-    r(tx - 8, 102, 3, 4, S.shadow > 0.5 && Math.floor(t * 4) % 2 ? '#ff4a5a' : '#fff6c8');
+    const tx = px(-60);
+    r(tx, 94, 310, 26, '#c7cbd9');
+    r(tx, 110, 310, 3, col);
+    for (let k = 0; k < 16; k++) if (k !== 9) r(tx + 10 + k * 18, 98, 11, 8, '#ffe39a');
+    r(tx + 9 * 18 + 8, 97, 15, 23, '#1b1f2e');
+    r(tx + 310, 96, 8, 22, '#aeb3c4');
+    r(tx + 315, 102, 3, 4, (S.alarm || S.shadow > 0.5) && Math.floor(t * 4) % 2 ? '#ff4a5a' : '#fff6c8');
+    // 부서진 선로: 레일이 끊기고 바닥이 꺼진다
+    if (S.wreck >= 0) {
+      const gx = px(350);
+      r(gx, 112, 80, 26, '#05060b');
+      r(gx - 6, 120, 8, 3, '#8b90a6');
+      r(gx - 2, 116, 5, 3, '#8b90a6');
+      r(gx + 78, 125, 8, 3, '#8b90a6');
+      r(gx + 76, 129, 5, 3, '#8b90a6');
+    }
     // 그림자 (블랙맘바)
     if (S.shadow > 0.01) drawShadow(px(390), S.shadow);
+    if (S.wreck >= 0) drawRocks(px(390));
     // 승강장
     r(0, 136, W, 44, mix('#2a2f42', '#4a5068', S.phase));
     r(0, 136, W, 4, '#c9a43a');
@@ -589,6 +614,36 @@
     if (S.nova) drawNova(px(S.nova.x), 128, 1);
     const step = w.moving ? Math.floor(w.step) % 2 : -1;
     Chars.full(g, S.char, px(w.x), 170, 1.2, S.lineColor || '#565c70', step);
+  }
+
+  // 무너져 쌓이는 바위: 하나씩 떨어져 선로 위에 더미를 만든다
+  const ROCKS = (() => {
+    const rand = rng(77);
+    const out = [];
+    const rows = [6, 5, 4, 3, 2];
+    let i = 0;
+    rows.forEach((n, row) => {
+      for (let k = 0; k < n; k++) {
+        const sz = 12 + Math.floor(rand() * 7);
+        out.push({ x: (k - (n - 1) / 2) * 15 + Math.floor(rand() * 5) - 2, y: 130 - row * 11, s: sz, d: i * 0.09 + rand() * 0.1 });
+        i++;
+      }
+    });
+    return out;
+  })();
+  function drawRocks(x) {
+    ROCKS.forEach((k) => {
+      const tt = S.wreck - k.d;
+      if (tt <= 0) return;
+      const y = Math.min(k.y, -20 + 260 * tt * tt);
+      const rx = Math.round(x + k.x - k.s / 2);
+      const ry = Math.round(y - k.s);
+      r(rx, ry, k.s, k.s, '#5d5650');
+      r(rx + 2, ry - 2, k.s - 4, 2, '#5d5650');
+      r(rx + 2, ry, k.s - 6, 3, '#857c72');
+      r(rx, ry + k.s - 3, k.s, 3, '#3b3631');
+      r(rx + k.s - 3, ry + 2, 3, k.s - 2, '#47413b');
+    });
   }
 
   // 선로에서 솟는 검은 그림자: 물결치는 몸통, 노란 눈. 고른 카드가 많을수록 크다.
@@ -754,6 +809,10 @@
       S.jam.a = Math.min(1, (S.jam.a || 0) + dt * 2);
       S.jam.x += (S.jam.tx - S.jam.x) * Math.min(1, dt * 2);
     }
+    S.speed += (S.speedT - S.speed) * Math.min(1, dt * 2.2);
+    S.ride += dt * 60 * S.speed;
+    S.quake = Math.max(0, S.quake - dt * 0.9);
+    if (S.wreck >= 0) S.wreck += dt;
     if (S.scene === 'arrival') S.train = Math.min(1, S.train + dt * 0.35);
     if (S.shadow !== undefined) S.shadow += ((S.shadowT || 0) - S.shadow) * Math.min(1, dt * 1.2);
     if ((S.scene === 'underpass' || S.scene === 'track') && S.walk) {
@@ -783,6 +842,9 @@
   }
 
   function draw() {
+    const q = S.quake * 4;
+    g.save();
+    if (q > 0.2) g.translate(Math.round((Math.random() - 0.5) * q), Math.round((Math.random() - 0.5) * q));
     if (S.scene === 'title') drawTitle();
     else if (S.scene === 'platform') {
       if (S.dream) S.cam = S.camT + Math.sin(t * 1.2) * 6;
@@ -800,6 +862,7 @@
       g.globalAlpha = 1;
     }
     if (S.hands && (S.scene === 'platform' || S.scene === 'train' || S.scene === 'hub') && !S.dream) drawHands();
+    g.restore();
     if (S.lids < 0.999) drawLids();
     if (S.fade > 0.01) {
       g.globalAlpha = S.fade;
@@ -861,8 +924,12 @@
         S.walker = { x: 40, dir: 1, moving: false, target: null, step: 0 };
       }
       if (name === 'arrival') S.train = 0;
+      S.speed = S.speedT = 1;
+      S.alarm = false;
+      S.wreck = -1;
+      S.quake = 0;
       if (name === 'track') {
-        S.walker = { x: 50, dir: 1, moving: false, target: null, step: 0 };
+        S.walker = { x: 104, dir: 1, moving: false, target: null, step: 0 };
         S.shadow = S.shadowT = 0;
         S.shadowName = '';
       }
@@ -882,6 +949,23 @@
     },
     set destName(v) {
       S.destName = v;
+    },
+    // 급정거: 속도가 0으로, 화면이 흔들리고 비상등이 켜진다
+    brake() {
+      S.speedT = 0;
+      S.quake = 1.4;
+      S.alarm = true;
+    },
+    alarm(on) {
+      S.alarm = on;
+    },
+    quake(v) {
+      S.quake = v;
+    },
+    // 선로가 부서지고 바위가 쌓인다
+    wreck() {
+      S.wreck = 0;
+      S.quake = 1.6;
     },
     tunnel(on) {
       S.tunnelT = on ? 1 : 0;
@@ -963,8 +1047,7 @@
         if (hit && this.onHot) this.onHot(hit.id);
         return;
       }
-      if (S.shadow !== undefined) S.shadow += ((S.shadowT || 0) - S.shadow) * Math.min(1, dt * 1.2);
-    if ((S.scene === 'underpass' || S.scene === 'track') && S.walk) {
+      if (S.scene === 'underpass' && S.walk) {
         const L = Math.max(0, Math.min(TUNNEL - W, S.walker.x - W / 2));
         const near = POSTERS.find((q) => Math.abs(p.x + L - q.x) < 24 && p.y < 90);
         if (near && Math.abs(S.walker.x - near.x) < 34) {

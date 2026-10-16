@@ -599,22 +599,41 @@
     await Mamba.load();
     const sv = Data.save;
     const color = sv.disc && Quiz.types[sv.disc.primary] ? Quiz.types[sv.disc.primary].color : null;
+    // 달리던 열차가 갑자기 멈춘다 (1인칭)
+    await Game.fadeTo(1);
+    Game.scene('train', { phase: 0.6 });
+    Game.setChar(sv.avatar || null, color);
+    await Game.fadeTo(0);
+    await say([n('ep4.t1'), n('ep4.t2')]);
+    Game.brake();
+    Sound.play('screech');
+    await sleep(900);
+    Sound.play('crash');
+    await say([
+      { who: 'narrator', key: 'ep4.t3', wait: 600 },
+      { who: 'narrator', key: 'ep4.t4', do: () => Sound.play('alarm') },
+      nova('ep4.t5'),
+    ]);
+    // 밖으로 나가 보니 (3인칭)
     await Game.fadeTo(1);
     Game.scene('track', { phase: 0.65 });
     Game.setChar(sv.avatar || null, color);
+    Game.alarm(true);
     await Game.fadeTo(0);
     await say([n('ep4.n1'), n('ep4.n2')]);
     // 직접 걸어서 열차 앞쪽으로
     await walkTunnel('walk.hintTrack');
     Sound.play('rumble');
     Game.shadow(0.7, 3);
+    Game.quake(0.6);
     await sleep(1200);
-    Game.novaSit(236);
+    Game.novaSit(262);
     await say([n('ep4.n3'), nova('ep4.nova1'), nova('ep4.nova2')]);
 
     const prev = sv.ep4 || {};
     const ids = await Mamba.pick(prev.cards || []);
     const freq = await Mamba.frequency(ids, prev.freq || {});
+    Game.alarm(false);
     // 고른 것들이 모여 그림자가 커진다
     Game.shadow(1, ids.length);
     Sound.play('rumble');
@@ -630,9 +649,18 @@
       { who: 'shadow', name: named.full, key: 'ep4.shadow1', vars: { name: named.full, desc: top[L].desc } },
       nova('ep4.nova4', { vars: { name: named.full } }),
       nova('ep4.nova5', { vars: { name: named.full } }),
-      { who: 'narrator', key: 'ep4.n4', do: () => Game.shadow(0.35) , wait: 1200 },
-      nova('ep4.nova6', { vars: { name: named.full } }),
     ]);
+    // 이름이 불리자 그림자가 날뛰며 선로를 부순다
+    Game.shadow(1.15);
+    Sound.play('rumble');
+    Game.quake(0.8);
+    await say([{ who: 'shadow', name: named.full, key: 'ep4.shadow2', wait: 300 }]);
+    Game.wreck();
+    Sound.play('crash');
+    await sleep(500);
+    Game.shadow(0.12);
+    await sleep(1600);
+    await say([n('ep4.n4'), nova('ep4.nova6', { vars: { name: named.full } }), nova('ep4.nova7')]);
     Data.save.ep4 = { cards: ids, freq, name: named.name, full: named.full, idea: named.idea };
     Data.persist();
     Data.send('ep4_result', {

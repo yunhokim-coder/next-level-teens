@@ -237,8 +237,8 @@
     "destEmpty": "Write your station or pick an example."
   },
   "ep4": {
-    "n1": "An elevated platform. The eastern sky is starting to glow. A train in your line color is waiting.",
-    "n2": "...But it isn't moving. Something seems to be happening up front.",
+    "n1": "You step out through the open door. High above the city, the eastern sky is red. The emergency light is still blinking.",
+    "n2": "Something is writhing on the track in front of the train.",
     "n3": "Something black rises over the tracks.",
     "nova1": "That's the shadow that blocks the track. It looks different for everyone. Face yours and you can get around it.",
     "nova2": "Pick the cards that block you these days. At least one each from heart, thought and action, up to three each.",
@@ -247,8 +247,8 @@
     "shadow1": "...{desc}. So just stop for today.",
     "nova4": "{name}. Hear that? That isn't you. It's just something that blocks you.",
     "nova5": "The problem is {name}, not you. Seen that way, you can deal with it.",
-    "n4": "When its name is called, the shadow shrinks a little. But it is still on the track.",
-    "nova6": "At the next stop, let's find a detour around {name}. There are more ways than you think.",
+    "n4": "CRASH! The shadow slams the track. The line snaps, and rocks come tumbling down on top of it. The shadow hides behind them.",
+    "nova6": "...The way is blocked. But it also means {name} is scared.",
     "tag": "Shadows on the track",
     "title": "What blocks you these days?",
     "lead": "Pick at least one each from heart, thought and action, up to three each.",
@@ -268,6 +268,13 @@
     "nameIdeas": "Shadow|Monster|Goblin|Gremlin",
     "nameError": "Please write or pick a name.",
     "nameGo": "Call it this",
-    "namePreview": "→ {full}"
+    "namePreview": "→ {full}",
+    "t1": "Inside the train on the elevated line. Dawn is breaking outside the window.",
+    "t2": "The next stop should be coming up soon. But then—",
+    "t3": "SCREEEECH— THUD!! The train lurches hard and stops dead.",
+    "t4": "The lights flash red and an alarm starts blaring.",
+    "t5": "What was that?! Something's up ahead. Let's go look!",
+    "shadow2": "...You think giving me a name changes anything? You're not getting through.",
+    "nova7": "There's more than one line. At the next stop, let's find a detour around these rocks."
   }
 }

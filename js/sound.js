@@ -124,6 +124,20 @@
       noise(0.8, 0.1);
       tone(70, 0.8, { type: 'sawtooth', vol: 0.05, slide: -30 });
     },
+    screech: () => {
+      tone(2200, 1.4, { type: 'sawtooth', vol: 0.025, slide: -1400 });
+      tone(1650, 1.4, { type: 'square', vol: 0.015, slide: -900 });
+      noise(1.4, 0.07);
+    },
+    crash: () => {
+      noise(1.2, 0.18);
+      tone(60, 1.2, { type: 'sawtooth', vol: 0.09, slide: -35 });
+      tone(110, 0.5, { type: 'square', vol: 0.05, slide: -60, delay: 0.15 });
+    },
+    alarm: () => [0, 1, 2].forEach((i) => {
+      tone(880, 0.18, { vol: 0.04, delay: i * 0.42 });
+      tone(660, 0.18, { vol: 0.04, delay: i * 0.42 + 0.2 });
+    }),
     powerup: () => [392, 523, 659, 784, 1047].forEach((f, i) => tone(f, 0.1, { vol: 0.05, delay: i * 0.07 })),
     clear: () => [523, 523, 784, 1047].forEach((f, i) => tone(f, i === 3 ? 0.4 : 0.14, { delay: i * 0.15 })),
   };
