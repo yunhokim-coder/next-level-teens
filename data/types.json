@@ -4,18 +4,24 @@
     "ko": {
       "line": "레드 라인",
       "name": "직진 급행",
-      "animal": "호랑이",
       "summary": "목표가 보이면 멈추지 않고 달린다. 빠르고, 결정이 분명하다.",
-      "strengths": ["추진력", "결단력", "도전 정신"],
+      "strengths": [
+        "추진력",
+        "결단력",
+        "도전 정신"
+      ],
       "watch": "속도를 내다 주변을 놓치거나, 막히면 확 짜증이 날 수 있어.",
       "study": "목표를 작게 쪼개 '오늘 끝낼 것'을 정하면 급행의 힘이 제일 잘 나와."
     },
     "en": {
       "line": "Red Line",
       "name": "The Express",
-      "animal": "Tiger",
       "summary": "Once you see the goal, you don't stop. Fast and decisive.",
-      "strengths": ["Drive", "Decisiveness", "Daring"],
+      "strengths": [
+        "Drive",
+        "Decisiveness",
+        "Daring"
+      ],
       "watch": "At full speed you may miss what's around you, or get frustrated when blocked.",
       "study": "Break goals into 'done today' pieces. That's where the express runs best."
     }
@@ -25,18 +31,24 @@
     "ko": {
       "line": "그린 라인",
       "name": "모두를 태우는 순환선",
-      "animal": "턱시도 고양이",
       "summary": "사람을 모으고 분위기를 살린다. 함께할 때 에너지가 커진다.",
-      "strengths": ["표현력", "친화력", "긍정 에너지"],
+      "strengths": [
+        "표현력",
+        "친화력",
+        "긍정 에너지"
+      ],
       "watch": "재미가 없으면 금방 흥미가 식고, 정리는 미루기 쉬워.",
       "study": "친구에게 설명하거나 같이 공부하면 순환선은 멈추지 않아."
     },
     "en": {
       "line": "Green Line",
       "name": "The Loop Line",
-      "animal": "Tuxedo cat",
       "summary": "You bring people together and lift the mood. Your energy grows with others.",
-      "strengths": ["Expression", "Friendliness", "Positive energy"],
+      "strengths": [
+        "Expression",
+        "Friendliness",
+        "Positive energy"
+      ],
       "watch": "When it stops being fun, interest fades fast, and tidying up gets put off.",
       "study": "Explain things to a friend or study together. The loop keeps running."
     }
@@ -45,42 +57,72 @@
     "color": "#f5d33f",
     "ko": {
       "line": "옐로 라인",
-      "name": "늘 같은 시간의 막차",
-      "animal": "토끼",
+      "name": "모든 역에 서는 완행열차",
       "summary": "꾸준하고 믿음직하다. 주변 사람을 편하게 해 준다.",
-      "strengths": ["꾸준함", "배려", "인내심"],
+      "strengths": [
+        "꾸준함",
+        "배려",
+        "인내심"
+      ],
       "watch": "변화가 갑자기 오면 불안하고, 싫다는 말을 잘 못 할 수 있어.",
-      "study": "매일 같은 시간, 같은 자리에서 짧게. 루틴이 막차의 힘이야."
+      "study": "매일 같은 시간, 같은 자리에서 짧게. 한 역씩 꾸준히 가는 게 완행의 힘이야."
     },
     "en": {
       "line": "Yellow Line",
-      "name": "The Last Train, Always On Time",
-      "animal": "Rabbit",
+      "name": "The Local, Stopping at Every Station",
       "summary": "Steady and dependable. People feel at ease around you.",
-      "strengths": ["Consistency", "Care", "Patience"],
+      "strengths": [
+        "Consistency",
+        "Care",
+        "Patience"
+      ],
       "watch": "Sudden change can make you uneasy, and saying no can be hard.",
-      "study": "Same time, same place, short sessions. Routine is your power."
+      "study": "Same time, same place, short sessions. Steady, stop by stop, is your power."
     }
   },
   "C": {
     "color": "#3f8cff",
     "ko": {
       "line": "블루 라인",
-      "name": "시간표를 짜는 기관사",
-      "animal": "안경 쓴 기관사와 AI 로봇",
+      "name": "시간표대로 달리는 정시 열차",
       "summary": "정확하고 깊게 생각한다. 계획과 원리를 알면 강해진다.",
-      "strengths": ["분석력", "꼼꼼함", "계획력"],
+      "strengths": [
+        "분석력",
+        "꼼꼼함",
+        "계획력"
+      ],
       "watch": "완벽하지 않으면 시작을 미루거나, 실수에 오래 마음 쓸 수 있어.",
-      "study": "완벽 대신 '먼저 70%'. 계획표에 시작 시간만 적어도 기관사는 출발해."
+      "study": "완벽 대신 '먼저 70%'. 계획표에 시작 시간만 적어도 정시 열차는 출발해."
     },
     "en": {
       "line": "Blue Line",
-      "name": "The Timetable Driver",
-      "animal": "Driver with glasses and an AI robot",
+      "name": "The On-Time Train",
       "summary": "Precise and deep-thinking. You get stronger when you know the plan and the why.",
-      "strengths": ["Analysis", "Thoroughness", "Planning"],
+      "strengths": [
+        "Analysis",
+        "Thoroughness",
+        "Planning"
+      ],
       "watch": "If it can't be perfect you may delay starting, or dwell on mistakes.",
-      "study": "Aim for 'first 70%' instead of perfect. Just writing a start time gets you moving."
+      "study": "Aim for 'first 70%' instead of perfect. Just writing a start time gets you rolling."
+    }
+  },
+  "avatars": {
+    "tiger": {
+      "ko": "호랑이",
+      "en": "Tiger"
+    },
+    "cat": {
+      "ko": "턱시도 고양이",
+      "en": "Tuxedo cat"
+    },
+    "rabbit": {
+      "ko": "토끼",
+      "en": "Rabbit"
+    },
+    "dog": {
+      "ko": "안경 강아지",
+      "en": "Dog with glasses"
     }
   }
 }

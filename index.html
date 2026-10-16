@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>NEXT LINE</title>
   <meta name="description" content="NEXT LINE: 공부, 내일의 역">
-  <meta name="app-version" content="20261017b">
+  <meta name="app-version" content="20261017d">
   <link rel="preload" href="assets/fonts/Galmuri11.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=20261017b">
+  <link rel="stylesheet" href="css/style.css?v=20261017d">
 </head>
 <body>
   <div id="app">
@@ -31,7 +31,10 @@
           <div class="logo-route" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
           <div class="logo-sign"><span class="logo-sign-tag">NEXT STOP</span><span class="logo-sub" data-i18n="title.sub"></span></div>
         </div>
-        <button id="start-btn" class="press" type="button" data-i18n="title.start"></button>
+        <div class="title-btns">
+          <button id="start-btn" class="press" type="button" data-i18n="title.start"></button>
+          <button id="new-btn" class="press-sub" type="button" hidden data-i18n="title.new"></button>
+        </div>
         <div class="credit" data-i18n="title.credit"></div>
       </div>
 
@@ -137,6 +140,26 @@
         </div>
       </div>
 
+      <!-- 노선도 (목차): 지난 역은 다시 보기, 다음 역은 열림, 그 뒤는 잠김 -->
+      <div id="map-screen" class="overlay" hidden>
+        <div class="panel form-panel map-panel">
+          <div class="clear-stop" data-i18n="map.tag"></div>
+          <h2 id="map-title"></h2>
+          <ol id="map-list" class="map-list"></ol>
+          <button id="map-survey" class="btn btn-primary" type="button" hidden data-i18n="clear.toSurvey"></button>
+        </div>
+      </div>
+
+      <!-- 2화 겉모습 고르기: 성향과 상관없이 동물 4종 중 하나 -->
+      <div id="avatar-screen" class="overlay" hidden>
+        <div class="panel form-panel">
+          <div class="clear-stop" data-i18n="avatar.tag"></div>
+          <h2 data-i18n="avatar.title"></h2>
+          <p class="muted" data-i18n="avatar.lead"></p>
+          <div id="avatar-options" class="avatar-options"></div>
+        </div>
+      </div>
+
       <!-- 끝 인사 -->
       <div id="thanks-screen" class="overlay" hidden>
         <div class="panel">
@@ -144,7 +167,7 @@
           <h2 data-i18n="thanks.title"></h2>
           <p data-i18n="thanks.body"></p>
           <p class="muted"><span data-i18n="setup.code"></span> <strong id="thanks-code"></strong></p>
-          <button id="thanks-replay" class="btn" type="button" data-i18n="clear.replay"></button>
+          <button id="thanks-replay" class="btn" type="button" data-i18n="map.open"></button>
         </div>
       </div>
 
@@ -156,6 +179,7 @@
           <p id="clear-next"></p>
           <p class="muted" id="clear-demo" data-i18n="clear.demo"></p>
           <button id="replay-btn" class="btn btn-primary" type="button"></button>
+          <button id="clear-map" class="btn" type="button" data-i18n="map.open"></button>
         </div>
       </div>
 
@@ -177,14 +201,14 @@
     </div>
   </div>
 
-  <script src="config.js?v=20261017b"></script>
-  <script src="js/i18n.js?v=20261017b"></script>
-  <script src="js/sound.js?v=20261017b"></script>
-  <script src="js/data.js?v=20261017b"></script>
-  <script src="js/story.js?v=20261017b"></script>
-  <script src="js/chars.js?v=20261017b"></script>
-  <script src="js/game.js?v=20261017b"></script>
-  <script src="js/quiz.js?v=20261017b"></script>
-  <script src="js/main.js?v=20261017b"></script>
+  <script src="config.js?v=20261017d"></script>
+  <script src="js/i18n.js?v=20261017d"></script>
+  <script src="js/sound.js?v=20261017d"></script>
+  <script src="js/data.js?v=20261017d"></script>
+  <script src="js/story.js?v=20261017d"></script>
+  <script src="js/chars.js?v=20261017d"></script>
+  <script src="js/game.js?v=20261017d"></script>
+  <script src="js/quiz.js?v=20261017d"></script>
+  <script src="js/main.js?v=20261017d"></script>
 </body>
 </html>

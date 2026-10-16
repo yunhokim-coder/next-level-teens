@@ -40,7 +40,7 @@
     fade: 1,
     fadeT: 0,
     train: 0,
-    char: null, // D I S C (2화에서 정해짐)
+    char: null, // 겉모습 동물 tiger cat rabbit dog (2화에서 학생이 고름)
     lineColor: null,
     ticketTo: '',
     tunnel: 0,
@@ -375,7 +375,7 @@
 
   // ---------- 내 손 (1인칭) ----------
   function drawHands() {
-    const h = Chars.hands(S.char);
+    const h = Chars.hands(S.char, S.lineColor);
     const bob = Math.round(Math.sin(t * 1.8) * 1.2);
     const sway = Math.round((S.camT - S.cam) * 0.04);
     // 왼손
@@ -384,8 +384,8 @@
     r(30 - sway, 148 + bob, 26, 14, h.skin);
     for (let i = 0; i < 4; i++) r(31 - sway + i * 6, 147 + bob, 5, 3, i % 2 ? h.skin : h.skin);
     r(30 - sway, 160 + bob, 26, 1, h.dark);
-    if (h.mark && S.char === 'D') for (let i = 0; i < 3; i++) r(34 - sway + i * 7, 152 + bob, 2, 5, h.mark);
-    if (h.mark && S.char === 'I') for (let i = 0; i < 4; i++) r(31 - sway + i * 6, 147 + bob, 5, 2, h.mark);
+    if (h.mark && S.char === 'tiger') for (let i = 0; i < 3; i++) r(34 - sway + i * 7, 152 + bob, 2, 5, h.mark);
+    if (h.mark && S.char === 'cat') for (let i = 0; i < 4; i++) r(31 - sway + i * 6, 147 + bob, 5, 2, h.mark);
     // 오른손에 든 승차권 (엄지가 왼쪽 아래 모서리를 잡고 있다)
     const tx = 192 - sway;
     const ty = 110 + bob;
@@ -403,8 +403,8 @@
     r(tx + 30, ty + 44, 34, 1, h.dark);
     r(tx + 14, ty + 36, 14, 10, h.skin);
     r(tx + 14, ty + 36, 1, 10, h.dark);
-    if (h.mark && S.char === 'D') for (let i = 0; i < 3; i++) r(tx + 36 + i * 8, ty + 47, 2, 6, h.mark);
-    if (h.mark && S.char === 'I') r(tx + 14, ty + 36, 14, 3, h.mark);
+    if (h.mark && S.char === 'tiger') for (let i = 0; i < 3; i++) r(tx + 36 + i * 8, ty + 47, 2, 6, h.mark);
+    if (h.mark && S.char === 'cat') r(tx + 14, ty + 36, 14, 3, h.mark);
     r(tx + 24, ty + 54, 50, 20, h.sleeve);
     r(tx + 24, ty + 54, 50, 3, h.sleeveDark);
   }
@@ -467,7 +467,7 @@
     // 창에 비친 나: 터널 속에서 서서히 드러난다
     if (S.reflect > 0.01) {
       g.globalAlpha = S.reflect * 0.85;
-      Chars.draw(g, S.char, wx + ww / 2 - 30, wy + 4, 2.5);
+      Chars.draw(g, S.char, wx + ww / 2 - 30, wy + 4, 2.5, S.lineColor || '#565c70');
       g.globalAlpha = S.reflect * 0.25;
       r(wx, wy, ww, wh, '#7fa6d8');
       g.globalAlpha = 1;

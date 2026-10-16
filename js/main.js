@@ -22,8 +22,8 @@
   }
 
   // ---------- 미니 초상화: 2화 전에는 후드 실루엣과 ?, 그 뒤로는 내 캐릭터와 노선색 ----------
-  function drawPortrait(code = null, color = null) {
-    Chars.portrait($('#portrait-canvas'), code);
+  function drawPortrait(avatar = null, color = null) {
+    Chars.portrait($('#portrait-canvas'), avatar, color);
     $('#portrait').style.borderLeftColor = color || '';
   }
 
@@ -221,10 +221,34 @@
   }
 
   // ---------- 시작: 동의 → 등록 → 사전 질문 → 1화 ----------
-  async function start() {
+  // 등록과 사전 질문까지 마친 저장이 있는지
+  const hasRun = () => {
+    const sv = Data.load();
+    return !!(sv && sv.profile && sv.profile.grade && sv.answers && sv.answers.pre);
+  };
+
+  // 저장된 승객으로 돌아왔을 때: 이름, 캐릭터, 노선색을 되살린다
+  function restore() {
+    const sv = Data.save;
+    $('#portrait-name').textContent = Data.nameText();
+    $('#portrait').hidden = false;
+    if (sv.disc && Quiz.types[sv.disc.primary]) {
+      const tp = Quiz.types[sv.disc.primary];
+      Game.setChar(sv.avatar || null, tp.color);
+      drawPortrait(sv.avatar || null, tp.color);
+    }
+  }
+
+  // 시작: 이어하기면 노선도로, 처음이면 동의 → 등록 → 사전 질문 → 1화
+  async function start(fresh = false) {
     $('#title-screen').hidden = true;
     await Data.loadSurvey();
     await Quiz.load();
+    if (!fresh && hasRun()) {
+      restore();
+      showMap();
+      return;
+    }
     const yes = await consent();
     Data.create(yes);
     await setup();
@@ -232,9 +256,57 @@
     await ep1();
   }
 
+  // ---------- 노선도 (목차) ----------
+  const STOPS = [1, 2, 3, 4, 5, 6];
+  function showMap() {
+    const sv = Data.save;
+    const done = sv.done || {};
+    const L = I18n.lang === 'en' ? 'en' : 'ko';
+    const color = sv.disc && Quiz.types[sv.disc.primary] ? Quiz.types[sv.disc.primary].color : '';
+    $('#map-screen .map-panel').style.setProperty('--mapc', color || 'var(--line)');
+    $('#map-title').textContent = I18n.t('map.title').replace('{name}', Data.nameText());
+    // 다음 역: 아직 안 깬 역 중 첫 번째 (앞 역을 모두 깼을 때만 열림)
+    const next = STOPS.find((n) => !done[n]);
+    const list = $('#map-list');
+    list.innerHTML = '';
+    STOPS.forEach((n) => {
+      const ready = READY.includes(n);
+      const state = done[n] ? 'done' : n === next && ready ? 'next' : 'locked';
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = `map-stop ${state}`;
+      b.innerHTML = '<span class="dot"></span><span class="info"><span class="no"></span><span class="name"></span><span class="state"></span></span>';
+      b.querySelector('.dot').textContent = state === 'done' ? '✓' : state === 'locked' ? '🔒' : '';
+      b.querySelector('.no').textContent = `STOP ${n}`;
+      b.querySelector('.name').textContent = I18n.t(`map.stop${n}`);
+      b.querySelector('.state').textContent = I18n.t(state === 'done' ? 'map.replay' : state === 'next' ? 'map.go' : ready ? 'map.locked' : 'map.soon');
+      if (state === 'locked') b.disabled = true;
+      else
+        b.onclick = () => {
+          Sound.play('start');
+          $('#map-screen').hidden = true;
+          EPISODES[n]();
+        };
+      li.appendChild(b);
+      list.appendChild(li);
+    });
+    // 지금 열린 역을 다 깼고 사후 질문을 아직 안 했으면 마지막 질문 버튼
+    const allReady = READY.every((n) => done[n]);
+    $('#map-survey').hidden = !(allReady && !(sv.answers && sv.answers.post));
+    $('#map-survey').onclick = () => {
+      Sound.play('select');
+      $('#map-screen').hidden = true;
+      finish();
+    };
+    $('#portrait').hidden = false;
+    $('#map-screen').hidden = false;
+  }
+
   // ---------- 끝: 사후 질문 → 만족도 → 인사 ----------
   async function finish() {
     $('#clear-screen').hidden = true;
+    $('#map-screen').hidden = true;
     await survey('post');
     await survey('satisfaction');
     Data.save.done.demo = true;
@@ -324,21 +396,35 @@
     Sound.play('clear');
     Data.save.done[ep] = true;
     Data.persist();
-    Data.send('episode_complete', { episode: ep });
-    const next = READY.includes(ep + 1);
+    const replay = !!Data.save.done[ep];
+    Data.save.done[ep] = true;
+    Data.persist();
+    Data.send('episode_complete', { episode: ep, replay });
+    // 다음 역이 열려 있고 아직 안 깼으면 다음 역, 열린 역을 다 깼는데 사후 질문 전이면 마지막 질문, 그 밖에는 노선도
+    const nextReady = READY.includes(ep + 1) && !Data.save.done[ep + 1];
+    const needSurvey = READY.every((n) => Data.save.done[n]) && !(Data.save.answers && Data.save.answers.post);
+    const action = nextReady ? 'next' : needSurvey ? 'survey' : 'map';
     $('#clear-stop').textContent = `STOP ${ep}`;
     $('#clear-title').textContent = I18n.t(`clear.ep${ep}.title`);
     $('#clear-next').textContent = I18n.t(`clear.ep${ep}.next`);
-    $('#clear-demo').hidden = next;
-    $('#replay-btn').textContent = I18n.t(next ? 'clear.toNext' : 'clear.toSurvey');
+    $('#clear-demo').hidden = READY.includes(ep + 1);
+    $('#replay-btn').textContent = I18n.t(action === 'next' ? 'clear.toNext' : action === 'survey' ? 'clear.toSurvey' : 'map.open');
+    $('#clear-map').hidden = action === 'map';
     $('#clear-screen').hidden = false;
     return new Promise((resolve) => {
       $('#replay-btn').onclick = () => {
         Sound.play('select');
         $('#clear-screen').hidden = true;
         resolve();
-        if (next) EPISODES[ep + 1]();
-        else finish();
+        if (action === 'next') EPISODES[ep + 1]();
+        else if (action === 'survey') finish();
+        else showMap();
+      };
+      $('#clear-map').onclick = () => {
+        Sound.play('select');
+        $('#clear-screen').hidden = true;
+        resolve();
+        showMap();
       };
     });
   }
@@ -352,9 +438,9 @@
     $('#result-line').textContent = tp[L].line;
     $('#result-line').style.color = tp.color;
     $('#result-screen .result-panel').style.borderTopColor = tp.color;
-    Chars.portrait($('#result-canvas'), res.primary);
+    Chars.portrait($('#result-canvas'), res.primary, tp.color);
     $('#result-name').textContent = tp[L].name;
-    $('#result-animal').textContent = tp[L].animal;
+    $('#result-animal').textContent = I18n.t('result.type').replace('{code}', res.primary);
     $('#result-summary').textContent = tp[L].summary;
     $('#result-strengths').textContent = tp[L].strengths.join(' · ');
     $('#result-watch').textContent = tp[L].watch;
@@ -368,6 +454,34 @@
         $('#result-screen').hidden = true;
         resolve();
       };
+    });
+  }
+
+  function pickAvatar(color) {
+    const L = I18n.lang === 'en' ? 'en' : 'ko';
+    const box = $('#avatar-options');
+    box.innerHTML = '';
+    return new Promise((resolve) => {
+      Chars.ANIMALS.forEach((a) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'avatar-opt';
+        const c = document.createElement('canvas');
+        c.width = 24;
+        c.height = 32;
+        Chars.portrait(c, a, color);
+        b.appendChild(c);
+        const label = document.createElement('span');
+        label.textContent = Quiz.types.avatars[a][L];
+        b.appendChild(label);
+        b.onclick = () => {
+          Sound.play('select');
+          $('#avatar-screen').hidden = true;
+          resolve(a);
+        };
+        box.appendChild(b);
+      });
+      $('#avatar-screen').hidden = false;
     });
   }
 
@@ -390,19 +504,26 @@
 
     const L = I18n.lang === 'en' ? 'en' : 'ko';
     const tp = Quiz.types[res.primary];
-    await say([nova('ep2.nova4'), { who: 'narrator', key: 'ep2.tunnel', do: () => { Game.tunnel(true); Sound.play('rumble'); }, wait: 1800 }]);
-    // 창에 비친 내 모습
-    Game.setChar(res.primary, null);
+    // 성향 결과: 사람 역할 캐릭터 카드, 노선색 확정
+    await say([nova('ep2.nova4')]);
+    await showResult(res);
+    // 겉모습: 성향과 상관없이 마음에 드는 동물을 고른다 (옷은 내 노선색)
+    await say([nova('ep2.nova5', { vars: { line: tp[L].line } }), nova('ep2.nova6')]);
+    const avatar = await pickAvatar(tp.color);
+    Data.save.avatar = avatar;
+    Data.persist();
+    Data.send('avatar', { avatar });
+    // 터널: 어두운 창에 고른 모습이 비친다
+    await say([nova('ep2.nova7'), { who: 'narrator', key: 'ep2.tunnel', do: () => { Game.tunnel(true); Sound.play('rumble'); }, wait: 1800 }]);
+    Game.setChar(avatar, tp.color);
     Game.reflect(1);
     await sleep(2600);
-    await say([n('ep2.reflect1'), n('ep2.reflect2', { vars: { type: tp[L].name } })]);
-    Game.setChar(res.primary, tp.color);
-    drawPortrait(res.primary, tp.color);
-    await showResult(res);
+    await say([n('ep2.reflect1'), n('ep2.reflect2')]);
+    drawPortrait(avatar, tp.color);
     Game.tunnel(false);
     Game.reflect(0);
     await sleep(900);
-    await say([nova('ep2.nova5', { vars: { line: tp[L].line } }), nova('ep2.nova6')]);
+    await say([nova('ep2.nova8')]);
     await stopClear(2);
   }
 
@@ -414,6 +535,9 @@
     Game.fadeTo(0);
     $('#portrait').hidden = true;
     $('#clear-screen').hidden = true;
+    $('#map-screen').hidden = true;
+    $('#new-btn').hidden = !hasRun();
+    $('#start-btn').textContent = I18n.t(hasRun() ? 'title.continue' : 'title.start');
     $('#portrait-name').textContent = '???';
     Game.setChar(null, null);
     drawPortrait();
@@ -436,10 +560,15 @@
       Sound.play('start');
       start();
     });
+    $('#new-btn').addEventListener('click', () => {
+      Sound.unlock && Sound.unlock();
+      Sound.play('start');
+      start(true);
+    });
     $('#thanks-replay').addEventListener('click', () => {
       Sound.play('select');
       $('#thanks-screen').hidden = true;
-      showTitle();
+      showMap();
     });
     $('#look-left').addEventListener('click', () => Game.turn(-1));
     $('#look-right').addEventListener('click', () => Game.turn(1));
