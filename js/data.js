@@ -82,9 +82,11 @@
         ts: new Date().toISOString(),
         ...payload,
       };
+      const text = JSON.stringify(body);
       try {
-        // text/plain으로 보내면 브라우저가 사전 요청(CORS preflight)을 하지 않는다
-        fetch(cfg.APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body) }).catch(() => {});
+        // sendBeacon: 페이지를 닫아도 보내지고, CORS 사전 요청이 없다. 안 되면 fetch로 보낸다
+        const ok = navigator.sendBeacon && navigator.sendBeacon(cfg.APPS_SCRIPT_URL, new Blob([text], { type: 'text/plain;charset=utf-8' }));
+        if (!ok) fetch(cfg.APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: text }).catch(() => {});
       } catch (e) {
         /* 전송 실패는 진행을 막지 않는다 */
       }
