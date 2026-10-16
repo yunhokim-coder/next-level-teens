@@ -820,13 +820,14 @@
     const DAYS = I18n.t('ep6.days').split('|');
     const wp = g.o.picks[g.w.pick] || g.o.picks[0];
     const when = `${g.w.days.map((d) => DAYS[d]).join(I18n.t('ep6.daySep'))} ${Grow.timeText(g.w)} · ${Grow.placeText(g.w)}`;
-    const stops = [{ letter: 'G', tag: I18n.t('ep6.mapDest'), name: st.destLabel, big: true }];
-    stops.push({ letter: 'W', tag: `${I18n.t('ep6.mapW')} · ${when}`, name: label(wp) });
-    g.o.picks.forEach((p, i) => {
-      if (i !== g.w.pick) stops.push({ letter: 'O', tag: I18n.t('ep6.mapO'), name: label(p) });
-    });
-    stops.push({ letter: 'R', tag: I18n.t('ep6.mapR').replace('{n}', g.r), name: e6.station, big: true });
-    return stops;
+    // 위에서부터 G·R·O·W 순서
+    const short = (p) => (p.own ? p.own : p.ai ? p.ai.name : Battle.card(p.id)[L].name);
+    return [
+      { letter: 'G', tag: I18n.t('ep6.mapDest'), name: st.destLabel, big: true },
+      { letter: 'R', tag: I18n.t('ep6.mapR').replace('{n}', g.r), name: e6.station },
+      { letter: 'O', tag: I18n.t('ep6.mapO'), name: g.o.picks.map(short).join(' · ') },
+      { letter: 'W', tag: `${I18n.t('ep6.mapW')} · ${when}`, name: label(wp) },
+    ];
   }
   function routeInfo() {
     const sv = Data.save;

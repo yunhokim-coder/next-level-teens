@@ -148,8 +148,8 @@
     g.textAlign = 'left';
 
     // 노선: 아래(지금 역) → 위(종착역)
-    const top = tall ? 420 : 300;
-    const bottom = tall ? 1100 : 860;
+    const top = tall ? 420 : 290;
+    const bottom = tall ? 1060 : 720;
     const lx = pad + 50;
     g.fillStyle = col;
     g.fillRect(lx - 9, top, 18, bottom - top);
@@ -178,7 +178,7 @@
       g.fillStyle = '#ffffff';
       g.font = F(s.big ? 38 : 32, true);
       wrap(g, s.name, textW)
-        .slice(0, 2)
+        .slice(0, s.letter === 'W' ? 3 : 2)
         .forEach((ln, k) => g.fillText(ln, lx + 56, y - 8 + k * 42));
     });
 
