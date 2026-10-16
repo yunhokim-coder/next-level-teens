@@ -66,7 +66,9 @@
     },
     // 보낼 수 있는지: 설정 플래그 + 학생 동의 + 주소
     get canSend() {
-      return !!(cfg.DATA_COLLECTION && cfg.APPS_SCRIPT_URL && save && save.consent);
+      // ?s=TEST 링크는 연결 확인용이라 수집 스위치가 꺼져 있어도 보낸다
+      const on = cfg.DATA_COLLECTION || (save && save.school === 'TEST');
+      return !!(on && cfg.APPS_SCRIPT_URL && save && save.consent);
     },
     // event: register, pre, post, satisfaction, episode_complete ...
     send(event, payload = {}) {
