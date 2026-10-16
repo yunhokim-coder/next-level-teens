@@ -72,7 +72,8 @@
     dialog.dataset.who = step.who;
     choicesEl.hidden = true;
     choicesEl.innerHTML = '';
-    const name = I18n.t(`names.${step.who}`);
+    // step.name이 있으면 그 이름을 쓴다 (학생이 붙인 그림자 이름 등)
+    const name = step.name || I18n.t(`names.${step.who}`);
     nameEl.textContent = name;
     nameEl.hidden = !name;
     if (step.who !== 'narrator') Game.focus(step.who);
@@ -167,7 +168,7 @@
     // 대사 도중 언어를 바꾸면 지금 대사를 바뀐 언어로 다시 보여준다
     refresh() {
       if (!current || dialog.hidden) return;
-      nameEl.textContent = I18n.t(`names.${current.who}`);
+      nameEl.textContent = current.name || I18n.t(`names.${current.who}`);
       finishTyping();
     },
   };

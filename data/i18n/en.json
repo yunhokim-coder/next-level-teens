@@ -3,7 +3,8 @@
     "narrator": "",
     "nova": "Nova",
     "jam": "Jam",
-    "voice": "???"
+    "voice": "???",
+    "shadow": "???"
   },
   "title": {
     "sub": "Today's Study, Tomorrow's Station",
@@ -23,7 +24,8 @@
     "hint": "Tap the blinking board"
   },
   "walk": {
-    "hint": "◀ ▶ or tap the floor to walk · head for the stairs"
+    "hint": "◀ ▶ or tap the floor to walk · head for the stairs",
+    "hintTrack": "◀ ▶ or tap the floor to walk · head to the front of the train"
   },
   "scene": {
     "boardNext": "NEXT",
@@ -94,6 +96,10 @@
     "ep3": {
       "title": "Final Station · CLEAR",
       "next": "Next stop: shadows that block the track"
+    },
+    "ep4": {
+      "title": "Shadows on the Track · CLEAR",
+      "next": "Next stop: the detour battle, with study strategies"
     }
   },
   "consent": {
@@ -229,5 +235,38 @@
     "destIdeasHide": "Hide examples",
     "destIdeasLead": "Tap one to put it in the box above. Feel free to edit it.",
     "destEmpty": "Write your station or pick an example."
+  },
+  "ep4": {
+    "n1": "An elevated platform. The eastern sky is starting to glow. A train in your line color is waiting.",
+    "n2": "...But it isn't moving. Something seems to be happening up front.",
+    "n3": "Something black rises over the tracks.",
+    "nova1": "That's the shadow that blocks the track. It looks different for everyone. Face yours and you can get around it.",
+    "nova2": "Pick the cards that block you these days. At least one each from heart, thought and action, up to three each.",
+    "grow": "What you picked gathers, and the shadow swells.",
+    "nova3": "What would you call this thing? Once it has a name, it gets less scary.",
+    "shadow1": "...{desc}. So just stop for today.",
+    "nova4": "{name}. Hear that? That isn't you. It's just something that blocks you.",
+    "nova5": "The problem is {name}, not you. Seen that way, you can deal with it.",
+    "n4": "When its name is called, the shadow shrinks a little. But it is still on the track.",
+    "nova6": "At the next stop, let's find a detour around {name}. There are more ways than you think.",
+    "tag": "Shadows on the track",
+    "title": "What blocks you these days?",
+    "lead": "Pick at least one each from heart, thought and action, up to three each.",
+    "need": "Heart {h} · Thought {t} · Action {a}",
+    "done": "That's all",
+    "full": "You can pick up to three per group.",
+    "missing": "Please pick one from {cats} too.",
+    "freqTitle": "How often does it show up?",
+    "freq1": "Sometimes",
+    "freq2": "Often",
+    "freq3": "Almost daily",
+    "freqError": "Please choose for every card.",
+    "nameTitle": "What will you call this shadow?",
+    "nameLead": "You name it. It stays on this device.",
+    "namePh": "e.g. Phone Ghost",
+    "nameIdeasLead": "Stuck? Pick one",
+    "nameIdeas": "{w} Shadow|Mr. {w}",
+    "nameError": "Please write or pick a name.",
+    "nameGo": "Call it this"
   }
 }

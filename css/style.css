@@ -130,7 +130,7 @@ body.portrait #dialog { min-height: 120px; }
 .q .seg button { padding: 7px 4px; font-size: 11px; }
 .q .seg button b { display: block; font-size: 15px; }
 /* 폼 화면은 그림 크기와 상관없이 화면 전체에 띄운다 (폰에서도 넉넉하게) */
-#consent-screen, #setup-screen, #survey-screen, #thanks-screen, #map-screen, #avatar-screen, #dest-screen, #fuel-screen, #gauge-screen, #util-screen, #quiz-screen, #tie-screen, #result-screen { position: fixed; z-index: 20; }
+#consent-screen, #setup-screen, #survey-screen, #thanks-screen, #map-screen, #avatar-screen, #dest-screen, #mamba-screen, #freq-screen, #name-screen, #fuel-screen, #gauge-screen, #util-screen, #quiz-screen, #tie-screen, #result-screen { position: fixed; z-index: 20; }
 body.portrait #portrait { transform: scale(0.8); transform-origin: top left; }
 html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 
@@ -209,3 +209,22 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 .field-big { font-size: 17px; padding: 11px 12px; }
 .btn-ghost { background: transparent; border-style: dashed; color: var(--amber); }
 .dest-opt[aria-pressed='true'] { border-color: var(--line); background: #0f2e2b; }
+
+/* ---------- 4화 운행 방해 ---------- */
+.tabs { display: flex; gap: 6px; margin: 10px 0 8px; }
+.tab { flex: 1; background: #141a33; color: var(--ink); border: 1px solid #39436e; padding: 8px 6px; font-size: 14px; cursor: pointer; font-family: inherit; }
+.tab[aria-pressed='true'] { border-color: var(--line); background: #0f2e2b; color: #fff; }
+.tab-count { display: inline-block; min-width: 18px; padding: 0 4px; margin-left: 4px; font-size: 11px; background: #2a3150; color: var(--muted); }
+.tab-count.on { background: var(--amber); color: #0b0c16; }
+.mamba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 44vh; overflow-y: auto; padding-right: 2px; }
+.mcard { text-align: left; display: flex; flex-direction: column; gap: 3px; background: #10131f; color: var(--ink); border: 1px solid #39436e; border-left: 4px solid #3a2a55; padding: 8px 10px; cursor: pointer; font-family: inherit; }
+.mcard strong { font-size: 14px; }
+.mcard span { font-size: 12px; color: #b3b9d0; line-height: 1.45; }
+.mcard[aria-pressed='true'] { border-color: #ffcf4a; border-left-color: #ffcf4a; background: #231d10; }
+.mamba-foot { margin-top: 8px; font-size: 12px; }
+.freq-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0 4px; }
+.freq-row { display: grid; grid-template-columns: 1fr 230px; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid #222a48; }
+.freq-name { font-size: 14px; }
+@media (max-width: 420px) { .mamba-grid { grid-template-columns: 1fr; } .freq-row { grid-template-columns: 1fr; } }
+#dialog[data-who='shadow'] { border-top-color: #8a5ad0; }
+#dialog[data-who='shadow'] #dialog-name { color: #ffcf4a; }

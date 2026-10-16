@@ -75,11 +75,11 @@
   }
 
   // ---------- 통로 걷기: 끝의 계단까지 ----------
-  function walkTunnel() {
+  function walkTunnel(hintKey = 'walk.hint') {
     return new Promise((resolve) => {
       $('#walk-pad').hidden = false;
       const hint = $('#look-hint');
-      hint.textContent = I18n.t('walk.hint');
+      hint.textContent = I18n.t(hintKey);
       hint.hidden = false;
       Game.onHot = (id) => {
         Game.markSeen(id);
@@ -405,7 +405,7 @@
   }
 
   // ---------- 역 클리어: 다음 역이 있으면 이어서, 없으면 마지막 질문으로 ----------
-  const READY = [1, 2, 3];
+  const READY = [1, 2, 3, 4];
   function stopClear(ep) {
     Sound.play('clear');
     Data.save.done[ep] = true;
@@ -594,7 +594,59 @@
     await stopClear(3);
   }
 
-  const EPISODES = { 1: () => ep1(), 2: () => ep2(), 3: () => ep3() };
+  // ---------- 4화: 운행 방해 (3인칭) ----------
+  async function ep4() {
+    await Mamba.load();
+    const sv = Data.save;
+    const color = sv.disc && Quiz.types[sv.disc.primary] ? Quiz.types[sv.disc.primary].color : null;
+    await Game.fadeTo(1);
+    Game.scene('track', { phase: 0.65 });
+    Game.setChar(sv.avatar || null, color);
+    await Game.fadeTo(0);
+    await say([n('ep4.n1'), n('ep4.n2')]);
+    // 직접 걸어서 열차 앞쪽으로
+    await walkTunnel('walk.hintTrack');
+    Sound.play('rumble');
+    Game.shadow(0.7, 3);
+    await sleep(1200);
+    Game.novaSit(236);
+    await say([n('ep4.n3'), nova('ep4.nova1'), nova('ep4.nova2')]);
+
+    const prev = sv.ep4 || {};
+    const ids = await Mamba.pick(prev.cards || []);
+    const freq = await Mamba.frequency(ids, prev.freq || {});
+    // 고른 것들이 모여 그림자가 커진다
+    Game.shadow(1, ids.length);
+    Sound.play('rumble');
+    await sleep(1400);
+    await say([n('ep4.grow'), nova('ep4.nova3')]);
+    const named = await Mamba.name(ids, freq, prev);
+    Game.shadowName = named.name;
+    Sound.play('powerup');
+    await sleep(800);
+    const L = I18n.lang === 'en' ? 'en' : 'ko';
+    const top = Mamba.card(Mamba.byFrequency(ids, freq)[0]);
+    await say([
+      { who: 'shadow', name: named.name, key: 'ep4.shadow1', vars: { name: named.name, desc: top[L].desc } },
+      nova('ep4.nova4', { vars: { name: named.name } }),
+      nova('ep4.nova5'),
+      { who: 'narrator', key: 'ep4.n4', do: () => Game.shadow(0.35) , wait: 1200 },
+      nova('ep4.nova6', { vars: { name: named.name } }),
+    ]);
+    Data.save.ep4 = { cards: ids, freq, name: named.name, idea: named.idea };
+    Data.persist();
+    Data.send('ep4_result', {
+      cards: ids.join(','),
+      heart: ids.filter((id) => Mamba.card(id).category === 'heart').length,
+      thought: ids.filter((id) => Mamba.card(id).category === 'thought').length,
+      action: ids.filter((id) => Mamba.card(id).category === 'action').length,
+      freq: ids.map((id) => `${id}:${freq[id]}`).join(' '),
+      named: named.idea >= 0 ? `idea${named.idea}` : 'own',
+    });
+    await stopClear(4);
+  }
+
+  const EPISODES = { 1: () => ep1(), 2: () => ep2(), 3: () => ep3(), 4: () => ep4() };
 
   function showTitle() {
     Game.scene('title', { phase: 0 });

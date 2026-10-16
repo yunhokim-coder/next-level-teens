@@ -328,9 +328,8 @@
     [11, 37, 4, 2, '#0b0c16'],
   ];
 
-  function drawNova(x, y) {
-    const u = 2;
-    shape(NOVA, x - 20, y, u);
+  function drawNova(x, y, u = 2) {
+    shape(NOVA, x - 10 * u, y, u);
     // 눈 (가끔 깜빡임), 단추, 랜턴
     const blink = Math.floor(t * 10) % 40 === 0;
     r(x - 20 + 8 * u, y + 8 * u, u, blink ? 1 : u, C.K);
@@ -343,7 +342,7 @@
     r(lx, ly, 3 * u, 4 * u, '#ffd35a');
     r(lx, ly, 3 * u, 1, '#8a6a20');
     g.globalAlpha = 0.18 + 0.06 * Math.sin(t * 5);
-    r(lx - 8, ly - 6, 3 * u + 16, 4 * u + 12, '#ffd35a');
+    r(lx - 4 * u, ly - 3 * u, 11 * u, 10 * u, '#ffd35a');
     g.globalAlpha = 1;
   }
 
@@ -554,6 +553,78 @@
     if (S.nova) drawNova(S.nova.x, 52);
   }
 
+  // ---------- 3인칭 고가 승강장 (옆에서, 가로 640): 내 캐릭터가 걷고, 선로에 그림자가 솟는다 ----------
+  const TRACK = 640;
+  function drawTrack() {
+    const w = S.walker;
+    const L = Math.max(0, Math.min(TRACK - W, w.x - W / 2 + 40));
+    const px = (x) => x - L;
+    sky(S.phase);
+    sunMoon(S.phase);
+    g.save();
+    g.translate(-Math.round(L * 0.25), 0);
+    skyline(S.phase);
+    g.restore();
+    // 선로
+    r(0, 112, W, 6, mix('#11141f', '#3a4058', S.phase));
+    r(0, 118, W, 18, mix('#0b0d16', '#262b3c', S.phase));
+    for (let x = 0; x < TRACK; x += 14) r(px(x), 124, 8, 10, '#1b1712');
+    r(0, 122, W, 2, '#8b90a6');
+    r(0, 131, W, 2, '#8b90a6');
+    // 멈춰 선 내 열차
+    const col = S.lineColor || C.line;
+    const tx = px(470);
+    r(tx, 94, 190, 26, '#c7cbd9');
+    r(tx, 110, 190, 3, col);
+    for (let k = 0; k < 10; k++) r(tx + 10 + k * 18, 98, 11, 8, '#ffe39a');
+    r(tx - 8, 96, 8, 22, '#aeb3c4');
+    r(tx - 8, 102, 3, 4, S.shadow > 0.5 && Math.floor(t * 4) % 2 ? '#ff4a5a' : '#fff6c8');
+    // 그림자 (블랙맘바)
+    if (S.shadow > 0.01) drawShadow(px(390), S.shadow);
+    // 승강장
+    r(0, 136, W, 44, mix('#2a2f42', '#4a5068', S.phase));
+    r(0, 136, W, 4, '#c9a43a');
+    for (let x = 0; x < TRACK; x += 3) r(px(x), 137, 1, 1, '#8a6f22');
+    for (let x = 0; x < TRACK; x += 48) r(px(x), 140, 1, 40, mix('#232838', '#40465c', S.phase));
+    if (S.nova) drawNova(px(S.nova.x), 128, 1);
+    const step = w.moving ? Math.floor(w.step) % 2 : -1;
+    Chars.full(g, S.char, px(w.x), 170, 1.2, S.lineColor || '#565c70', step);
+  }
+
+  // 선로에서 솟는 검은 그림자: 물결치는 몸통, 노란 눈. 고른 카드가 많을수록 크다.
+  function drawShadow(x, a) {
+    const size = 0.8 + Math.min(1, (S.shadowSize || 3) / 9) * 0.6;
+    const rise = a * 46 * size;
+    g.globalAlpha = Math.min(1, a * 1.2);
+    // 기운
+    g.fillStyle = '#5a3a8a';
+    for (let i = 0; i < 14; i++) {
+      const ox = Math.sin(t * 2 + i) * 18 * size;
+      const oy = (t * 20 + i * 9) % 40;
+      g.fillRect(Math.round(x + ox), Math.round(122 - rise - oy + 20), 2, 2);
+    }
+    // 몸통: 아래에서 위로 굵기가 줄어드는 마디
+    for (let k = 0; k < 9; k++) {
+      const yy = 128 - (rise * k) / 8;
+      const xx = x + Math.sin(t * 2.2 + k * 0.7) * 6 * size;
+      const rad = (14 - k) * size;
+      r(xx - rad, yy - 5, rad * 2, 8, '#06060b');
+    }
+    // 머리
+    const hx = x + Math.sin(t * 2.2 + 6) * 6 * size;
+    const hy = 128 - rise - 6;
+    r(hx - 12 * size, hy - 6 * size, 24 * size, 12 * size, '#06060b');
+    r(hx - 7 * size, hy - 2 * size, 4, 3, '#ffcf4a');
+    r(hx + 3 * size, hy - 2 * size, 4, 3, '#ffcf4a');
+    g.globalAlpha = 1;
+    if (S.shadowName && a > 0.6) {
+      g.font = '7px Galmuri11, monospace';
+      const tw = g.measureText(S.shadowName).width;
+      r(hx - tw / 2 - 4, hy - 26 * size, tw + 8, 11, 'rgba(8,8,16,0.85)');
+      text(S.shadowName, hx, hy - 25 * size, '#ffcf4a', 7, 'center');
+    }
+  }
+
   // ---------- 지하 통로 (옆에서 걷기, 가로 640) ----------
   const TUNNEL = 640;
   const POSTERS = [
@@ -684,7 +755,8 @@
       S.jam.x += (S.jam.tx - S.jam.x) * Math.min(1, dt * 2);
     }
     if (S.scene === 'arrival') S.train = Math.min(1, S.train + dt * 0.35);
-    if (S.scene === 'underpass' && S.walk) {
+    if (S.shadow !== undefined) S.shadow += ((S.shadowT || 0) - S.shadow) * Math.min(1, dt * 1.2);
+    if ((S.scene === 'underpass' || S.scene === 'track') && S.walk) {
       const w = S.walker;
       let dir = 0;
       if (S.keys.left) dir = -1;
@@ -696,11 +768,11 @@
       w.moving = dir !== 0;
       if (dir) {
         w.dir = dir;
-        w.x = Math.max(16, Math.min(TUNNEL - 30, w.x + dir * dt * 70));
+        w.x = Math.max(16, Math.min((S.scene === 'track' ? 330 : TUNNEL - 30), w.x + dir * dt * 70));
         w.step += dt * 6;
         if (Math.floor(w.step * 2) !== Math.floor((w.step - dt * 6) * 2) && Math.floor(w.step) % 2 === 0) Sound.play('blip');
       }
-      if (w.x >= 588 && S.onExit) {
+      if (w.x >= (S.scene === 'track' ? 300 : 588) && S.onExit) {
         const cb = S.onExit;
         S.onExit = null;
         S.walk = false;
@@ -720,6 +792,7 @@
     else if (S.scene === 'arrival') drawArrival();
     else if (S.scene === 'train') drawTrain();
     else if (S.scene === 'hub') drawHub();
+    else if (S.scene === 'track') drawTrack();
     if (S.dream) {
       // 꿈: 아침빛이 번지고 화면이 출렁인다
       g.globalAlpha = 0.35 + 0.1 * Math.sin(t * 1.5);
@@ -788,6 +861,11 @@
         S.walker = { x: 40, dir: 1, moving: false, target: null, step: 0 };
       }
       if (name === 'arrival') S.train = 0;
+      if (name === 'track') {
+        S.walker = { x: 50, dir: 1, moving: false, target: null, step: 0 };
+        S.shadow = S.shadowT = 0;
+        S.shadowName = '';
+      }
       if (name === 'train') {
         S.cam = S.camT = W / 2;
         S.tunnel = S.tunnelT = 0;
@@ -810,6 +888,13 @@
     },
     reflect(v) {
       S.reflectT = v;
+    },
+    shadow(v, size) {
+      S.shadowT = v;
+      if (size !== undefined) S.shadowSize = size;
+    },
+    set shadowName(v) {
+      S.shadowName = v;
     },
     novaSit(x) {
       S.nova = { x, tx: x };
@@ -878,7 +963,8 @@
         if (hit && this.onHot) this.onHot(hit.id);
         return;
       }
-      if (S.scene === 'underpass' && S.walk) {
+      if (S.shadow !== undefined) S.shadow += ((S.shadowT || 0) - S.shadow) * Math.min(1, dt * 1.2);
+    if ((S.scene === 'underpass' || S.scene === 'track') && S.walk) {
         const L = Math.max(0, Math.min(TUNNEL - W, S.walker.x - W / 2));
         const near = POSTERS.find((q) => Math.abs(p.x + L - q.x) < 24 && p.y < 90);
         if (near && Math.abs(S.walker.x - near.x) < 34) {
@@ -887,9 +973,14 @@
         }
         S.walker.target = p.x + L;
       }
+      if (S.scene === 'track' && S.walk) {
+        const L = Math.max(0, Math.min(TRACK - W, S.walker.x - W / 2 + 40));
+        S.walker.target = p.x + L;
+      }
     },
     // 걷는 중 가까운 포스터 (Enter·Space로 읽기)
     nearPoster() {
+      if (S.scene !== 'underpass') return null;
       return POSTERS.find((q) => Math.abs(S.walker.x - q.x) < 30) || null;
     },
     focus() {},

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>NEXT LINE</title>
   <meta name="description" content="NEXT LINE: 공부, 내일의 역">
-  <meta name="app-version" content="20261017h">
+  <meta name="app-version" content="20261017j">
   <link rel="preload" href="assets/fonts/Galmuri11.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=20261017h">
+  <link rel="stylesheet" href="css/style.css?v=20261017j">
 </head>
 <body>
   <div id="app">
@@ -209,6 +209,41 @@
         </div>
       </div>
 
+      <!-- 4화 운행 방해 -->
+      <div id="mamba-screen" class="overlay" hidden>
+        <div class="panel form-panel">
+          <div class="clear-stop" data-i18n="ep4.tag"></div>
+          <h2 data-i18n="ep4.title"></h2>
+          <p class="muted" data-i18n="ep4.lead"></p>
+          <div id="mamba-tabs" class="tabs"></div>
+          <div id="mamba-grid" class="mamba-grid"></div>
+          <div class="mamba-foot"><span id="mamba-need" class="muted"></span></div>
+          <div id="mamba-error" class="error" hidden></div>
+          <button id="mamba-done" class="btn btn-primary" type="button" data-i18n="ep4.done"></button>
+        </div>
+      </div>
+      <div id="freq-screen" class="overlay" hidden>
+        <div class="panel form-panel">
+          <div class="clear-stop" data-i18n="ep4.tag"></div>
+          <h2 data-i18n="ep4.freqTitle"></h2>
+          <div id="freq-list" class="freq-list"></div>
+          <div id="freq-error" class="error" hidden data-i18n="ep4.freqError"></div>
+          <button id="freq-done" class="btn btn-primary" type="button" data-i18n="survey.go"></button>
+        </div>
+      </div>
+      <div id="name-screen" class="overlay" hidden>
+        <div class="panel form-panel">
+          <div class="clear-stop" data-i18n="ep4.tag"></div>
+          <h2 data-i18n="ep4.nameTitle"></h2>
+          <p class="muted" data-i18n="ep4.nameLead"></p>
+          <input id="name-own" class="field field-big" maxlength="16" autocomplete="off" data-i18n-placeholder="ep4.namePh">
+          <p class="field-help" data-i18n="ep4.nameIdeasLead"></p>
+          <div id="name-ideas" class="chips"></div>
+          <div id="name-error" class="error" hidden data-i18n="ep4.nameError"></div>
+          <button id="name-go" class="btn btn-primary" type="button" data-i18n="ep4.nameGo"></button>
+        </div>
+      </div>
+
       <!-- 끝 인사 -->
       <div id="thanks-screen" class="overlay" hidden>
         <div class="panel">
@@ -250,15 +285,16 @@
     </div>
   </div>
 
-  <script src="config.js?v=20261017h"></script>
-  <script src="js/i18n.js?v=20261017h"></script>
-  <script src="js/sound.js?v=20261017h"></script>
-  <script src="js/data.js?v=20261017h"></script>
-  <script src="js/story.js?v=20261017h"></script>
-  <script src="js/chars.js?v=20261017h"></script>
-  <script src="js/game.js?v=20261017h"></script>
-  <script src="js/quiz.js?v=20261017h"></script>
-  <script src="js/station.js?v=20261017h"></script>
-  <script src="js/main.js?v=20261017h"></script>
+  <script src="config.js?v=20261017j"></script>
+  <script src="js/i18n.js?v=20261017j"></script>
+  <script src="js/sound.js?v=20261017j"></script>
+  <script src="js/data.js?v=20261017j"></script>
+  <script src="js/story.js?v=20261017j"></script>
+  <script src="js/chars.js?v=20261017j"></script>
+  <script src="js/game.js?v=20261017j"></script>
+  <script src="js/quiz.js?v=20261017j"></script>
+  <script src="js/station.js?v=20261017j"></script>
+  <script src="js/mamba.js?v=20261017j"></script>
+  <script src="js/main.js?v=20261017j"></script>
 </body>
 </html>

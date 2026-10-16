@@ -205,8 +205,14 @@
     return `rgb(${c(16)},${c(8)},${c(0)})`;
   }
 
-  function draw(g, code, x, y, u = 1, cloth = '#565c70') {
-    const parts = BUST[code] || UNKNOWN;
+  // parts를 직접 넘기면(전신 그리기) 그 부분과 위치·배율을 쓴다
+  function draw(g, code, x, y, u = 1, cloth = '#565c70', parts0 = null, x0 = null, y0 = null, u0 = null) {
+    const parts = parts0 || BUST[code] || UNKNOWN;
+    if (parts0) {
+      x = x0;
+      y = y0;
+      u = u0;
+    }
     const col = (c) => (c === 'CL' ? cloth : c === 'CD' ? shade(cloth, 0.7) : c);
     const px = (v) => Math.round(v);
     parts.forEach((p) => {
@@ -220,8 +226,33 @@
     });
   }
 
+  // 3인칭 전신 (정면 꼬마 체형): 머리는 상반신 그림에서 가져오고, 몸·팔·다리를 붙인다. 높이 35칸.
+  function full(g, animal, x, feetY, u = 1.25, cloth = '#565c70', step = -1) {
+    const fur = (HANDS[animal] || HANDS.none).skin;
+    const top = feetY - 35 * u;
+    const head = (BUST[animal] || UNKNOWN).filter((p) => p[1] < 18 && p[4] !== 'CL' && p[4] !== 'CD');
+    const legL = step === 0 ? -1 : step === 1 ? 1 : 0;
+    const body = [
+      [7, 27 + Math.max(0, legL), 4, 6 - Math.abs(legL), '#1d2233'],
+      [13, 27 + Math.max(0, -legL), 4, 6 - Math.abs(legL), '#1d2233'],
+      [3, 20, 3, 7, 'CD'],
+      [18, 20, 3, 7, 'CD'],
+      [6, 18, 12, 10, 'CL'],
+    ];
+    const deco = [
+      [3, 27, 3, 2, fur, false],
+      [18, 27, 3, 2, fur, false],
+      [6, 33, 5, 2, '#e9ecf2', false],
+      [13, 33, 5, 2, '#e9ecf2', false],
+      [10, 18, 4, 2, shade(cloth, 0.7), false],
+    ];
+    draw(g, null, 0, 0, 0, cloth, body.concat(deco), x - 12 * u, top, u);
+    draw(g, null, 0, 0, 0, cloth, head, x - 12 * u, top, u);
+  }
+
   window.Chars = {
     ANIMALS: ['tiger', 'cat', 'rabbit', 'dog'],
+    full,
     draw,
     shade,
     hands(animal, cloth) {
