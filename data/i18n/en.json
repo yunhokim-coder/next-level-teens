@@ -17,7 +17,7 @@
   "look": {
     "left": "Left",
     "right": "Right",
-    "hint": "◀ ▶ look around · tap what you're curious about · check the board"
+    "hint": "Tap the blinking board"
   },
   "walk": {
     "hint": "◀ ▶ or tap the floor to walk · head for the stairs"
@@ -47,7 +47,7 @@
     "n1": "Clunk. Your eyes open. You dozed off on the last train and rode it to the end of the line.",
     "n2": "An empty platform. 11:58 p.m.",
     "n3": "There's a ticket in your hand. But the TO line is blank.",
-    "n4": "Let's look around first.",
+    "n4": "Huh? Something is showing on the board up there.",
     "board": "Next train --:--. Destination TBD. ...Is that even a thing?",
     "nova1": "You're still here. Missed the last train?",
     "nova2": "Don't worry. I'm the station guide at this hour. Call me Nova.",
@@ -98,7 +98,7 @@
     "gender": "Gender",
     "achievement": "How are your grades these days, roughly?",
     "achievementHelp": "Compared with your class or grade. It doesn't need to be exact.",
-    "error": "Please choose your grade, gender, and grade level. You can pick \"Prefer not to say\".",
+    "error": "Please choose your grade, gender, and grade level.",
     "code": "My anonymous code",
     "go": "Board"
   },

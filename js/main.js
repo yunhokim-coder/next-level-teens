@@ -55,29 +55,21 @@
   const nova = (key, extra = {}) => ({ who: 'nova', key, ...extra });
   const jam = (key, extra = {}) => ({ who: 'jam', key, ...extra });
 
-  // ---------- 둘러보기: 전광판을 볼 때까지 자유롭게 ----------
-  function lookAround() {
+  // ---------- 안내된 한 번의 클릭: 전광판을 누르면 이야기가 이어진다 ----------
+  function tapBoard() {
     return new Promise((resolve) => {
-      $('#look-left').hidden = false;
-      $('#look-right').hidden = false;
       const hint = $('#look-hint');
       hint.textContent = I18n.t('look.hint');
       hint.hidden = false;
-      Game.lookMode(true);
+      Game.lookMode(true, 'board');
       Game.onHot = (id) => {
+        if (id !== 'board') return;
         Game.markSeen(id);
+        Game.onHot = null;
+        Game.lookMode(false);
+        hint.hidden = true;
         Sound.play('select');
-        if (id === 'board') {
-          Game.onHot = null;
-          Game.lookMode(false);
-          $('#look-left').hidden = true;
-          $('#look-right').hidden = true;
-          hint.hidden = true;
-          $('#toast').hidden = true;
-          resolve();
-          return;
-        }
-        toast(I18n.t(`hot.${id}`));
+        resolve();
       };
     });
   }
@@ -287,13 +279,12 @@
     await Game.lids(0, 220);
     await Game.lids(1, 800);
     $('#portrait').hidden = false;
-    await say([n('ep1.n1'), n('ep1.n2'), n('ep1.n3'), n('ep1.n4')]);
+    await say([n('ep1.n1'), n('ep1.n2'), n('ep1.n3'), { who: 'narrator', key: 'ep1.n4', do: () => Game.lookAt(800), wait: 900 }]);
 
-    await lookAround();
+    await tapBoard();
 
     await say([n('ep1.board')]);
-    Game.lookAt(480);
-    await sleep(500);
+    await sleep(300);
     Sound.play('select');
     Game.novaEnter();
     await sleep(700);

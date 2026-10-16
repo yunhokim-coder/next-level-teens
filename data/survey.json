@@ -85,11 +85,6 @@
       "id": "other",
       "ko": "그 밖 (선생님, 보호자 등)",
       "en": "Other (teacher, parent, etc.)"
-    },
-    {
-      "id": "na",
-      "ko": "밝히지 않음",
-      "en": "Prefer not to say"
     }
   ],
   "gender": [
@@ -102,11 +97,6 @@
       "id": "m",
       "ko": "남성",
       "en": "Male"
-    },
-    {
-      "id": "na",
-      "ko": "밝히지 않음",
-      "en": "Prefer not to say"
     }
   ],
   "achievement": [
@@ -134,11 +124,6 @@
       "id": "1",
       "ko": "하위권",
       "en": "Bottom"
-    },
-    {
-      "id": "na",
-      "ko": "밝히지 않음",
-      "en": "Prefer not to say"
     }
   ],
   "nameParts": {

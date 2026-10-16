@@ -252,7 +252,7 @@
     // 둘러보기 중이면 아직 안 본 곳에 표시
     if (S.look) {
       HOT.forEach((h) => {
-        if (S.seen[h.id]) return;
+        if (S.seen[h.id] || (S.only && h.id !== S.only)) return;
         const bob = Math.round(Math.sin(t * 4) * 2);
         r(px(h.x + h.w / 2) - 2, h.y - 10 + bob, 4, 6, '#ffe14a');
         r(px(h.x + h.w / 2) - 2, h.y - 2 + bob, 4, 2, '#ffe14a');
@@ -608,8 +608,9 @@
       return new Promise((res) => setTimeout(res, 450));
     },
     // 둘러보기: ◀ ▶ 로 왼쪽(자판기), 가운데(역 이름판), 오른쪽(전광판·출구)을 본다
-    lookMode(on) {
+    lookMode(on, only = null) {
       S.look = on;
+      S.only = only;
     },
     turn(dir) {
       S.camT = Math.max(W / 2, Math.min(PANO - W / 2, S.camT + dir * 160));
@@ -648,7 +649,7 @@
     click(p) {
       if (S.scene === 'platform' && S.look) {
         const L = S.cam - W / 2;
-        const hit = HOT.find((h) => p.x + L >= h.x && p.x + L <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h);
+        const hit = HOT.find((h) => (!S.only || h.id === S.only) && p.x + L >= h.x && p.x + L <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h);
         if (hit && this.onHot) this.onHot(hit.id);
         return;
       }
