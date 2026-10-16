@@ -130,7 +130,7 @@ body.portrait #dialog { min-height: 120px; }
 .q .seg button { padding: 7px 4px; font-size: 11px; }
 .q .seg button b { display: block; font-size: 15px; }
 /* 폼 화면은 그림 크기와 상관없이 화면 전체에 띄운다 (폰에서도 넉넉하게) */
-#consent-screen, #setup-screen, #survey-screen, #thanks-screen, #map-screen, #avatar-screen, #quiz-screen, #tie-screen, #result-screen { position: fixed; z-index: 20; }
+#consent-screen, #setup-screen, #survey-screen, #thanks-screen, #map-screen, #avatar-screen, #dest-screen, #fuel-screen, #gauge-screen, #util-screen, #quiz-screen, #tie-screen, #result-screen { position: fixed; z-index: 20; }
 body.portrait #portrait { transform: scale(0.8); transform-origin: top left; }
 html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 
@@ -184,3 +184,24 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
 @media (max-width: 420px) { .avatar-options { grid-template-columns: repeat(2, 1fr); } }
 
 .portrait-type { align-self: flex-start; margin-top: 2px; padding: 1px 6px; font-size: 11px; font-weight: 700; color: #0b0c16; background: var(--ptype, var(--line)); letter-spacing: 0.04em; }
+
+/* ---------- 3화 종착역 ---------- */
+.dest-options { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0 4px; }
+.dest-opt { text-align: left; background: #141a33; color: var(--ink); border: 1px solid #39436e; padding: 9px 10px; font-size: 13px; line-height: 1.4; cursor: pointer; font-family: inherit; }
+.dest-opt:hover, .dest-opt:focus-visible { border-color: var(--line); outline: none; background: #0f2e2b; }
+.own-row { display: flex; gap: 6px; }
+.own-row .btn { margin-top: 0; width: auto; flex: none; }
+.fuel-options { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 4px; }
+.fuel-opt { display: flex; align-items: center; gap: 10px; text-align: left; background: #141a33; color: var(--ink); border: 1px solid #39436e; padding: 8px 10px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.fuel-opt i { flex: none; width: 16px; height: 16px; border: 2px solid #5a648e; }
+.fuel-opt[aria-pressed='true'] { border-color: var(--line); background: #0f2e2b; }
+.fuel-opt[aria-pressed='true'] i { background: var(--line); border-color: var(--line); }
+.gauge-bars { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 6px; }
+.gauge-row { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 10px; font-size: 13px; color: #b3b9d0; }
+.gauge-row.main { color: #fff; font-weight: 700; }
+.g-bar { display: flex; gap: 4px; }
+.g-bar i { flex: 1; height: 16px; background: #222a48; border: 1px solid #39436e; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chip { background: #141a33; color: var(--ink); border: 1px solid #39436e; padding: 7px 11px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.chip[aria-pressed='true'] { border-color: var(--line); background: #0f2e2b; color: #fff; }
+@media (max-width: 420px) { .dest-options { grid-template-columns: 1fr; } .gauge-row { grid-template-columns: 1fr; gap: 3px; } }

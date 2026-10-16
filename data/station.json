@@ -1,0 +1,266 @@
+{
+  "note": "3화 종착역: 미래의 나(가능한 자기), 연료 게이지(자기결정성 연속선), 유용성 질문. docs/cards-draft.md 1·2절에서 옮김.",
+  "destinations": [
+    {
+      "id": "1",
+      "ko": "누군가를 돕고 지키는 사람",
+      "short": {
+        "ko": "돕는 사람",
+        "en": "Helper"
+      },
+      "en": "Someone who helps and protects others"
+    },
+    {
+      "id": "2",
+      "ko": "내가 만든 걸 세상에 보여주는 사람",
+      "short": {
+        "ko": "만드는 사람",
+        "en": "Maker"
+      },
+      "en": "Someone who shows the world what they make"
+    },
+    {
+      "id": "3",
+      "ko": "궁금한 걸 끝까지 파고드는 사람",
+      "short": {
+        "ko": "파고드는 사람",
+        "en": "Explorer"
+      },
+      "en": "Someone who digs into what they wonder about"
+    },
+    {
+      "id": "4",
+      "ko": "사람들을 이끌고 일을 성사시키는 사람",
+      "short": {
+        "ko": "이끄는 사람",
+        "en": "Leader"
+      },
+      "en": "Someone who leads people and gets things done"
+    },
+    {
+      "id": "5",
+      "ko": "몸과 기술로 무언가를 해내는 사람",
+      "short": {
+        "ko": "해내는 사람",
+        "en": "Doer"
+      },
+      "en": "Someone who gets things done with body and skill"
+    },
+    {
+      "id": "6",
+      "ko": "사람의 마음을 움직이는 말과 글을 쓰는 사람",
+      "short": {
+        "ko": "쓰는 사람",
+        "en": "Writer"
+      },
+      "en": "Someone whose words move people's hearts"
+    },
+    {
+      "id": "7",
+      "ko": "문제를 숫자와 논리로 푸는 사람",
+      "short": {
+        "ko": "푸는 사람",
+        "en": "Solver"
+      },
+      "en": "Someone who solves problems with numbers and logic"
+    },
+    {
+      "id": "8",
+      "ko": "세계를 무대로 움직이는 사람",
+      "short": {
+        "ko": "세계로 가는 사람",
+        "en": "Globetrotter"
+      },
+      "en": "Someone who works on a world stage"
+    },
+    {
+      "id": "9",
+      "ko": "가족과 주변 사람을 든든하게 챙기는 사람",
+      "short": {
+        "ko": "챙기는 사람",
+        "en": "Caretaker"
+      },
+      "en": "Someone who looks after family and the people around them"
+    },
+    {
+      "id": "10",
+      "ko": "내 일을 스스로 만들어 가는 사람",
+      "short": {
+        "ko": "길을 만드는 사람",
+        "en": "Pathmaker"
+      },
+      "en": "Someone who creates their own work"
+    },
+    {
+      "id": "11",
+      "ko": "자연과 생명을 다루는 사람",
+      "short": {
+        "ko": "생명을 돌보는 사람",
+        "en": "Naturalist"
+      },
+      "en": "Someone who works with nature and living things"
+    },
+    {
+      "id": "12",
+      "ko": "한 분야에서 \"그건 저 사람한테 물어봐\"라는 말을 듣는 사람",
+      "short": {
+        "ko": "전문가",
+        "en": "Expert"
+      },
+      "en": "Someone people go to as the expert in a field"
+    }
+  ],
+  "gauges": [
+    {
+      "id": "interest",
+      "ko": "흥미",
+      "en": "Interest",
+      "color": "#ff8fb8"
+    },
+    {
+      "id": "growth",
+      "ko": "성장",
+      "en": "Growth",
+      "color": "#3cf29a"
+    },
+    {
+      "id": "meaning",
+      "ko": "의미",
+      "en": "Meaning",
+      "color": "#5b8cff"
+    },
+    {
+      "id": "connection",
+      "ko": "연결",
+      "en": "Connection",
+      "color": "#ffbe4a"
+    },
+    {
+      "id": "reward",
+      "ko": "인정·보상",
+      "en": "Recognition",
+      "color": "#c79cff"
+    },
+    {
+      "id": "pressure",
+      "ko": "압박",
+      "en": "Pressure",
+      "color": "#9aa0b4",
+      "sub": {
+        "ko": "해야 하니까",
+        "en": "because I have to"
+      }
+    }
+  ],
+  "fuel": [
+    {
+      "id": 1,
+      "g": "interest",
+      "ko": "재밌으면 시간 가는 줄 모르고 한다",
+      "en": "When it's fun, I lose track of time"
+    },
+    {
+      "id": 2,
+      "g": "interest",
+      "ko": "모르던 걸 알게 될 때 기분이 좋다",
+      "en": "I feel good when I learn something new"
+    },
+    {
+      "id": 3,
+      "g": "growth",
+      "ko": "어제보다 나아졌다는 느낌이 나를 움직인다",
+      "en": "Feeling better than yesterday keeps me going"
+    },
+    {
+      "id": 4,
+      "g": "growth",
+      "ko": "어려운 문제를 풀었을 때 짜릿하다",
+      "en": "Solving a hard problem is a thrill"
+    },
+    {
+      "id": 5,
+      "g": "meaning",
+      "ko": "이게 내 미래에 필요하다고 느끼면 한다",
+      "en": "I do it when I feel I'll need it for my future"
+    },
+    {
+      "id": 6,
+      "g": "meaning",
+      "ko": "내가 정한 목표라면 싫어도 한다",
+      "en": "If it's a goal I set, I do it even when I don't feel like it"
+    },
+    {
+      "id": 7,
+      "g": "connection",
+      "ko": "누가 같이 하거나 응원해 주면 더 잘된다",
+      "en": "It goes better when someone joins me or cheers me on"
+    },
+    {
+      "id": 8,
+      "g": "connection",
+      "ko": "믿어 주는 사람을 실망시키고 싶지 않다",
+      "en": "I don't want to let down people who believe in me"
+    },
+    {
+      "id": 9,
+      "g": "reward",
+      "ko": "점수나 등수가 오르면 힘이 난다",
+      "en": "Better scores or rankings give me energy"
+    },
+    {
+      "id": 10,
+      "g": "reward",
+      "ko": "칭찬이나 보상이 있으면 더 한다",
+      "en": "I do more when there is praise or a reward"
+    },
+    {
+      "id": 11,
+      "g": "pressure",
+      "ko": "안 하면 혼나거나 뒤처질까 봐 한다",
+      "en": "I do it because I'll get in trouble or fall behind if I don't"
+    },
+    {
+      "id": 12,
+      "g": "pressure",
+      "ko": "남들이 다 하니까 나도 한다",
+      "en": "I do it because everyone else does"
+    }
+  ],
+  "utility": [
+    {
+      "id": "knowledge",
+      "ko": "그 일에 필요한 지식이 생긴다",
+      "en": "I'll gain knowledge I need for it"
+    },
+    {
+      "id": "thinking",
+      "ko": "생각하는 힘이 길러진다",
+      "en": "It builds my thinking skills"
+    },
+    {
+      "id": "options",
+      "ko": "선택지가 넓어진다",
+      "en": "It opens up more options"
+    },
+    {
+      "id": "finish",
+      "ko": "끝까지 해 본 경험이 생긴다",
+      "en": "I'll know what it's like to see something through"
+    },
+    {
+      "id": "school",
+      "ko": "원하는 학교·과정에 갈 수 있다",
+      "en": "It can get me into the school or program I want"
+    },
+    {
+      "id": "trust",
+      "ko": "나를 믿게 된다",
+      "en": "I'll start to believe in myself"
+    },
+    {
+      "id": "unsure",
+      "ko": "아직 잘 모르겠다",
+      "en": "I'm not sure yet"
+    }
+  ]
+}

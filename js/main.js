@@ -250,6 +250,7 @@
       drawPortrait(sv.avatar || null, tp.color);
       showType(sv.disc);
     }
+    if (sv.ep3 && sv.ep3.dest) showDest(sv.ep3.dest);
   }
 
   // 시작: 이어하기면 노선도로, 처음이면 동의 → 등록 → 사전 질문 → 1화
@@ -404,7 +405,7 @@
   }
 
   // ---------- 역 클리어: 다음 역이 있으면 이어서, 없으면 마지막 질문으로 ----------
-  const READY = [1, 2];
+  const READY = [1, 2, 3];
   function stopClear(ep) {
     Sound.play('clear');
     Data.save.done[ep] = true;
@@ -541,7 +542,58 @@
     await stopClear(2);
   }
 
-  const EPISODES = { 1: () => ep1(), 2: () => ep2() };
+  // ---------- 3화: 종착역 ----------
+  // 승차권·전광판에 들어갈 짧은 이름 (너무 길면 줄임)
+  const shortName = (s) => (s.length > 10 ? `${s.slice(0, 9)}…` : s);
+
+  function showDest(dest) {
+    Game.destName = dest && dest.id !== 'unknown' ? shortName(dest.label) : '';
+    Game.ticketTo = dest ? shortName(dest.label) : '';
+  }
+
+  async function ep3() {
+    await Station.load();
+    await Game.fadeTo(1);
+    Game.scene('hub', { phase: 0.5 });
+    Game.novaSit(292);
+    showDest(null);
+    await Game.fadeTo(0);
+    await say([n('ep3.n1'), nova('ep3.nova1'), nova('ep3.nova2'), nova('ep3.nova3')]);
+
+    const prev = Data.save.ep3 || {};
+    const dest = await Station.pickDest(prev.dest);
+    showDest(dest);
+    Sound.play('powerup');
+    await sleep(500);
+    await say([
+      dest.id === 'unknown' ? nova('ep3.destFog') : nova('ep3.destSet', { vars: { dest: dest.label } }),
+      nova('ep3.nova4'),
+    ]);
+
+    const checked = await Station.fuelCheck();
+    const fuel = Station.gauges(checked);
+    await Station.showGauge(fuel);
+    const main = fuel.main;
+    const comment = !main.length ? 'ep3.fuelNone' : main.includes('pressure') && main.length === 1 ? 'ep3.fuel_pressure' : `ep3.fuel_${main.find((m) => m !== 'pressure') || main[0]}`;
+    await say([nova(comment), nova('ep3.nova5')]);
+
+    const util = await Station.utility(dest);
+    // 기기에는 다 저장, 전송은 선택지 번호만 (직접 쓴 글 제외)
+    Data.save.ep3 = { dest: { id: dest.id, label: dest.label, own: dest.own || '' }, fuel: checked, count: fuel.count, main, util: util.ids, utilOwn: util.own };
+    Data.persist();
+    Data.send('ep3_result', {
+      destination: dest.id,
+      fuel: checked.join(','),
+      counts: Station.data.gauges.map((gg) => `${gg.id}:${fuel.count[gg.id]}`).join(' '),
+      main: main.join(','),
+      utility: util.ids.join(','),
+      utility_own: util.own ? 1 : 0,
+    });
+    await say([nova('ep3.nova6'), nova('ep3.nova7')]);
+    await stopClear(3);
+  }
+
+  const EPISODES = { 1: () => ep1(), 2: () => ep2(), 3: () => ep3() };
 
   function showTitle() {
     Game.scene('title', { phase: 0 });
@@ -556,6 +608,8 @@
     Game.setChar(null, null);
     drawPortrait();
     showType(null);
+    Game.destName = '';
+    Game.ticketTo = '';
     $('#title-screen').hidden = false;
   }
 

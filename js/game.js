@@ -43,6 +43,7 @@
     char: null, // 겉모습 동물 tiger cat rabbit dog (2화에서 학생이 고름)
     lineColor: null,
     ticketTo: '',
+    destName: '',
     tunnel: 0,
     tunnelT: 0,
     reflect: 0,
@@ -490,6 +491,69 @@
     if (S.nova) drawNova(S.nova.x - (S.cam - W / 2), 52);
   }
 
+  // ---------- 환승역 (1인칭, 커다란 노선도 전광판, 천창 너머로 새벽) ----------
+  function drawHub() {
+    // 천창: 하늘이 보이고 철골이 가로지른다
+    sky(S.phase);
+    const beam = '#2a2f42';
+    r(0, 0, W, 4, beam);
+    r(0, 20, W, 3, beam);
+    r(0, 38, W, 4, beam);
+    for (let x = 0; x < W; x += 40) r(x, 0, 3, 42, beam);
+    // 벽
+    r(0, 42, W, 80, mix('#2a3047', '#8f97ad', S.phase));
+    // 노선도 전광판
+    const bx = 18;
+    const by = 46;
+    const bw = 246;
+    const bh = 70;
+    r(bx - 3, by - 3, bw + 6, bh + 6, '#8a90a4');
+    r(bx, by, bw, bh, '#0e1430');
+    text(I18n.t('scene.mapTitle'), bx + 6, by + 3, '#8a90a6', 6);
+    // 다른 사람들의 노선 (회색)
+    const others = [
+      [by + 22, '#4a5272', 30, 210],
+      [by + 34, '#3d4562', 60, 236],
+      [by + 60, '#454d6a', 20, 150],
+    ];
+    others.forEach(([y, c, x0, x1]) => {
+      r(bx + x0, y, x1 - x0, 3, c);
+      for (let x = bx + x0; x <= bx + x1; x += 36) r(x - 2, y - 2, 6, 7, c);
+    });
+    // 내 노선: 지금 여기 → 종착역
+    const my = by + 46;
+    const col = S.lineColor || C.line;
+    const x0 = bx + 16;
+    const x1 = bx + bw - 22;
+    r(x0, my, x1 - x0, 4, col);
+    for (let k = 1; k <= 3; k++) {
+      const x = x0 + ((x1 - x0) * k) / 4;
+      r(x - 3, my - 2, 7, 8, '#0e1430');
+      r(x - 2, my - 1, 5, 6, '#ffffff');
+      r(x - 1, my, 3, 4, '#0e1430');
+    }
+    r(x0 - 4, my - 3, 9, 10, '#ffffff');
+    r(x0 - 2, my - 1, 5, 6, col);
+    text(I18n.t('scene.boardHere'), x0 - 4, my + 8, '#c4c9de', 6);
+    // 종착역 (안 정했으면 안개)
+    const blink = Math.floor(t * 2) % 2 === 0;
+    if (S.destName) {
+      r(x1 - 6, my - 5, 13, 14, '#ffffff');
+      r(x1 - 4, my - 3, 9, 10, col);
+      text(S.destName, x1 + 6, my - 15, '#ffffff', 7, 'right');
+    } else {
+      g.globalAlpha = 0.5 + (blink ? 0.2 : 0);
+      r(x1 - 10, my - 8, 22, 18, '#9aa0b4');
+      r(x1 - 6, my - 11, 14, 4, '#9aa0b4');
+      g.globalAlpha = 1;
+      text('?', x1 + 1, my - 5, '#ffffff', 9, 'center');
+    }
+    // 바닥
+    r(0, 122, W, 58, mix('#2f3448', '#5a6178', S.phase));
+    for (let x = 0; x < W; x += 32) r(x, 122, 1, 58, mix('#282c3e', '#4c5268', S.phase));
+    if (S.nova) drawNova(S.nova.x, 52);
+  }
+
   // ---------- 지하 통로 (옆에서 걷기, 가로 640) ----------
   const TUNNEL = 640;
   const POSTERS = [
@@ -655,13 +719,14 @@
     else if (S.scene === 'underpass') drawUnderpass();
     else if (S.scene === 'arrival') drawArrival();
     else if (S.scene === 'train') drawTrain();
+    else if (S.scene === 'hub') drawHub();
     if (S.dream) {
       // 꿈: 아침빛이 번지고 화면이 출렁인다
       g.globalAlpha = 0.35 + 0.1 * Math.sin(t * 1.5);
       r(0, 0, W, H, '#fff4e0');
       g.globalAlpha = 1;
     }
-    if (S.hands && (S.scene === 'platform' || S.scene === 'train') && !S.dream) drawHands();
+    if (S.hands && (S.scene === 'platform' || S.scene === 'train' || S.scene === 'hub') && !S.dream) drawHands();
     if (S.lids < 0.999) drawLids();
     if (S.fade > 0.01) {
       g.globalAlpha = S.fade;
@@ -709,7 +774,7 @@
     },
     scene(name, opts = {}) {
       S.scene = name;
-      S.hands = name === 'platform' || name === 'train';
+      S.hands = name === 'platform' || name === 'train' || name === 'hub';
       S.look = false;
       S.walk = false;
       S.nova = null;
@@ -736,6 +801,9 @@
     },
     set ticketTo(v) {
       S.ticketTo = v;
+    },
+    set destName(v) {
+      S.destName = v;
     },
     tunnel(on) {
       S.tunnelT = on ? 1 : 0;

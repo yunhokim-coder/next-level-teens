@@ -33,7 +33,9 @@
     "ticketFrom": "FROM · No-Name Stn",
     "ticketTo": "TO ·",
     "toPlatform": "OTHER SIDE",
-    "dreamSign": "Tomorrow"
+    "dreamSign": "Tomorrow",
+    "mapTitle": "NEXT LINE MAP",
+    "boardHere": "YOU ARE HERE"
   },
   "hot": {
     "vending": "Text scrolls across the vending machine: \"Line of the day: Well begun is half done. ...That's only half true. The other half is starting again.\"",
@@ -88,7 +90,11 @@
       "title": "Your Character · CLEAR",
       "next": "Next stop: the final station, where you choose where to go"
     },
-    "toNext": "Next stop"
+    "toNext": "Next stop",
+    "ep3": {
+      "title": "Final Station · CLEAR",
+      "next": "Next stop: shadows that block the track"
+    }
   },
   "consent": {
     "tag": "Before boarding",
@@ -179,5 +185,45 @@
     "tag": "Your look",
     "title": "How do you want to ride?",
     "lead": "This has nothing to do with your result. Pick a look you like. Your outfit is your line color."
+  },
+  "ep3": {
+    "n1": "The train stops at a huge transfer station. Through the skylight the sky is a little brighter.",
+    "nova1": "This is where you choose your final station. See the route map? The end of your line is still foggy.",
+    "nova2": "Not a job title. Pick who you want to be five years from now.",
+    "nova3": "No right answer. If you don't know, 'not sure yet' is fine. A foggy station is still a station.",
+    "destSet": "{dest}. Nice. The end of your line just lit up.",
+    "destFog": "That's okay. Let's leave it foggy. Sometimes it clears as you go.",
+    "nova4": "Now let's see what you run on. Everyone's fuel is different. Pick everything that sounds like you.",
+    "fuel_interest": "Fun is your fuel. Start with the fun part and you’ll go far.",
+    "fuel_growth": "Getting better than yesterday is your fuel. Keep track of small wins and the tank stays full.",
+    "fuel_meaning": "You move when you know why. Remind yourself of the reason often.",
+    "fuel_connection": "You get energy from doing it together. Finding people to study with is a strategy too.",
+    "fuel_reward": "You get energy when results show. Small, frequent rewards can work.",
+    "fuel_pressure": "You can run on that fuel. But to go the distance, let's mix in other kinds too.",
+    "fuelNone": "Your fuel isn't clear yet. That's okay. We'll find it together at the next stops.",
+    "nova5": "One last thing. How do you think what you study now connects to that station?",
+    "nova6": "Great. Now you have a final station. All that’s left is the way there.",
+    "nova7": "But something always blocks the way. Let's meet it at the next stop.",
+    "destTag": "Final station",
+    "destTitle": "Five years from now, who do you want to be?",
+    "destLead": "It doesn't have to be a job. Pick the one that pulls you most.",
+    "destOwn": "Write your own (stays on this device)",
+    "destOwnPh": "e.g. Someone who makes people laugh",
+    "ok": "OK",
+    "destUnknown": "Not sure yet (foggy station)",
+    "fogStation": "Foggy Station",
+    "fuelTag": "Fuel gauge",
+    "fuelTitle": "What gets you moving?",
+    "fuelLead": "Pick everything that sounds like you. It's fine to pick none.",
+    "fuelGo": "See my gauge",
+    "mainFuel": "Main fuel: {fuel}",
+    "noFuel": "Your fuel isn't clear yet",
+    "utilTag": "Final station",
+    "utilTitle": "How does studying now lead to \"{dest}\"?",
+    "utilLead": "Pick all that apply.",
+    "utilOwn": "Write your own (optional, stays on this device)",
+    "utilOwnPh": "e.g. Good English lets me meet more people",
+    "utilError": "Pick at least one or write your own.",
+    "utilTitleFog": "Even with the station still foggy, how might what you study now help you?"
   }
 }
