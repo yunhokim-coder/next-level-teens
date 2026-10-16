@@ -784,6 +784,30 @@
     const L = I18n.lang === 'en' ? 'en' : 'ko';
     return Story.josa(I18n.t('ep6.planSentence').replace('{if}', Mamba.card(pl.m)[L].word).replace('{then}', Battle.card(pl.c)[L].act));
   }
+  // 프로필 카드: 겉모습, DISC 1·2순위, 강점, 연료 게이지, 공부 팁, 종착역
+  function profileInfo(st, color) {
+    const sv = Data.save;
+    const L = st.L;
+    const d = sv.disc || null;
+    const tp = d && Quiz.types[d.primary] ? Quiz.types[d.primary] : null;
+    const t2 = d && d.secondary && Quiz.types[d.secondary] ? Quiz.types[d.secondary] : null;
+    const gauges = (Station.data && Station.data.gauges) || [];
+    const count = (sv.ep3 && sv.ep3.count) || {};
+    const main = (sv.ep3 && sv.ep3.main) || [];
+    return {
+      passenger: Data.nameText(),
+      code: d ? I18n.t('hud.type').replace('{code}', `${d.primary}${d.secondary || ''}`) : '',
+      avatar: sv.avatar || null,
+      color,
+      line: tp ? tp[L].line : '',
+      primary: tp ? tp[L].name : '',
+      secondary: t2 ? t2[L].name : '',
+      strengths: tp ? tp[L].strengths : [],
+      study: tp ? tp[L].study : '',
+      fuels: gauges.map((g) => ({ label: g[L], color: g.color, n: count[g.id] || 0, main: main.includes(g.id) })),
+      dest: st.destLabel,
+    };
+  }
   function routeInfo() {
     const sv = Data.save;
     const st = story6();
@@ -800,11 +824,12 @@
       shadow: st.shadow,
       plan: planText(e6.plan),
       detours: st.detours.map((id) => Battle.card(id)[st.L].name),
+      profile: profileInfo(st, color),
     };
   }
 
   async function ep6() {
-    await Promise.all([Mamba.load(), Battle.load()]);
+    await Promise.all([Mamba.load(), Battle.load(), Station.load(), Quiz.load()]);
     const sv = Data.save;
     const st = story6();
     const color = sv.disc && Quiz.types[sv.disc.primary] ? Quiz.types[sv.disc.primary].color : null;
@@ -812,6 +837,7 @@
     Game.scene('platform', { phase: 0.8 });
     Game.setChar(sv.avatar || null, color);
     if (sv.ep3 && sv.ep3.dest) showDest(sv.ep3.dest);
+    Game.boardDest = st.destLabel.length > 12 ? `${st.destLabel.slice(0, 11)}…` : st.destLabel;
     Game.signName = '';
     Game.lookAt(480);
     await Game.fadeTo(0);
@@ -827,7 +853,7 @@
       nova('ep6.o'),
     ]);
     const prev = sv.ep6 || {};
-    const w = await Finale.ways(prev.ways);
+    const w = await Finale.ways(prev.ways, { dest: st.destLabel, now: I18n.t('ep6.nowText'), color });
     await say([nova('ep6.oDone', { vars: { w1: w.ways[0] } }), nova('ep6.w')]);
     const pl = await Finale.plan(st.order.map((id) => Mamba.card(id)), st.detours.map((id) => Battle.card(id)), prev.plan);
     await say([nova('ep6.wDone', { vars: { plan: planText(pl) } }), nova('ep6.s1')]);
@@ -912,7 +938,7 @@
     $('#thanks-routemap').addEventListener('click', async () => {
       Sound.play('select');
       $('#thanks-screen').hidden = true;
-      await Promise.all([Mamba.load(), Battle.load()]);
+      await Promise.all([Mamba.load(), Battle.load(), Station.load(), Quiz.load()]);
       await Finale.show(routeInfo(), (fmt) => Data.send('routemap', { format: fmt, replay: true }));
       $('#thanks-screen').hidden = false;
     });

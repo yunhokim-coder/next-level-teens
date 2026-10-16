@@ -306,7 +306,8 @@
     text(I18n.t('scene.boardNext'), bx + 6, 17, C.amber, 8);
     text('--:--', bx + 126, 17, C.amber, 8, 'right');
     text(I18n.t('scene.boardDest'), bx + 6, 30, C.amber, 8);
-    text(I18n.t('scene.boardUnknown'), bx + 126, 30, (Math.floor(t * 2) % 2 ? C.amber : '#7a5a20'), 8, 'right');
+    if (S.boardDest) text(S.boardDest, bx + 126, 30, C.amber, 8, 'right');
+    else text(I18n.t('scene.boardUnknown'), bx + 126, 30, (Math.floor(t * 2) % 2 ? C.amber : '#7a5a20'), 8, 'right');
     // 계단과 출구 표시
     const sx = px(900);
     for (let i = 0; i < 6; i++) r(sx + i * 8, 140 - i * 10, 60, 10, i % 2 ? '#2f3549' : '#353c52');
@@ -1072,6 +1073,7 @@
         S.train = S.leave ? 1 : 0;
       }
       S.speed = S.speedT = 1;
+      S.boardDest = '';
       S.alarm = false;
       S.beam = S.hit = S.lunge = 0;
       S.detour = S.detourT = 0;
@@ -1250,6 +1252,9 @@
       return POSTERS.find((q) => Math.abs(S.walker.x - q.x) < 30) || null;
     },
     focus() {},
+    set boardDest(v) {
+      S.boardDest = v;
+    },
     set signName(v) {
       S.signName = v;
     },

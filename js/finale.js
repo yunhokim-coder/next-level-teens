@@ -10,55 +10,123 @@
     if (p) p.scrollTop = 0;
   }
 
-  // ---------- 경유역 3개: 이번 주 → 2주 뒤 → 한 달 뒤(다음 시험) ----------
-  function ways(prev = []) {
+  // ---------- GROW 노선: 지금 여기(R) → 경유역 3개(O) → 종착역(G) ----------
+  // 역을 눌러 하나씩 채운다. 채운 역까지 선로에 불이 들어온다.
+  function ways(prev = [], ctx = {}) {
     const keys = ['w1', 'w2', 'w3'];
+    const vals = keys.map((k, i) => prev[i] || '');
+    const used = [false, false, false];
+    let cur = Math.max(0, vals.findIndex((v) => !v));
+    if (vals.every((v) => v)) cur = 0;
     return new Promise((resolve) => {
-      let used = [false, false, false];
-      keys.forEach((k, i) => {
-        const input = $(`#way-${k}`);
-        input.value = prev[i] || '';
-        input.oninput = () => {
-          used[i] = false;
-          $('#ways-error').hidden = true;
-        };
-        const box = $(`#way-${k}-ideas`);
+      const route = $('#grow-route');
+      route.style.setProperty('--gc', ctx.color || 'var(--line)');
+      $('#grow-title').textContent = I18n.t('ep6.waysTitle').replace('{dest}', ctx.dest || '');
+      const input = $('#grow-input');
+      const save = () => {
+        vals[cur] = input.value.trim().slice(0, 40);
+      };
+      const render = () => {
+        route.innerHTML = '<div class="grow-fill"></div>';
+        const stops = [
+          { cls: 'start lit', letter: 'R', when: I18n.t('ep6.now'), text: ctx.now || '' },
+          ...keys.map((k, i) => ({ cls: (vals[i] ? 'lit' : '') + (i === cur ? ' cur' : ''), letter: 'O', when: I18n.t(`ep6.${k}Short`), text: vals[i], i })),
+          { cls: 'end' + (vals.every((v) => v) ? ' lit' : ''), letter: 'G', when: I18n.t('ep6.mapDestShort'), text: ctx.dest || '' },
+        ];
+        stops.forEach((st) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = `grow-stop ${st.cls}`;
+          b.innerHTML = '<span class="grow-letter"></span><span class="grow-dot"></span><span class="grow-when"></span><span class="grow-text"></span>';
+          b.querySelector('.grow-letter').textContent = st.letter;
+          b.querySelector('.grow-when').textContent = st.when;
+          const tx = b.querySelector('.grow-text');
+          tx.textContent = st.text || I18n.t('ep6.tapToWrite');
+          if (!st.text) tx.classList.add('empty');
+          if (st.i === undefined) b.disabled = true;
+          else
+            b.onclick = () => {
+              save();
+              cur = st.i;
+              Sound.play('blip');
+              render();
+              input.focus();
+            };
+          route.appendChild(b);
+        });
+        // 불 들어온 선로: 앞에서부터 이어서 채운 역까지
+        let n = 0;
+        while (n < 3 && vals[n]) n++;
+        const lit = vals.every((v) => v) ? 4 : n;
+        route.querySelector('.grow-fill').style.width = `${(80 * lit) / 4}%`;
+        const k = keys[cur];
+        $('#grow-label').textContent = I18n.t(`ep6.${k}`);
+        input.placeholder = I18n.t(`ep6.${k}Ph`);
+        input.value = vals[cur];
+        const box = $('#grow-ideas');
         box.innerHTML = '';
-        box.hidden = true;
         I18n.t(`ep6.${k}Ideas`)
           .split('|')
           .forEach((idea) => {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'chip';
-            b.textContent = idea;
-            b.onclick = () => {
+            const c = document.createElement('button');
+            c.type = 'button';
+            c.className = 'chip';
+            c.textContent = idea;
+            c.onclick = () => {
               input.value = idea;
-              used[i] = true;
+              used[cur] = true;
+              save();
               Sound.play('blip');
               $('#ways-error').hidden = true;
+              render();
             };
-            box.appendChild(b);
+            box.appendChild(c);
           });
-      });
-      $('#ways-ideas').onclick = () => {
-        Sound.play('blip');
-        keys.forEach((k) => ($(`#way-${k}-ideas`).hidden = false));
-        $('#ways-ideas').hidden = true;
+        const done = vals.every((v) => v);
+        $('#ways-go').textContent = I18n.t(done ? 'ep6.waysGo' : 'ep6.nextStop');
       };
-      $('#ways-ideas').hidden = false;
+      input.oninput = () => {
+        used[cur] = false;
+        $('#ways-error').hidden = true;
+        save();
+        // 글자를 쓰는 동안 노선 위 이름만 바꾼다 (입력 칸 포커스 유지)
+        const el = $('#grow-route').querySelectorAll('.grow-stop')[cur + 1].querySelector('.grow-text');
+        el.textContent = vals[cur] || I18n.t('ep6.tapToWrite');
+        el.classList.toggle('empty', !vals[cur]);
+      };
+      input.onkeydown = (e) => {
+        if (e.key === 'Enter') $('#ways-go').click();
+      };
+      $('#grow-ideas-btn').onclick = () => {
+        Sound.play('blip');
+        $('#grow-ideas').hidden = false;
+        $('#grow-ideas-btn').hidden = true;
+      };
       $('#ways-go').onclick = () => {
-        const vals = keys.map((k) => $(`#way-${k}`).value.trim().slice(0, 40));
-        if (vals.some((v) => !v)) {
+        save();
+        if (!vals[cur]) {
           $('#ways-error').hidden = false;
           Sound.play('poof');
           return;
         }
-        Sound.play('select');
+        const next = vals.findIndex((v) => !v);
+        if (next >= 0) {
+          cur = next;
+          Sound.play('select');
+          $('#grow-ideas').hidden = true;
+          $('#grow-ideas-btn').hidden = false;
+          render();
+          input.focus();
+          return;
+        }
+        Sound.play('powerup');
         $('#ways-screen').hidden = true;
-        resolve({ ways: vals, ideas: used.slice() });
+        resolve({ ways: vals.slice(), ideas: used.slice() });
       };
       $('#ways-error').hidden = true;
+      $('#grow-ideas').hidden = true;
+      $('#grow-ideas-btn').hidden = false;
+      render();
       open('#ways-screen');
     });
   }
@@ -330,17 +398,173 @@
     g.textAlign = 'left';
   }
 
-  // ---------- 노선도 화면: 미리보기, 저장(정사각형·배경화면), 인쇄 ----------
+  // ---------- 프로필 카드 (승객 카드) ----------
+  // p = { passenger, code, avatar, color, primary:{name,line}, secondary:{name}, summary, strengths[], study, fuels:[{label,color,n}], dest }
+  function drawProfile(canvas, p, tall) {
+    const W = 1080;
+    const H = tall ? 1920 : 1080;
+    canvas.width = W;
+    canvas.height = H;
+    const g = canvas.getContext('2d');
+    const col = p.color || '#2fd3bf';
+    const F = (size, bold) => `${bold ? '700 ' : ''}${size}px Galmuri11, monospace`;
+    g.textBaseline = 'top';
+    g.fillStyle = '#0b0e1e';
+    g.fillRect(0, 0, W, H);
+    // 카드 몸통 (승차권처럼 위에 노선색 띠)
+    const m = tall ? 60 : 36;
+    const top = tall ? 330 : m;
+    const ch = tall ? 1120 : H - m * 2;
+    g.fillStyle = '#f3efe2';
+    g.fillRect(m, top, W - m * 2, ch);
+    g.fillStyle = col;
+    g.fillRect(m, top, W - m * 2, 96);
+    g.fillStyle = '#0b0e1e';
+    g.font = F(30, true);
+    g.fillText('NEXT LINE', m + 40, top + 20);
+    g.font = F(24);
+    g.fillText(I18n.t('ep6.profileTag'), m + 40, top + 58);
+    g.textAlign = 'right';
+    g.font = F(26, true);
+    g.fillText(p.line, W - m - 40, top + 34);
+    g.textAlign = 'left';
+    // 초상화
+    const pc = document.createElement('canvas');
+    pc.width = 24;
+    pc.height = 32;
+    Chars.portrait(pc, p.avatar, col);
+    g.imageSmoothingEnabled = false;
+    const ps = tall ? 8 : 7;
+    const ax = m + 40;
+    const ay = top + 130;
+    g.fillStyle = col;
+    g.fillRect(ax - 8, ay - 8, 24 * ps + 16, 32 * ps + 16);
+    g.drawImage(pc, ax, ay, 24 * ps, 32 * ps);
+    // 이름과 유형
+    const tx = ax + 24 * ps + 50;
+    const tw = W - m - 40 - tx;
+    g.fillStyle = '#5a6078';
+    g.font = F(24);
+    g.fillText(I18n.t('hud.passenger'), tx, ay);
+    g.fillStyle = '#0b0e1e';
+    g.font = F(44, true);
+    g.fillText(p.passenger, tx, ay + 34);
+    g.font = F(34, true);
+    g.fillStyle = col;
+    g.fillRect(tx, ay + 102, g.measureText(p.code).width + 40, 52);
+    g.fillStyle = '#ffffff';
+    g.fillText(p.code, tx + 20, ay + 110);
+    g.fillStyle = '#0b0e1e';
+    g.font = F(34, true);
+    let y = ay + 176;
+    wrap(g, p.primary, tw).forEach((ln) => {
+      g.fillText(ln, tx, y);
+      y += 42;
+    });
+    if (p.secondary) {
+      g.fillStyle = '#5a6078';
+      g.font = F(24);
+      wrap(g, `+ ${p.secondary}`, tw).forEach((ln) => {
+        g.fillText(ln, tx, y + 4);
+        y += 32;
+      });
+    }
+    // 아래 칸들
+    let by = ay + 32 * ps + 50;
+    const bx = m + 40;
+    const bw = W - m * 2 - 80;
+    const label = (str) => {
+      g.fillStyle = col;
+      g.fillRect(bx, by + 6, 8, 24);
+      g.fillStyle = '#5a6078';
+      g.font = F(24, true);
+      g.fillText(str, bx + 20, by + 4);
+      by += 42;
+    };
+    // 강점
+    label(I18n.t('ep6.profileStrengths'));
+    let cx = bx;
+    g.font = F(28, true);
+    p.strengths.forEach((st) => {
+      const w = g.measureText(st).width + 36;
+      g.fillStyle = '#0b0e1e';
+      g.fillRect(cx, by, w, 48);
+      g.fillStyle = '#ffffff';
+      g.fillText(st, cx + 18, by + 9);
+      cx += w + 12;
+    });
+    by += 72;
+    // 연료 게이지
+    label(I18n.t('ep6.profileFuel'));
+    const cols = tall || I18n.lang === 'en' ? 2 : 3;
+    const cw = (bw - (cols - 1) * 20) / cols;
+    const maxN = Math.max(1, ...p.fuels.map((f) => f.n));
+    p.fuels.forEach((f, i) => {
+      const x = bx + (i % cols) * (cw + 20);
+      const yy = by + Math.floor(i / cols) * 46;
+      g.fillStyle = '#0b0e1e';
+      g.font = F(22, f.main);
+      const lw = Math.min(cw * 0.55, Math.max(110, g.measureText(f.label).width + 14));
+      g.fillText(f.label, x, yy + 6);
+      const gx = x + lw;
+      const gw = cw - lw;
+      g.fillStyle = '#d8d3c4';
+      g.fillRect(gx, yy + 8, gw, 20);
+      g.fillStyle = f.color;
+      g.fillRect(gx, yy + 8, (gw * f.n) / maxN, 20);
+    });
+    by += Math.ceil(p.fuels.length / cols) * 46 + 26;
+    // 공부 팁과 종착역
+    const textBlock = (title, body, size) => {
+      label(title);
+      g.fillStyle = '#0b0e1e';
+      g.font = F(size);
+      wrap(g, body, bw).slice(0, 2).forEach((ln) => {
+        g.fillText(ln, bx, by);
+        by += size + 12;
+      });
+      by += 18;
+    };
+    textBlock(I18n.t('ep6.profileStudy'), p.study, 26);
+    textBlock(I18n.t('ep6.mapDest'), p.dest, 28);
+    // 아래 글
+    g.fillStyle = '#ffffff';
+    g.font = F(tall ? 34 : 26, true);
+    g.textAlign = 'center';
+    if (tall) g.fillText(I18n.t('ep6.mapFoot'), W / 2, top + ch + 80);
+    g.textAlign = 'left';
+  }
+
+  // ---------- 카드 화면: 노선도·프로필 카드, 저장(정사각형·배경화면), 인쇄 ----------
   function show(info, onSave) {
+    let kind = 'route';
+    const paint = (c, tall) => (kind === 'route' ? draw(c, info, tall) : drawProfile(c, info.profile, tall));
     return new Promise((resolve) => {
       const preview = $('#routemap-canvas');
-      const render = () => draw(preview, info, false);
+      const render = () => paint(preview, false);
+      const tabs = $('#card-tabs');
+      tabs.innerHTML = '';
+      ['route', 'profile'].forEach((k) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'tab';
+        b.dataset.kind = k;
+        b.textContent = I18n.t(k === 'route' ? 'ep6.mapTitle' : 'ep6.profileTitle');
+        b.onclick = () => {
+          kind = k;
+          Sound.play('blip');
+          tabs.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.kind === kind)));
+          render();
+        };
+        b.setAttribute('aria-pressed', String(k === kind));
+        tabs.appendChild(b);
+      });
       (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(render);
       render();
       const save = (tall) => {
         const c = document.createElement('canvas');
-        draw(c, info, tall);
-        const name = `next-line-${tall ? 'wallpaper' : 'map'}.png`;
+        paint(c, tall);
+        const name = `next-line-${kind}${tall ? '-wallpaper' : ''}.png`;
         c.toBlob((blob) => {
           if (!blob) return;
           const url = URL.createObjectURL(blob);
@@ -353,16 +577,16 @@
           setTimeout(() => URL.revokeObjectURL(url), 4000);
         }, 'image/png');
         Sound.play('select');
-        if (onSave) onSave(tall ? 'wallpaper' : 'square');
+        if (onSave) onSave(`${kind}-${tall ? 'wallpaper' : 'square'}`);
       };
       $('#routemap-save').onclick = () => save(false);
       $('#routemap-wall').onclick = () => save(true);
       $('#routemap-print').onclick = () => {
         const c = document.createElement('canvas');
-        draw(c, info, false);
+        paint(c, false);
         $('#print-img').src = c.toDataURL('image/png');
         Sound.play('select');
-        if (onSave) onSave('print');
+        if (onSave) onSave(`${kind}-print`);
         setTimeout(() => window.print(), 200);
       };
       $('#routemap-go').onclick = () => {
@@ -374,5 +598,5 @@
     });
   }
 
-  window.Finale = { ways, plan, station, draw, show };
+  window.Finale = { ways, plan, station, draw, drawProfile, show };
 })();

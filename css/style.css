@@ -295,3 +295,26 @@ html[lang='en'] .logo-sub { letter-spacing: 0.03em; }
   #print-area { display: block; position: fixed; inset: 0; background: #fff; }
   #print-img { width: 100%; height: auto; }
 }
+
+/* GROW 노선 */
+.grow-panel { width: min(600px, 94%); }
+.grow-route { --gc: var(--line); position: relative; display: grid; grid-template-columns: repeat(5, 1fr); margin: 14px 0 4px; padding-top: 4px; }
+.grow-route::before { content: ''; position: absolute; left: 10%; right: 10%; top: 31px; height: 6px; background: #2a3150; }
+.grow-fill { position: absolute; left: 10%; top: 31px; height: 6px; background: var(--gc); transition: width 0.35s; }
+.grow-stop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--ink); font-family: inherit; cursor: pointer; padding: 0 2px; min-width: 0; }
+.grow-stop:disabled { cursor: default; }
+.grow-letter { font-size: 11px; font-weight: 700; color: var(--muted); height: 14px; }
+.grow-dot { width: 22px; height: 22px; border-radius: 50%; background: #10131f; border: 4px solid #39436e; z-index: 1; }
+.grow-stop.lit .grow-dot { border-color: var(--gc); background: #fff; }
+.grow-stop.lit .grow-letter { color: var(--gc); }
+.grow-stop.cur .grow-dot { box-shadow: 0 0 0 4px rgba(255, 207, 74, 0.45); border-color: #ffcf4a; }
+.grow-stop.end .grow-dot, .grow-stop.start .grow-dot { width: 28px; height: 28px; margin-top: -3px; }
+.grow-when { font-size: 11px; color: var(--amber); white-space: nowrap; }
+.grow-text { font-size: 12px; line-height: 1.35; color: #e6e9f5; text-align: center; word-break: keep-all; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; max-width: 100%; min-height: 1.35em; }
+.grow-text.empty { color: #5a6284; }
+.grow-stop.end .grow-text { color: #ffcf4a; font-weight: 700; }
+.grow-legend { font-size: 11px; color: var(--muted); text-align: center; margin: 6px 0 2px; }
+.grow-edit { margin-top: 6px; padding: 10px 12px; background: #10131f; border: 1px solid #2a3150; border-left: 4px solid #ffcf4a; }
+.grow-edit .field-label { margin-top: 0; }
+.grow-badge { display: inline-block; min-width: 1.4em; text-align: center; background: var(--line); color: #04201c; font-size: 0.8em; padding: 0 4px; }
+@media (max-width: 420px) { .grow-text { font-size: 10.5px; } .grow-when { font-size: 10px; } }
