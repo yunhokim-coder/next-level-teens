@@ -153,8 +153,45 @@
     for (let wx = x + 10; wx < x + len; wx += 30) r(wx, y + 18, 6, 2, '#1a1c26');
   }
 
+  // 해와 달: 밤에는 달이 떠 있고, 새벽에 해가 지평선 위로 올라온다
+  function sunMoon(p) {
+    if (p < 0.55) {
+      g.globalAlpha = 1 - p / 0.55;
+      const my = 26 + p * 40;
+      r(258, my, 12, 12, '#f2f0d8');
+      r(256, my + 2, 16, 8, '#f2f0d8');
+      r(260, my - 2, 8, 16, '#f2f0d8');
+      r(262, my + 3, 3, 3, '#d9d6b8');
+      r(266, my + 7, 2, 2, '#d9d6b8');
+      g.globalAlpha = 1;
+    }
+    if (p > 0.35) {
+      const k = (p - 0.35) / 0.65;
+      const sy = 118 - k * 70;
+      g.globalAlpha = Math.min(1, k * 2);
+      r(52, sy - 8, 20, 20, '#ffd27a');
+      r(48, sy - 4, 28, 12, '#ffd27a');
+      r(56, sy - 12, 12, 28, '#ffd27a');
+      // 체크무늬 햇무리
+      g.fillStyle = '#ffe9b0';
+      g.globalAlpha = 0.5 * Math.min(1, k * 2);
+      for (let y = sy - 18; y < sy + 22; y += 2) {
+        for (let x = 42 + ((y / 2) % 2); x < 82; x += 2) {
+          const dx = x - 62;
+          const dy = y - (sy + 2);
+          const d = dx * dx + dy * dy;
+          if (d > 200 && d < 400) g.fillRect(x, y, 1, 1);
+        }
+      }
+      g.globalAlpha = 1;
+    }
+  }
+
   function drawTitle() {
+    // 타이틀은 밤 → 새벽 → 아침 → 다시 밤으로 천천히 돈다 (한 바퀴 30초)
+    if (S.titleCycle) S.phase = (1 - Math.cos((t * Math.PI * 2) / 30)) / 2;
     sky(S.phase);
+    sunMoon(S.phase);
     skyline(S.phase);
     elevated(S.phase);
     // 노선 위를 지나가는 열차
@@ -580,6 +617,7 @@
       S.walk = false;
       S.nova = null;
       S.jam = null;
+      S.titleCycle = name === 'title';
       if (opts.phase !== undefined) S.phase = opts.phase;
       if (name === 'platform') {
         S.cam = S.camT = 480;
