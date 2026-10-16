@@ -8,17 +8,30 @@
 
 ## 흐름
 
-게임(js/ai.js) → Apps Script 웹앱(apps-script/Code.gs, `action: 'ideas'`) → Anthropic API (`claude-haiku-5-5`, effort low, JSON 형식 고정) → 게임
+게임(js/ai.js) → **Cloudflare Worker**(cloudflare/worker.js, config.js `AI_URL`) → Anthropic API (`claude-haiku-5-5`, effort low, JSON 형식 고정) → 게임
 
-- API 키는 Apps Script의 **스크립트 속성 `ANTHROPIC_API_KEY`** 에만 있다. 게임 코드·저장소에는 없다.
-- 학생 글은 시트에 저장하지 않는다. `ai_log` 탭에는 익명 코드, 성공 여부, 걸린 시간, 토큰 수만 남는다.
+- Worker가 실패하면 잠깐 쉬고 한 번 더, 그래도 안 되면 **Apps Script**(apps-script/Code.gs, 같은 기능)로 보낸다. 둘 다 안 되면 정해진 문장과 기기 안 생성기.
+- Worker는 동시 요청을 많이 받을 수 있어서 반 전체(40~50명)가 함께 써도 된다. Apps Script는 동시 약 30.
+- API 키는 Worker의 **비밀 변수 `ANTHROPIC_API_KEY`**, Apps Script의 **스크립트 속성 `ANTHROPIC_API_KEY`** 에만 있다. 게임 코드·저장소에는 없다.
+- Worker는 `ALLOWED_ORIGINS`(게임 주소)에서 온 요청만 받는다.
+- 학생 글은 저장하지 않는다. Worker도 `ai_log` 기록(숫자만)을 Apps Script로 넘겨 같은 시트에 남긴다 (`via: worker`).
+
+### Cloudflare Worker 연결 (한 번만)
+
+1. dash.cloudflare.com 가입 (무료).
+2. Workers & Pages → 만들기(Create) → Worker → Hello World로 시작 → 이름 `next-line-ai` → 배포.
+3. 코드 편집 → 기본 코드를 지우고 `cloudflare/worker.js` 내용을 붙여 넣기 → 배포.
+4. Worker 설정(Settings) → 변수 및 비밀(Variables and Secrets) → 추가: 유형 **비밀(Secret)**, 이름 `ANTHROPIC_API_KEY`, 값 = API 키 → 배포.
+5. `https://next-line-ai.<계정>.workers.dev` 를 브라우저로 열어 `"key": true`가 보이면 성공.
+6. 그 주소를 `config.js`의 `AI_URL`에 넣는다.
 
 ## 안전장치
 
 | 무엇 | 어디서 | 기본값 |
 |---|---|---|
 | 월 지출 상한 | Anthropic Console → Billing (충전식이면 충전액이 곧 상한) | 예: $5 |
-| 하루 전체 요청 수 | Code.gs `AI_DAILY_LIMIT` | 500 |
+| 하루 전체 요청 수 | Code.gs `AI_DAILY_LIMIT` (Apps Script 경로) | 500 |
+| 학생 한 명 시간당 | worker.js `PER_STUDENT_HOUR` (Worker 경로, 대략적) | 15 |
 | 학생 한 명 요청 수 | 게임 10회 + Code.gs `AI_PER_STUDENT` 12회(6시간) | 10 |
 | 연락처 지우기 | js/ai.js `scrub` (이메일, 6자리 이상 숫자) | 켜짐 |
 | 위기 신호 | js/ai.js `CRISIS`(기기 안, AI로 보내지 않음) + AI 지시문(safety) | 켜짐 → 1388 안내 |

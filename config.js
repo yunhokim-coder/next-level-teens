@@ -14,6 +14,10 @@ window.APP_CONFIG = {
   // API 키는 Apps Script의 스크립트 속성(ANTHROPIC_API_KEY)에 둔다. 키가 없거나 실패하면 기기 안 생성기를 쓴다.
   AI_IDEAS: true,
 
+  // AI 요청을 받을 Cloudflare Worker 주소 (cloudflare/worker.js). 비워 두면 Apps Script로 보낸다.
+  // 이 주소가 실패하면 한 번 더 시도하고, 그래도 안 되면 Apps Script로 보낸다.
+  AI_URL: '',
+
   // 처음 열었을 때 언어 ('ko' 또는 'en'). 학생이 메뉴에서 바꾸면 그 기기에 기억된다.
   DEFAULT_LANG: 'ko',
   LANGS: ['ko', 'en'],
