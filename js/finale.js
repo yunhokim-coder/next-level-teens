@@ -391,23 +391,48 @@
       });
       (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(render);
       render();
+      // 폰: 공유 시트(사진에 저장)를 띄우고, 안 되면 이미지를 크게 보여 줘서 꾹 눌러 저장. PC: 파일로 내려받기
+      const touch = window.matchMedia('(pointer: coarse)').matches;
+      const sheet = (url) => {
+        $('#save-img').src = url;
+        $('#save-close').onclick = () => {
+          Sound.play('blip');
+          $('#save-screen').hidden = true;
+        };
+        $('#save-screen').hidden = false;
+      };
+      const download = (blob, name) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+      };
       const save = (tall) => {
         const c = document.createElement('canvas');
         paint(c, tall);
         const name = `next-line-${kind}${tall ? '-wallpaper' : ''}.png`;
-        c.toBlob((blob) => {
-          if (!blob) return;
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = name;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 4000);
-        }, 'image/png');
+        // 공유 시트는 누른 순간에 바로 불러야 해서 동기로 만든다
+        const url = c.toDataURL('image/png');
+        const bin = atob(url.split(',')[1]);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        const blob = new Blob([bytes], { type: 'image/png' });
         Sound.play('select');
         if (onSave) onSave(`${kind}-${tall ? 'wallpaper' : 'square'}`);
+        if (!touch) return download(blob, name);
+        let file = null;
+        try {
+          file = new File([blob], name, { type: 'image/png' });
+        } catch (e) {}
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file] }).catch((e) => {
+            if (!e || e.name !== 'AbortError') sheet(url);
+          });
+        } else sheet(url);
       };
       $('#routemap-save').onclick = () => save(false);
       $('#routemap-wall').onclick = () => save(true);

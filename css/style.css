@@ -401,3 +401,9 @@ body.mland #portrait { transform: scale(0.8); transform-origin: top left; }
 /* 폰 세로: 타이틀에서 가로로 돌리라고 안내 */
 .rotate-hint { display: none; margin-top: 10px; padding: 6px 10px; font-size: 12px; color: var(--ink); background: rgba(8, 10, 22, 0.8); border: 1px solid #39436e; border-left: 3px solid var(--amber); }
 body.portrait.touch .rotate-hint { display: block; }
+
+/* 폰에서 공유 시트가 안 될 때: 이미지를 크게 보여 주고 꾹 눌러 저장 */
+#save-screen { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: #05060e; }
+#save-img { max-width: 100%; max-height: 72vh; object-fit: contain; border: 1px solid #39436e; -webkit-touch-callout: default; user-select: auto; -webkit-user-select: auto; }
+.save-hint { margin: 0; max-width: 420px; text-align: center; font-size: 14px; line-height: 1.5; color: var(--ink); }
+#save-close { min-width: 140px; }
