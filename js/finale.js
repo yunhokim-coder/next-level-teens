@@ -391,8 +391,14 @@
       });
       (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(render);
       render();
-      // 폰: 공유 시트(사진에 저장)를 띄우고, 안 되면 이미지를 크게 보여 줘서 꾹 눌러 저장. PC: 파일로 내려받기
+      // 안드로이드·PC: 바로 내려받기 (안드로이드는 갤러리 '다운로드' 앨범에 보인다)
+      // 아이폰: 공유 시트 → [이미지 저장]으로 사진 앱에. 카톡 같은 앱 안 브라우저: 이미지를 크게 보여 주고 꾹 눌러 저장
+      const ua = navigator.userAgent;
       const touch = window.matchMedia('(pointer: coarse)').matches;
+      const inApp = /KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp/i.test(ua);
+      const android = /Android/i.test(ua);
+      const ios = touch && !android;
+      $('#save-tip').hidden = !ios || inApp;
       const sheet = (url) => {
         $('#save-img').src = url;
         $('#save-close').onclick = () => {
@@ -423,7 +429,8 @@
         const blob = new Blob([bytes], { type: 'image/png' });
         Sound.play('select');
         if (onSave) onSave(`${kind}-${tall ? 'wallpaper' : 'square'}`);
-        if (!touch) return download(blob, name);
+        if (inApp && touch) return sheet(url);
+        if (!touch || android) return download(blob, name);
         let file = null;
         try {
           file = new File([blob], name, { type: 'image/png' });
