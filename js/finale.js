@@ -80,6 +80,21 @@
     return lines;
   }
 
+  // 정해진 줄 수에 들어갈 때까지 글자를 줄이고, 그래도 넘치면 마지막 줄 끝을 …로 줄인다 (g.font는 고른 크기로 남는다)
+  function fit(g, str, size, minSize, maxW, maxLines, F) {
+    for (let sz = size; sz >= minSize; sz -= 2) {
+      g.font = F(sz, true);
+      const lines = wrap(g, str, maxW);
+      if (lines.length <= maxLines) return { lines, size: sz };
+    }
+    g.font = F(minSize, true);
+    const lines = wrap(g, str, maxW).slice(0, maxLines);
+    let last = lines[maxLines - 1];
+    while (last && g.measureText(`${last}…`).width > maxW) last = last.slice(0, -1);
+    lines[maxLines - 1] = `${last.trimEnd()}…`;
+    return { lines, size: minSize };
+  }
+
   function draw(canvas, info, tall) {
     const W = 1080;
     const H = tall ? 1920 : 1080;
@@ -173,13 +188,10 @@
         g.textAlign = 'left';
       }
       g.fillStyle = col;
-      g.font = F(22, true);
-      g.fillText(s.tag, lx + 56, y - 40);
+      fit(g, s.tag, 22, 16, textW + 40, 1, F).lines.forEach((ln) => g.fillText(ln, lx + 56, y - 40));
       g.fillStyle = '#ffffff';
-      g.font = F(s.big ? 38 : 32, true);
-      wrap(g, s.name, textW)
-        .slice(0, s.letter === 'W' ? 3 : 2)
-        .forEach((ln, k) => g.fillText(ln, lx + 56, y - 8 + k * 42));
+      const t = fit(g, s.name, s.big ? 38 : 32, 24, textW, s.letter === 'W' ? 3 : 2, F);
+      t.lines.forEach((ln, k) => g.fillText(ln, lx + 56, y - 8 + k * Math.round(t.size * 1.12)));
     });
 
     // 그림자와 우회 노선, 약속

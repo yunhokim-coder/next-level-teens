@@ -74,7 +74,7 @@
       };
       $('#dest-error').hidden = true;
       $('#dest-own-go').onclick = () => {
-        const v = input.value.trim().slice(0, 30);
+        const v = input.value.trim().slice(0, 50);
         if (!v) {
           $('#dest-error').hidden = false;
           Sound.play('poof');
